@@ -1,0 +1,63 @@
+@import 'tailwindcss';
+
+/*
+ * Dark-first. The palette is stock Tailwind zinc so component classes stay
+ * readable (`bg-zinc-900`, `border-zinc-800/60`) rather than hiding behind
+ * bespoke token names. Only the accent and a few primitives are defined here.
+ */
+@theme {
+  --color-accent: oklch(62% 0.17 255);
+  --color-accent-hover: oklch(67% 0.17 255);
+  --font-mono:
+    ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono', Menlo, Consolas, monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-zinc-950);
+  color: var(--color-zinc-100);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Amount columns must not reflow as digits change. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hairline separators that survive dark backgrounds better than border-*. */
+.rule {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--color-zinc-800),
+    transparent
+  );
+}
+
+::selection {
+  background-color: color-mix(in oklch, var(--color-accent) 40%, transparent);
+}
+
+/* Native selects render an OS-styled control on dark backgrounds; strip it. */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2371717a' stroke-width='1.5'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  padding-right: 1.5rem;
+}
+
+/* Thin scrollbars inside the data panes. */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-zinc-700) transparent;
+}
