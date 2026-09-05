@@ -310,6 +310,13 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
       });
 
       if (response.kind === 'failed') {
+        // The engine's own code is sent, not the human message: the message is
+        // prose that may quote file content, the code is a fixed enum.
+        track({
+          event: 'conversion_failed',
+          dialect,
+          errorCode: response.issues[0]?.code ?? 'UNKNOWN',
+        });
         setExportState('error');
         setExportMessage(response.issues[0]?.message ?? 'Conversion failed.');
         return;
@@ -327,7 +334,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
       // export never counts as a conversion.
       trackGoogleConversion('file_converted');
       track({
-        event: 'export',
+        event: 'conversion_success',
         dialect,
         rowBucket: rowBucket(response.transactionCount),
       });
@@ -339,6 +346,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
           (skipped > 0 ? `, ${skipped} row-level warning${skipped === 1 ? '' : 's'}.` : '.'),
       );
     } catch (cause) {
+      track({ event: 'conversion_failed', dialect, errorCode: 'worker-exception' });
       setExportState('error');
       setExportMessage(cause instanceof Error ? cause.message : 'Conversion failed.');
     }

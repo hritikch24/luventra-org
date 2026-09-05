@@ -12,7 +12,13 @@
  * offline tab or a missing table must never interrupt a conversion.
  */
 
-export type TelemetryEvent = 'page_view' | 'file_loaded' | 'preflight_pass' | 'export';
+export type TelemetryEvent =
+  | 'visitor_landed'
+  | 'file_loaded'
+  | 'preflight_pass'
+  | 'conversion_success'
+  | 'conversion_failed'
+  | 'user_logged_in';
 export type Surface = 'dashboard' | 'bank' | 'other';
 export type RowBucket = '1-50' | '51-200' | '201-1000' | '1000+';
 
@@ -63,6 +69,8 @@ function referrerHost(): string {
 
 export interface TelemetryPayload {
   readonly event: TelemetryEvent;
+  /** Engine failure code, for `conversion_failed`. Mapped server-side. */
+  readonly errorCode?: string;
   readonly surface?: Surface;
   /** One of our own bank page slugs, never a user-supplied path. */
   readonly bankSlug?: string;
@@ -79,7 +87,7 @@ export function track(payload: TelemetryPayload): void {
   const body = JSON.stringify({
     ...payload,
     sessionId: id,
-    referrerHost: payload.event === 'page_view' ? referrerHost() : undefined,
+    referrerHost: payload.event === 'visitor_landed' ? referrerHost() : undefined,
   });
 
   try {

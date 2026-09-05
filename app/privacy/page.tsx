@@ -18,7 +18,8 @@ export const metadata: Metadata = {
  *   - card data handled by Stripe         -> app/api/checkout
  *   - subscription row contents           -> supabase/schema.sql
  *   - ad event carries a name only        -> app/components/GoogleAdsTracker.tsx
- *   - usage counters hold no content      -> app/api/telemetry/route.ts, supabase/schema.sql
+ *   - usage counters hold no content      -> app/lib/telemetry-server.ts, supabase/schema.sql
+ *   - IP + country stored, purged at 90d  -> supabase/schema.sql purge_old_telemetry()
  *
  * If any of those change, change this page in the same commit. A privacy
  * policy that overstates protection is worse than none at all.
@@ -109,8 +110,17 @@ export default function PrivacyPage() {
             happened, together with which of our own pages you were on, the output format you
             chose and a coarse size band such as &ldquo;51&ndash;200 rows&rdquo;. These rows are
             keyed to a random identifier generated per browser tab, which is discarded when the
-            tab closes and is never linked to your account. The table that stores them has no
-            column capable of holding a filename, an amount, a payee or an account number.
+            tab closes and is never linked to your account. We also store your{' '}
+            <strong className="text-zinc-200">IP address and two-letter country</strong> with these
+            events, so we can count unique visitors and see which countries the service is used
+            from. The table that stores them has no column capable of holding a filename, an
+            amount, a payee or an account number.
+          </p>
+          <p>
+            IP addresses are personal data. We use them only to count unique visitors and for
+            basic abuse protection, we do not use them to build a profile of you, and every
+            telemetry row — including the IP — is deleted automatically 90 days after it is
+            written.
           </p>
           <p>
             <strong className="text-zinc-200">Server logs.</strong> Our hosting provider records
@@ -139,7 +149,8 @@ export default function PrivacyPage() {
         <Section title="Retention and your rights">
           <p>
             Account and subscription records are kept while your account exists and for as long as
-            tax and accounting rules require us to keep billing records. Depending on where you
+            tax and accounting rules require us to keep billing records. Usage counters, including
+            IP addresses, are deleted after 90 days. Depending on where you
             live, you may have the right to access, correct, export or delete your personal data,
             and to object to or restrict its processing.
           </p>

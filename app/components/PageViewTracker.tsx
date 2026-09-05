@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { track, type Surface } from '@/app/lib/telemetry';
 
 /**
- * Records one page_view per mount. Rendered by the pages that matter rather
+ * Records one visitor_landed per mount. Rendered by the pages that matter rather
  * than globally, so /metrics and the legal routes are not counted as funnel
  * traffic.
  */
@@ -16,7 +16,7 @@ export function PageViewTracker({
   readonly bankSlug?: string;
 }) {
   useEffect(() => {
-    track({ event: 'page_view', surface, ...(bankSlug ? { bankSlug } : {}) });
+    track({ event: 'visitor_landed', surface, ...(bankSlug ? { bankSlug } : {}) });
   }, [surface, bankSlug]);
 
   return null;

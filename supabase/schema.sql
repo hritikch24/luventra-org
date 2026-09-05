@@ -28,35 +28,43 @@ create policy "read own subscription"
   using (auth.uid() = user_id);
 
 -- ---------------------------------------------------------------------------
--- Telemetry: numeric and enumerated counters only.
+-- Telemetry.
 --
--- Deliberately incapable of holding statement content. There is no column for
--- a filename, an account number, a payee, an amount or any free text. Row
--- counts are stored as a coarse bucket rather than an exact figure, because an
--- exact count is itself a weak fingerprint of a specific statement.
+-- Holds counters plus coarse visitor origin. It still has no column able to
+-- hold statement content: no filename, amount, payee or account number, and
+-- row counts are coarse bands rather than exact figures.
 --
--- `session_id` is a random per-tab value generated in the browser. It is not
--- derived from a user, a cookie or an IP, and it is not joined to auth.users.
+-- `ip` IS personal data under UK/EU GDPR. It is stored to count unique
+-- visitors and must therefore have a retention limit and a lawful basis. The
+-- purge helper at the bottom of this file exists for that reason — schedule
+-- it. Anyone holding the /metrics key can read this table.
 -- ---------------------------------------------------------------------------
 
 create table if not exists public.telemetry_events (
   id           bigserial primary key,
   event        text not null
-                 check (event in ('page_view','file_loaded','preflight_pass','export')),
+                 check (event in ('visitor_landed','file_loaded','preflight_pass',
+                                  'conversion_success','conversion_failed','user_logged_in')),
   session_id   uuid not null,
-  -- Which of our own pages, never a user-supplied path.
   surface      text not null default 'other'
                  check (surface in ('dashboard','bank','other')),
-  -- Slug of one of our own bank pages; null elsewhere.
   bank_slug    text,
-  -- Output format chosen, for `export` rows.
   dialect      text check (dialect in ('ofx','qbo','qfx')),
-  -- Coarse size band, never an exact row count.
   row_bucket   text check (row_bucket in ('1-50','51-200','201-1000','1000+')),
-  -- Registrable host of the referrer only (e.g. "google.com"), never a full URL.
   referrer_host text,
+  -- ISO-3166-1 alpha-2 from the edge, e.g. "GB". Never a city or coordinate.
+  country      text check (country is null or country ~ '^[A-Z]{2}$'),
+  -- Visitor IP, for unique-visitor counts. Personal data: purge on schedule.
+  ip           inet,
+  -- Structural failure reason for conversion_failed, e.g. TIMEOUT_EXCEEDED.
+  error_code   text,
   created_at   timestamptz not null default now()
 );
+
+-- Existing deployments: add the new columns without dropping data.
+alter table public.telemetry_events add column if not exists country text;
+alter table public.telemetry_events add column if not exists ip inet;
+alter table public.telemetry_events add column if not exists error_code text;
 
 create index if not exists telemetry_events_created_at_idx
   on public.telemetry_events (created_at desc);
@@ -64,9 +72,19 @@ create index if not exists telemetry_events_session_idx
   on public.telemetry_events (session_id);
 create index if not exists telemetry_events_bank_idx
   on public.telemetry_events (bank_slug) where bank_slug is not null;
+create index if not exists telemetry_events_event_idx
+  on public.telemetry_events (event, created_at desc);
 
 alter table public.telemetry_events enable row level security;
 
--- No client may read telemetry; the metrics page uses the service-role key.
--- Writes arrive through the server route, which also uses the service role, so
--- no anon policy is granted here either.
+-- No client policy is granted: reads and writes both go through server code
+-- holding the service-role key.
+
+-- Retention. Ninety days is longer than any dashboard range offered, and
+-- keeping raw IPs past that has no analytical value. Schedule with pg_cron:
+--   select cron.schedule('purge-telemetry','0 3 * * *',
+--     $$select public.purge_old_telemetry()$$);
+create or replace function public.purge_old_telemetry()
+returns void language sql security definer as $$
+  delete from public.telemetry_events where created_at < now() - interval '90 days';
+$$;

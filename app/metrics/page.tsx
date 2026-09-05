@@ -1,31 +1,28 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createAdminClient } from '@/app/lib/supabase/server';
 import { hasSupabaseEnv } from '@/app/lib/supabase/env';
-import { SEO_BANKS } from '@/app/lib/seo-banks-data';
 
 /**
- * Internal metrics.
+ * Internal analytics console.
  *
- * Layout follows the Urban Shopfronts metrics dashboard: a stat-card row over
- * a two-column split, with a drop-off funnel on the left and a dense source
- * table on the right. Rendered in this product's zinc palette rather than that
- * project's gold/navy one.
+ * Layout mirrors the Urban Shopfronts metrics dashboard — stat-card row, then a
+ * two-column split with a drop-off funnel on the left and a dense event matrix
+ * on the right — rendered in this product's zinc palette.
  *
- * ── ACCESS CONTROL ──────────────────────────────────────────────────────────
- * The gate is a query-string key, which is obscurity rather than
- * authentication: the default is guessable, query strings reach server and
- * proxy logs, and whoever holds it reads the whole table through the
- * service-role client. `METRICS_KEY` overrides the default, and the ad tag is
- * suppressed on this route so the key is never sent to Google. Move this
- * behind the Supabase session before it holds anything sensitive.
+ * The range filter is a link rather than client state. Every chip is a real
+ * re-query, the route is already `force-dynamic`, and keeping it server-side
+ * means the access key never has to be handed to client JavaScript in order to
+ * authenticate a second fetch. Shareable URLs come free.
  *
- * ── WHAT THIS CAN SHOW ──────────────────────────────────────────────────────
- * Everything here comes from `telemetry_events`, which can only hold counters:
- * an event name, a random per-tab id, one of our own page slugs, a format
- * choice and a coarse size band. There is no column capable of holding a
- * filename, an amount or an account number, so no chart below can accidentally
- * surface statement content.
+ * ── ACCESS CONTROL ─────────────────────────────────────────────────────────
+ * `?key=` is obscurity, not authentication: the default is guessable and query
+ * strings reach server and proxy logs. It now guards a table holding visitor
+ * IP addresses, which raises the stakes considerably — move this behind the
+ * Supabase session and an admin claim before production. `METRICS_KEY`
+ * overrides the default meanwhile, and the ad tag is suppressed on this route
+ * so the key is never sent to Google.
  */
 
 export const dynamic = 'force-dynamic';
@@ -36,7 +33,15 @@ export const metadata: Metadata = {
 };
 
 const METRICS_KEY = process.env.METRICS_KEY ?? 'admin';
-const WINDOW_DAYS = 30;
+
+const RANGES = [
+  { hours: 24, label: 'Last 24 Hours' },
+  { hours: 48, label: 'Last 2 Days' },
+  { hours: 24 * 7, label: 'Last 7 Days' },
+  { hours: 24 * 30, label: 'Last 30 Days' },
+] as const;
+
+const DEFAULT_HOURS = 24 * 7;
 
 interface PageProps {
   readonly searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -45,14 +50,16 @@ interface PageProps {
 interface EventRow {
   readonly event: string;
   readonly session_id: string;
-  readonly surface: string | null;
   readonly bank_slug: string | null;
   readonly dialect: string | null;
-  readonly referrer_host: string | null;
+  readonly country: string | null;
+  readonly ip: string | null;
+  readonly error_code: string | null;
+  readonly created_at: string;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Presentation primitives                                                    */
+/* Presentation                                                               */
 /* -------------------------------------------------------------------------- */
 
 function Panel({
@@ -79,32 +86,26 @@ function StatCard({
   label,
   value,
   sub,
-  accent = false,
+  tone = 'default',
 }: {
   label: string;
   value: string;
   sub?: string;
-  accent?: boolean;
+  tone?: 'default' | 'good' | 'bad';
 }) {
+  const valueTone =
+    tone === 'good' ? 'text-emerald-400' : tone === 'bad' ? 'text-red-400' : 'text-zinc-100';
   return (
     <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
       <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">{label}</p>
-      <p
-        className={`mt-2 text-3xl font-bold tracking-tight tnum ${
-          accent ? 'text-emerald-400' : 'text-zinc-100'
-        }`}
-      >
-        {value}
-      </p>
+      <p className={`mt-2 text-3xl font-bold tracking-tight tnum ${valueTone}`}>{value}</p>
       {sub ? <p className="mt-1.5 text-xs text-zinc-400">{sub}</p> : null}
     </div>
   );
 }
 
-/** Stacked stages with proportional fill and an explicit drop-off between each. */
 function Funnel({ stages }: { stages: readonly { label: string; note: string; value: number }[] }) {
   const top = Math.max(stages[0]?.value ?? 0, 1);
-
   return (
     <div className="space-y-1">
       {stages.map((stage, index) => {
@@ -155,7 +156,7 @@ function Funnel({ stages }: { stages: readonly { label: string; note: string; va
                   <p className="text-lg font-bold text-zinc-100 tnum">
                     {stage.value.toLocaleString()}
                   </p>
-                  <p className="text-[11px] text-zinc-400 tnum">{ofTotal.toFixed(0)}% of visits</p>
+                  <p className="text-[11px] text-zinc-400 tnum">{ofTotal.toFixed(0)}% of landings</p>
                 </div>
               </div>
             </div>
@@ -174,6 +175,15 @@ function EmptyNote({ children }: { children: React.ReactNode }) {
   );
 }
 
+const EVENT_STYLE: Readonly<Record<string, string>> = {
+  visitor_landed: 'bg-zinc-800 text-zinc-200',
+  file_loaded: 'bg-zinc-800 text-zinc-200',
+  preflight_pass: 'bg-zinc-800 text-zinc-200',
+  conversion_success: 'bg-emerald-500/15 text-emerald-300',
+  conversion_failed: 'bg-red-500/15 text-red-300',
+  user_logged_in: 'bg-blue-500/15 text-blue-300',
+};
+
 /* -------------------------------------------------------------------------- */
 /* Page                                                                       */
 /* -------------------------------------------------------------------------- */
@@ -187,114 +197,108 @@ export default async function MetricsPage({ searchParams }: PageProps) {
     notFound();
   }
 
-  const since = new Date(Date.now() - WINDOW_DAYS * 86_400_000).toISOString();
+  const requested = Number(typeof params.hours === 'string' ? params.hours : '');
+  const hours = RANGES.some((range) => range.hours === requested) ? requested : DEFAULT_HOURS;
+  const activeRange = RANGES.find((range) => range.hours === hours) ?? RANGES[2];
+  const since = new Date(Date.now() - hours * 3_600_000).toISOString();
 
   let rows: EventRow[] | null = null;
   let dbError: string | null = null;
 
   if (!hasSupabaseEnv() || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    dbError = 'Supabase is not configured, so no telemetry can be read.';
+    dbError =
+      'Supabase is not configured, so nothing can be read back. Events are still being captured — they are printed to the server terminal instead of the database.';
   } else {
     try {
       const { data, error } = await createAdminClient()
         .from('telemetry_events')
-        .select('event, session_id, surface, bank_slug, dialect, referrer_host')
+        .select('event, session_id, bank_slug, dialect, country, ip, error_code, created_at')
         .gte('created_at', since)
-        .limit(50_000);
+        .order('created_at', { ascending: false })
+        .limit(20_000);
       if (error) throw new Error(error.message);
       rows = (data ?? []) as EventRow[];
     } catch (cause) {
       dbError =
         cause instanceof Error
-          ? `${cause.message} — if this mentions a missing relation, apply supabase/schema.sql.`
+          ? `${cause.message} — if this mentions a missing relation or column, apply supabase/schema.sql.`
           : 'Could not read telemetry.';
     }
   }
 
   const all = rows ?? [];
+  const of = (event: string) => all.filter((row) => row.event === event);
 
-  /* -- aggregates ------------------------------------------------------- */
+  /* -- headline numbers -------------------------------------------------- */
 
-  const sessionsOf = (event: string) =>
-    new Set(all.filter((row) => row.event === event).map((row) => row.session_id));
+  // Unique visitors count by IP where one was captured, falling back to the
+  // session id. Behind a proxy that strips forwarding headers every IP is
+  // null, and counting IPs alone would silently report zero visitors.
+  const visitorKeys = new Set(
+    of('visitor_landed').map((row) => row.ip ?? `session:${row.session_id}`),
+  );
+  const successes = of('conversion_success').length;
+  const failures = of('conversion_failed').length;
+  const logins = of('user_logged_in').length;
 
-  const viewSessions = sessionsOf('page_view');
-  const loadedSessions = sessionsOf('file_loaded');
-  const passSessions = sessionsOf('preflight_pass');
-  const exportSessions = sessionsOf('export');
-
-  const pageViews = all.filter((row) => row.event === 'page_view').length;
-  const totalExports = all.filter((row) => row.event === 'export').length;
-  const conversionRate =
-    viewSessions.size > 0 ? (exportSessions.size / viewSessions.size) * 100 : 0;
+  const sessionsWith = (event: string) => new Set(of(event).map((row) => row.session_id));
+  const landed = sessionsWith('visitor_landed');
+  const loaded = sessionsWith('file_loaded');
+  const passed = sessionsWith('preflight_pass');
+  const converted = sessionsWith('conversion_success');
 
   const stages = [
-    { label: 'Visited a page', note: 'Any dashboard or bank landing page', value: viewSessions.size },
-    { label: 'Loaded a statement', note: 'A CSV was parsed in the browser', value: loadedSessions.size },
-    { label: 'Passed pre-flight', note: 'Every blocking check cleared', value: passSessions.size },
-    { label: 'Exported a file', note: 'Downloaded OFX, QBO or QFX', value: exportSessions.size },
+    { label: 'Landed', note: 'Opened the dashboard or a bank page', value: landed.size },
+    { label: 'Loaded CSV', note: 'A statement was parsed in the browser', value: loaded.size },
+    { label: 'Passed checks', note: 'Every blocking pre-flight check cleared', value: passed.size },
+    { label: 'Downloaded file', note: 'OFX, QBO or QFX saved', value: converted.size },
   ];
 
-  // Per-bank-page attribution, ordered by exports then sessions.
-  const bankName = new Map(SEO_BANKS.map((bank) => [bank.slug, bank.name]));
-  const perBank = new Map<string, { sessions: Set<string>; exports: number }>();
-  for (const row of all) {
-    if (!row.bank_slug) continue;
-    const entry = perBank.get(row.bank_slug) ?? { sessions: new Set<string>(), exports: 0 };
-    if (row.event === 'page_view') entry.sessions.add(row.session_id);
-    perBank.set(row.bank_slug, entry);
-  }
-  // An export carries no slug, so attribute it to the bank page that session saw.
-  const sessionBank = new Map<string, string>();
-  for (const row of all) {
-    if (row.event === 'page_view' && row.bank_slug) sessionBank.set(row.session_id, row.bank_slug);
-  }
-  for (const row of all) {
-    if (row.event !== 'export') continue;
-    const slug = sessionBank.get(row.session_id);
-    if (!slug) continue;
-    const entry = perBank.get(slug);
-    if (entry) entry.exports += 1;
-  }
-
-  const bankRows = [...perBank.entries()]
-    .map(([slug, entry]) => ({
-      slug,
-      name: bankName.get(slug) ?? slug,
-      sessions: entry.sessions.size,
-      exports: entry.exports,
-    }))
-    .sort((a, b) => b.exports - a.exports || b.sessions - a.sessions)
-    .slice(0, 12);
-
-  const byDialect = ['ofx', 'qbo', 'qfx'].map((dialect) => ({
-    dialect,
-    count: all.filter((row) => row.event === 'export' && row.dialect === dialect).length,
-  }));
-
-  const byReferrer = [...all
-    .filter((row) => row.event === 'page_view' && row.referrer_host)
-    .reduce((acc, row) => {
-      const host = row.referrer_host ?? 'direct';
-      acc.set(host, (acc.get(host) ?? 0) + 1);
+  const failureCounts = [
+    ...of('conversion_failed').reduce((acc, row) => {
+      const code = row.error_code ?? 'UNKNOWN';
+      acc.set(code, (acc.get(code) ?? 0) + 1);
       return acc;
-    }, new Map<string, number>())]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 8);
+    }, new Map<string, number>()),
+  ].sort((a, b) => b[1] - a[1]);
+
+  const topFailure = failureCounts[0];
+  const recent = all.slice(0, 40);
 
   return (
     <main className="min-h-dvh bg-zinc-950">
       <div className="mx-auto max-w-[84rem] px-6 py-8">
-        <header className="flex flex-wrap items-baseline justify-between gap-3 border-b border-zinc-800 pb-4">
-          <div className="flex items-baseline gap-3">
-            <h1 className="text-lg font-bold tracking-tight text-zinc-100">Internal metrics</h1>
+        <header className="border-b border-zinc-800 pb-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-3">
+            <div className="flex items-baseline gap-3">
+              <h1 className="text-lg font-bold tracking-tight text-zinc-100">Analytics console</h1>
+              <span className="font-mono text-[0.6875rem] text-zinc-400">not indexed</span>
+            </div>
             <span className="font-mono text-[0.6875rem] text-zinc-400">
-              last {WINDOW_DAYS} days · not indexed
+              {new Date().toISOString().replace('T', ' ').slice(0, 19)} UTC
             </span>
           </div>
-          <span className="font-mono text-[0.6875rem] text-zinc-400">
-            {new Date().toISOString().replace('T', ' ').slice(0, 19)} UTC
-          </span>
+
+          {/* Range filter — each chip is a real re-query. */}
+          <nav aria-label="Time range" className="mt-4 flex flex-wrap gap-2">
+            {RANGES.map((range) => {
+              const active = range.hours === hours;
+              return (
+                <Link
+                  key={range.hours}
+                  href={{ pathname: '/metrics', query: { key, hours: range.hours } }}
+                  aria-current={active ? 'page' : undefined}
+                  className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors duration-150 ${
+                    active
+                      ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-300'
+                      : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100'
+                  }`}
+                >
+                  {range.label}
+                </Link>
+              );
+            })}
+          </nav>
         </header>
 
         {dbError ? (
@@ -303,102 +307,126 @@ export default async function MetricsPage({ searchParams }: PageProps) {
           </p>
         ) : null}
 
-        {/* Stat row -------------------------------------------------------- */}
+        {/* Headline cards --------------------------------------------------- */}
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            label="Page views"
-            value={pageViews.toLocaleString()}
-            sub="Dashboard and bank pages"
+            label="Total visitors"
+            value={visitorKeys.size.toLocaleString()}
+            sub={`Unique IPs · ${activeRange.label.toLowerCase()}`}
           />
           <StatCard
-            label="Sessions"
-            value={viewSessions.size.toLocaleString()}
-            sub="Distinct browser tabs"
+            label="Successful conversions"
+            value={successes.toLocaleString()}
+            tone={successes > 0 ? 'good' : 'default'}
+            sub="Files downloaded"
           />
           <StatCard
-            label="Conversion rate"
-            value={`${conversionRate.toFixed(1)}%`}
-            accent={conversionRate > 0}
-            sub="Sessions that exported a file"
+            label="Failed conversions"
+            value={failures.toLocaleString()}
+            tone={failures > 0 ? 'bad' : 'default'}
+            sub={topFailure ? `Top: ${topFailure[0]} (${topFailure[1]})` : 'No rejections'}
           />
           <StatCard
-            label="Total exports"
-            value={totalExports.toLocaleString()}
-            sub="OFX, QBO and QFX combined"
+            label="Logged in users"
+            value={logins.toLocaleString()}
+            sub="Magic-link sign-ins completed"
           />
         </div>
 
-        {/* Split: funnel left, sources right -------------------------------- */}
+        {/* Funnel + event matrix -------------------------------------------- */}
         <div className="mt-3 grid gap-3 lg:grid-cols-2">
           <Panel
             title="Conversion funnel"
-            right={
-              <span className="font-mono text-[0.6875rem] text-zinc-400">by session</span>
-            }
+            right={<span className="font-mono text-[0.6875rem] text-zinc-400">by session</span>}
           >
-            {viewSessions.size === 0 ? (
-              <EmptyNote>
-                No sessions recorded yet. Counters begin once{' '}
-                <code className="font-mono text-zinc-300">telemetry_events</code> exists and a
-                visitor opens the dashboard or a bank page.
-              </EmptyNote>
+            {landed.size === 0 ? (
+              <EmptyNote>No landings recorded in this range.</EmptyNote>
             ) : (
               <Funnel stages={stages} />
             )}
+
+            {failureCounts.length > 0 ? (
+              <div className="mt-4 border-t border-zinc-800 pt-3">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+                  Failure reasons
+                </p>
+                <div className="mt-2 space-y-1.5">
+                  {failureCounts.map(([code, count]) => (
+                    <div key={code} className="flex items-baseline justify-between gap-3">
+                      <span className="truncate font-mono text-xs text-red-300">{code}</span>
+                      <span className="shrink-0 text-sm font-semibold text-zinc-100 tnum">
+                        {count.toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </Panel>
 
           <Panel
-            title="Bank landing pages"
-            right={<span className="font-mono text-[0.6875rem] text-zinc-400">top 12</span>}
+            title="Recent events"
+            right={
+              <span className="font-mono text-[0.6875rem] text-zinc-400">
+                latest {Math.min(recent.length, 40)}
+              </span>
+            }
           >
-            {bankRows.length === 0 ? (
-              <EmptyNote>No bank page traffic recorded in this window.</EmptyNote>
+            {recent.length === 0 ? (
+              <EmptyNote>No events recorded in this range.</EmptyNote>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="scroll-thin max-h-[28rem] overflow-auto">
                 <table className="w-full text-left">
-                  <thead>
+                  <thead className="sticky top-0 bg-zinc-900">
                     <tr className="border-b border-zinc-800">
                       <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                        Page
+                        Time
                       </th>
-                      <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                        Sessions
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                        Event
                       </th>
-                      <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                        Exports
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                        Country
                       </th>
-                      <th className="pb-2 text-right text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                        Rate
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                        Status
                       </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {bankRows.map((row) => {
-                      const rate = row.sessions > 0 ? (row.exports / row.sessions) * 100 : 0;
-                      const strong = rate >= 20 && row.sessions >= 5;
-                      return (
-                        <tr key={row.slug} className="border-b border-zinc-800/60 last:border-b-0">
-                          <td className="py-2 pr-3 text-sm text-zinc-200">
-                            <span className="block max-w-[16rem] truncate" title={row.slug}>
-                              {row.name}
-                            </span>
-                          </td>
-                          <td className="py-2 text-right text-sm text-zinc-300 tnum">
-                            {row.sessions.toLocaleString()}
-                          </td>
-                          <td className="py-2 text-right text-sm font-semibold text-zinc-100 tnum">
-                            {row.exports.toLocaleString()}
-                          </td>
-                          <td
-                            className={`py-2 text-right text-sm font-semibold tnum ${
-                              strong ? 'text-emerald-400' : 'text-zinc-400'
+                    {recent.map((row, index) => (
+                      <tr
+                        key={`${row.created_at}-${index}`}
+                        className="border-b border-zinc-800/60 last:border-b-0"
+                      >
+                        <td className="py-1.5 pr-3 font-mono text-[0.6875rem] text-zinc-300 tnum">
+                          {row.created_at.replace('T', ' ').slice(5, 19)}
+                        </td>
+                        <td className="py-1.5 pr-3">
+                          <span
+                            className={`inline-block rounded px-1.5 py-0.5 font-mono text-[0.625rem] ${
+                              EVENT_STYLE[row.event] ?? 'bg-zinc-800 text-zinc-200'
                             }`}
                           >
-                            {rate.toFixed(0)}%
-                          </td>
-                        </tr>
-                      );
-                    })}
+                            {row.event}
+                          </span>
+                        </td>
+                        <td className="py-1.5 pr-3 font-mono text-xs text-zinc-200">
+                          {row.country ?? '—'}
+                        </td>
+                        <td className="py-1.5 font-mono text-[0.6875rem]">
+                          {row.error_code ? (
+                            <span className="text-red-300">{row.error_code}</span>
+                          ) : row.event === 'conversion_success' ? (
+                            <span className="text-emerald-300">{row.dialect ?? 'ok'}</span>
+                          ) : (
+                            <span className="text-zinc-400">
+                              {row.bank_slug ? row.bank_slug.replace('-to-quickbooks', '') : 'ok'}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -406,81 +434,12 @@ export default async function MetricsPage({ searchParams }: PageProps) {
           </Panel>
         </div>
 
-        {/* Secondary row ---------------------------------------------------- */}
-        <div className="mt-3 grid gap-3 lg:grid-cols-2">
-          <Panel title="Formats exported">
-            {totalExports === 0 ? (
-              <EmptyNote>No exports recorded in this window.</EmptyNote>
-            ) : (
-              <div className="space-y-2">
-                {byDialect.map(({ dialect, count }) => {
-                  const pct = totalExports > 0 ? (count / totalExports) * 100 : 0;
-                  return (
-                    <div key={dialect}>
-                      <div className="flex items-baseline justify-between">
-                        <span className="font-mono text-xs uppercase text-zinc-200">{dialect}</span>
-                        <span className="text-xs text-zinc-300 tnum">
-                          {count.toLocaleString()} · {pct.toFixed(0)}%
-                        </span>
-                      </div>
-                      <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-zinc-800">
-                        <div
-                          className="h-full rounded-full bg-emerald-500/70 transition-all duration-700"
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Panel>
-
-          <Panel title="Referrers">
-            {byReferrer.length === 0 ? (
-              <EmptyNote>No referrer data in this window.</EmptyNote>
-            ) : (
-              <table className="w-full text-left">
-                <tbody>
-                  {byReferrer.map(([host, count]) => (
-                    <tr key={host} className="border-b border-zinc-800/60 last:border-b-0">
-                      <td className="py-1.5 font-mono text-xs text-zinc-200">{host}</td>
-                      <td className="py-1.5 text-right text-sm text-zinc-100 tnum">
-                        {count.toLocaleString()}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </Panel>
-        </div>
-
-        {/* Surface inventory ------------------------------------------------ */}
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <StatCard label="Bank pages built" value={SEO_BANKS.length.toLocaleString()} sub="prerendered" />
-          <StatCard
-            label="Layouts verified"
-            value={SEO_BANKS.filter((bank) => bank.verified).length.toLocaleString()}
-            sub="checked against a real export"
-          />
-          <StatCard
-            label="Awaiting verification"
-            value={SEO_BANKS.filter((bank) => !bank.verified).length.toLocaleString()}
-            sub="unverified public claims"
-          />
-          <StatCard
-            label="UK / EU pages"
-            value={SEO_BANKS.filter((b) => b.region === 'UK' || b.region === 'EU').length.toLocaleString()}
-            sub="localised copy"
-          />
-        </div>
-
         <p className="mt-6 text-xs leading-relaxed text-zinc-400">
-          Counters only. <code className="font-mono text-zinc-300">telemetry_events</code> has no
-          column able to hold a filename, an amount, an account number or a payee, and row counts
-          are stored as coarse bands rather than exact figures. Session ids are random per tab and
-          are never joined to an account.
+          Counters plus visitor origin. The table has no column able to hold a filename, an amount,
+          an account number or a payee, and row counts are stored as coarse bands. IP addresses are
+          personal data: they are kept only to count unique visitors, are never rendered on this
+          page, and are purged after 90 days by{' '}
+          <code className="font-mono text-zinc-300">purge_old_telemetry()</code>.
         </p>
       </div>
     </main>
