@@ -14,6 +14,12 @@
 
 :root {
   color-scheme: dark;
+  /*
+   * Height of the global compliance footer. Single-sourced because the
+   * dashboard owns the full viewport and must subtract exactly this much to
+   * avoid a scrollbar; see StatementWorkbench.
+   */
+  --footer-h: 2.75rem;
 }
 
 html,

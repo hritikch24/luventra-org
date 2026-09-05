@@ -58,7 +58,7 @@ export function ValidationPanel({
   const gateOpen = report !== null && report.ready && !working;
 
   return (
-    <div className="flex flex-col gap-3 lg:min-h-0">
+    <div data-tour="validation" className="flex flex-col gap-3 lg:min-h-0">
       <section className="flex flex-col border border-zinc-800/60 bg-zinc-900 lg:min-h-0">
         <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
           <h2 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
@@ -112,7 +112,7 @@ export function ValidationPanel({
         </div>
       </section>
 
-      <section className="shrink-0 border border-zinc-800/60 bg-zinc-900 p-3">
+      <section data-tour="export" className="shrink-0 border border-zinc-800/60 bg-zinc-900 p-3">
         <label htmlFor="acctid" className="mb-1 block text-[0.625rem] uppercase tracking-wider text-zinc-600">
           Account ID
         </label>
@@ -155,7 +155,7 @@ export function ValidationPanel({
           type="button"
           onClick={onExport}
           disabled={!gateOpen}
-          className="flex w-full items-center justify-center gap-2 border border-zinc-700 bg-gradient-to-b from-zinc-800 to-zinc-900 px-3 py-2 text-xs font-medium text-zinc-50 transition-[colors,box-shadow] duration-150 hover:border-emerald-500/50 hover:from-zinc-700 hover:to-zinc-800 hover:text-white hover:shadow-[0_0_18px_rgba(16,185,129,0.18)] active:from-zinc-800 active:to-zinc-900 disabled:cursor-not-allowed disabled:border-zinc-800 disabled:from-zinc-900 disabled:to-zinc-900 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+          className="flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.12)_inset] transition-[colors,box-shadow] duration-150 hover:bg-accent-hover hover:shadow-[0_0_24px_rgba(16,185,129,0.5),0_0_0_1px_rgba(52,211,153,0.6)] active:bg-accent disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
         >
           {working ? (
             <>

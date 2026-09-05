@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { GoogleAdsTracker } from './components/GoogleAdsTracker';
+import { SiteFooter } from './components/SiteFooter';
 
 /**
  * `metadataBase` resolves the relative canonicals the bank pages declare into
@@ -30,8 +31,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="bg-zinc-950">
-      <body className="bg-zinc-950 text-zinc-100 antialiased">
-        {children}
+      <body className="flex min-h-dvh flex-col bg-zinc-950 text-zinc-100 antialiased">
+        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        <SiteFooter />
         <GoogleAdsTracker />
       </body>
     </html>

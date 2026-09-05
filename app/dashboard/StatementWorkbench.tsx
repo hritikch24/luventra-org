@@ -23,6 +23,7 @@ import { PreviewGrid } from './components/PreviewGrid';
 import { ValidationPanel, type ExportState } from './components/ValidationPanel';
 import { BillingModal, FREE_ROW_LIMIT } from './components/BillingModal';
 import { AuthLink } from '@/app/components/AuthLink';
+import { OnboardingTour, useOnboardingTour } from './components/OnboardingTour';
 import { trackGoogleConversion } from '@/app/components/GoogleAdsTracker';
 
 /**
@@ -124,6 +125,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
   const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [billingOpen, setBillingOpen] = useState(false);
   const [subscription, setSubscription] = useState<SubscriptionState | null>(null);
+  const tour = useOnboardingTour(!embedded);
 
   // One worker for the session; spawning per file would re-pay module init.
   const clientRef = useRef<StatementWorkerClient | null>(null);
@@ -320,7 +322,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
   }, [loaded, dialect, accountId, checkEntitlement]);
 
   return (
-    <div className={`flex flex-col ${embedded ? 'h-[44rem] max-h-[85vh]' : 'h-dvh'}`}>
+    <div className={`flex flex-col ${embedded ? 'h-[44rem] max-h-[85vh]' : 'h-[calc(100dvh-var(--footer-h))]'}`}>
       <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-4 py-2.5">
         <div className="flex items-baseline gap-2.5">
           {/* The bank page owns the page-level h1, so this drops to a span. */}
@@ -344,26 +346,33 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
       <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto p-3 lg:grid-cols-[17rem_minmax(0,1fr)_19rem] lg:overflow-hidden">
         {/* LEFT — ingestion and mapping rules */}
         <div className="scroll-thin flex flex-col gap-3 lg:min-h-0 lg:overflow-y-auto">
-          <FileDropzone
-            preview={loaded?.preview ?? null}
-            busy={busy}
-            error={error}
-            onFile={(file) => {
-              void onFile(file);
-            }}
-            onClear={onClear}
-          />
-          {loaded ? (
-            <MappingTable
-              preview={loaded.preview}
-              columns={loaded.schema.columns}
-              onAssign={onAssign}
+          {/* TARGET 1 */}
+          <div data-tour="dropzone">
+            <FileDropzone
+              preview={loaded?.preview ?? null}
+              busy={busy}
+              error={error}
+              onFile={(file) => {
+                void onFile(file);
+              }}
+              onClear={onClear}
             />
-          ) : (
-            <div className="border border-zinc-800/60 bg-zinc-900/40 px-3 py-6 text-center">
-              <p className="font-mono text-[0.6875rem] text-zinc-700">mapping rules</p>
-            </div>
-          )}
+          </div>
+
+          {/* TARGET 2 — present in both states so the step always has an anchor. */}
+          <div data-tour="mapping">
+            {loaded ? (
+              <MappingTable
+                preview={loaded.preview}
+                columns={loaded.schema.columns}
+                onAssign={onAssign}
+              />
+            ) : (
+              <div className="border border-zinc-800/60 bg-zinc-900/40 px-3 py-6 text-center">
+                <p className="font-mono text-[0.6875rem] text-zinc-700">mapping rules</p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* CENTRE — live preview matrix */}
@@ -389,6 +398,8 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
           }}
         />
       </main>
+
+      {embedded ? null : <OnboardingTour controller={tour} />}
 
       <BillingModal
         open={billingOpen}
