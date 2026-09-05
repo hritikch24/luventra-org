@@ -7,9 +7,25 @@ import type { OfxDialect } from '@/app/worker/types';
 const STATUS: Readonly<
   Record<CheckStatus, { icon: typeof Check; tone: string; dot: string; sr: string }>
 > = {
-  pass: { icon: Check, tone: 'text-emerald-400', dot: 'bg-emerald-400', sr: 'passed' },
-  warn: { icon: TriangleAlert, tone: 'text-amber-400', dot: 'bg-amber-400', sr: 'warning' },
-  fail: { icon: X, tone: 'text-red-400', dot: 'bg-red-400', sr: 'failed' },
+  pass: {
+    icon: Check,
+    tone: 'text-emerald-400',
+    dot: 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]',
+    sr: 'passed',
+  },
+  warn: {
+    icon: TriangleAlert,
+    tone: 'text-amber-400',
+    dot: 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]',
+    sr: 'warning',
+  },
+  fail: {
+    icon: X,
+    tone: 'text-red-400',
+    dot: 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.45)]',
+    sr: 'failed',
+  },
+  // Unchecked stays matte: a glow here would read as a result.
   skip: { icon: Minus, tone: 'text-zinc-600', dot: 'bg-zinc-700', sr: 'not checked' },
 };
 
@@ -77,11 +93,15 @@ export function ValidationPanel({
                     className="px-3 py-2 transition-colors duration-150 hover:bg-zinc-800/30"
                   >
                     <div className="flex items-center gap-1.5">
+                      <span
+                        className={`size-1.5 shrink-0 rounded-full ${style.dot}`}
+                        aria-hidden
+                      />
                       <Icon className={`size-3 shrink-0 ${style.tone}`} aria-hidden />
                       <span className="text-xs font-medium text-zinc-200">{check.label}</span>
                       <span className="sr-only">{style.sr}</span>
                     </div>
-                    <p className="mt-1 pl-[1.125rem] text-[0.6875rem] leading-relaxed text-zinc-500">
+                    <p className="mt-1 pl-[1.875rem] text-[0.6875rem] leading-relaxed text-zinc-500">
                       {check.detail}
                     </p>
                   </li>
@@ -135,7 +155,7 @@ export function ValidationPanel({
           type="button"
           onClick={onExport}
           disabled={!gateOpen}
-          className="flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-medium text-white transition-colors duration-150 hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="flex w-full items-center justify-center gap-2 border border-zinc-700 bg-gradient-to-b from-zinc-800 to-zinc-900 px-3 py-2 text-xs font-medium text-zinc-50 transition-[colors,box-shadow] duration-150 hover:border-emerald-500/50 hover:from-zinc-700 hover:to-zinc-800 hover:text-white hover:shadow-[0_0_18px_rgba(16,185,129,0.18)] active:from-zinc-800 active:to-zinc-900 disabled:cursor-not-allowed disabled:border-zinc-800 disabled:from-zinc-900 disabled:to-zinc-900 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
         >
           {working ? (
             <>

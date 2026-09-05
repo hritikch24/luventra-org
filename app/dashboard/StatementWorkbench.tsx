@@ -22,6 +22,7 @@ import { MappingTable } from './components/MappingTable';
 import { PreviewGrid } from './components/PreviewGrid';
 import { ValidationPanel, type ExportState } from './components/ValidationPanel';
 import { BillingModal, FREE_ROW_LIMIT } from './components/BillingModal';
+import { AuthLink } from '@/app/components/AuthLink';
 import { trackGoogleConversion } from '@/app/components/GoogleAdsTracker';
 
 /**
@@ -334,7 +335,10 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
           )}
           <span className="font-mono text-[0.625rem] text-zinc-600">csv → ofx/qbo/qfx</span>
         </div>
-        <span className="font-mono text-[0.625rem] text-zinc-600">parsed locally</span>
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-[0.625rem] text-zinc-600">parsed locally</span>
+          {embedded ? null : <AuthLink />}
+        </div>
       </header>
 
       <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto p-3 lg:grid-cols-[17rem_minmax(0,1fr)_19rem] lg:overflow-hidden">

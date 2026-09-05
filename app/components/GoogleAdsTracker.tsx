@@ -1,6 +1,7 @@
 'use client';
 
 import Script from 'next/script';
+import { usePathname } from 'next/navigation';
 
 /**
  * Google Ads global site tag (gtag.js).
@@ -117,8 +118,20 @@ export interface GoogleAdsTrackerProps {
  * do with rendering; `lazyOnload` waits for idle and can miss a fast bounce,
  * which is exactly the traffic paid ads produce.
  */
+/**
+ * Routes the tag must never load on.
+ *
+ * gtag reports `page_location` as the full URL including its query string, so
+ * loading it on /metrics would hand that page's access key to Google. Keep any
+ * route whose URL carries a secret in this list.
+ */
+const EXCLUDED_PREFIXES = ['/metrics'];
+
 export function GoogleAdsTracker({ enableInDevelopment = false }: GoogleAdsTrackerProps = {}) {
+  const pathname = usePathname();
   const tagId = resolveTagId();
+
+  if (EXCLUDED_PREFIXES.some((prefix) => pathname?.startsWith(prefix))) return null;
   if (tagId === null) return null;
   if (process.env.NODE_ENV !== 'production' && !enableInDevelopment) return null;
 

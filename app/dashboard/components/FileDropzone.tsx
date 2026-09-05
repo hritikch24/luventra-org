@@ -58,7 +58,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
 
   if (preview) {
     return (
-      <div className="flex items-center gap-2.5 border border-zinc-800/60 bg-zinc-900 px-3 py-2.5">
+      <div className="flex items-center gap-2.5 border border-zinc-800/60 bg-zinc-900 px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-700 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]">
         <FileText className="size-4 shrink-0 text-zinc-500" aria-hidden />
         <div className="min-w-0 flex-1">
           <p className="truncate font-mono text-xs text-zinc-100">{preview.fileName}</p>
@@ -99,23 +99,29 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           setDragging(false);
           take(event.dataTransfer.files);
         }}
-        className={`border border-dashed transition-colors duration-150 ${
+        className={`border border-dashed transition-[colors,box-shadow] duration-150 ${
           dragging
-            ? 'border-accent/70 bg-accent/10'
-            : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700'
+            ? 'border-emerald-500/70 bg-emerald-500/[0.07] shadow-[0_0_24px_rgba(16,185,129,0.22),inset_0_0_20px_rgba(16,185,129,0.06)]'
+            : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]'
         }`}
       >
         <label
           htmlFor={inputId}
-          className="flex cursor-pointer flex-col items-center justify-center gap-2 px-4 py-8"
+          className="group flex cursor-pointer flex-col items-center justify-center gap-2 px-4 py-8"
         >
           <Upload
             className={`size-4 transition-colors duration-150 ${
-              dragging ? 'text-accent' : 'text-zinc-600'
+              dragging
+                ? 'text-emerald-400 drop-shadow-[0_0_6px_rgba(16,185,129,0.55)]'
+                : 'text-zinc-600 group-hover:text-zinc-400'
             }`}
             aria-hidden
           />
-          <span className="font-mono text-xs text-zinc-500">
+          <span
+            className={`font-mono text-xs transition-colors duration-150 ${
+              dragging ? 'text-emerald-300' : 'text-zinc-500'
+            }`}
+          >
             {busy ? 'reading…' : dragging ? 'release to load' : 'drop statement'}
           </span>
           <input

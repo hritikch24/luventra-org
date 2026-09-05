@@ -6,6 +6,7 @@ import { SEO_BANKS, bankBySlug } from '@/app/lib/seo-banks-data';
 import { resolvePresetRoles } from '@/app/lib/preset-resolve';
 import { copyFor } from '@/app/lib/market-context';
 import { StatementWorkbench } from '@/app/dashboard/StatementWorkbench';
+import { AuthLink } from '@/app/components/AuthLink';
 
 interface PageProps {
   /** `params` is a promise in this version of Next and must be awaited. */
@@ -99,7 +100,10 @@ export default async function BankPage({ params }: PageProps) {
             <ArrowLeft className="size-3" aria-hidden />
             all banks
           </Link>
-          <span className="font-mono text-[0.625rem] text-zinc-600">csv → ofx/qbo/qfx</span>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-[0.625rem] text-zinc-600">csv → ofx/qbo/qfx</span>
+            <AuthLink />
+          </div>
         </div>
       </header>
 
