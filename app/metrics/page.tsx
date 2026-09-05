@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createAdminClient } from '@/app/lib/supabase/server';
-import { hasSupabaseEnv } from '@/app/lib/supabase/env';
+import { describeSupabaseEnv, hasServerSupabaseEnv } from '@/app/lib/supabase/env';
 
 /**
  * Internal analytics console.
@@ -54,6 +54,8 @@ interface EventRow {
   readonly dialect: string | null;
   readonly country: string | null;
   readonly ip: string | null;
+  readonly browser: string | null;
+  readonly os: string | null;
   readonly error_code: string | null;
   readonly created_at: string;
 }
@@ -74,7 +76,7 @@ function Panel({
   return (
     <section className="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900">
       <div className="flex items-center justify-between gap-3 border-b border-zinc-800 px-4 py-3">
-        <h2 className="text-sm font-semibold tracking-tight text-zinc-100">{title}</h2>
+        <h2 className="text-sm font-semibold tracking-tight text-white">{title}</h2>
         {right}
       </div>
       <div className="p-4">{children}</div>
@@ -97,72 +99,171 @@ function StatCard({
     tone === 'good' ? 'text-emerald-400' : tone === 'bad' ? 'text-red-400' : 'text-zinc-100';
   return (
     <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">{label}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-200">{label}</p>
       <p className={`mt-2 text-3xl font-bold tracking-tight tnum ${valueTone}`}>{value}</p>
-      {sub ? <p className="mt-1.5 text-xs text-zinc-400">{sub}</p> : null}
+      {sub ? <p className="mt-1.5 text-xs text-zinc-300">{sub}</p> : null}
     </div>
   );
 }
 
-function Funnel({ stages }: { stages: readonly { label: string; note: string; value: number }[] }) {
+/**
+ * Waterfall funnel drawn as one SVG.
+ *
+ * Each stage is a band whose width is proportional to its value, joined to the
+ * next by a filled taper so the loss between stages is the visible area rather
+ * than a number to read. Laid out in a fixed 1000-unit viewBox and scaled with
+ * `preserveAspectRatio="none"`, so it fills any panel width without needing a
+ * measured container.
+ */
+function FunnelChart({
+  stages,
+}: {
+  stages: readonly { label: string; note: string; value: number }[];
+}) {
   const top = Math.max(stages[0]?.value ?? 0, 1);
+  const W = 1000;
+  const BAND = 54;
+  const GAP = 30;
+  const H = stages.length * BAND + (stages.length - 1) * GAP;
+
+  const widthOf = (value: number) => Math.max((value / top) * W, 6);
+
   return (
-    <div className="space-y-1">
-      {stages.map((stage, index) => {
-        const previous = index === 0 ? null : (stages[index - 1]?.value ?? 0);
-        const lost = previous === null ? 0 : previous - stage.value;
-        const dropPct = previous && previous > 0 ? (lost / previous) * 100 : 0;
-        const widthPct = (stage.value / top) * 100;
-        const ofTotal = top > 0 ? (stage.value / top) * 100 : 0;
-        // Shedding more than half the remaining visitors is the story.
-        const severe = dropPct >= 50;
+    <div className="w-full">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        preserveAspectRatio="none"
+        className="h-[19rem] w-full"
+        role="img"
+        aria-label="Conversion funnel"
+      >
+        <defs>
+          <linearGradient id="funnel-band" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="rgb(16 185 129)" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="rgb(16 185 129)" stopOpacity="0.22" />
+          </linearGradient>
+        </defs>
 
-        return (
-          <div key={stage.label}>
-            {previous !== null ? (
-              <div className="flex items-center gap-2 py-1 pl-1">
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className={severe ? 'text-red-400' : 'text-zinc-400'}
-                  aria-hidden
-                >
-                  <path d="M12 5v14M19 12l-7 7-7-7" />
-                </svg>
-                <span
-                  className={`text-xs font-semibold ${severe ? 'text-red-400' : 'text-zinc-400'}`}
-                >
-                  {lost.toLocaleString()} lost here ({dropPct.toFixed(0)}%)
-                </span>
-              </div>
-            ) : null}
+        {stages.map((stage, index) => {
+          const y = index * (BAND + GAP);
+          const w = widthOf(stage.value);
+          const next = stages[index + 1];
+          const nextW = next ? widthOf(next.value) : null;
 
-            <div className="relative overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950">
-              <div
-                className="absolute inset-y-0 left-0 bg-emerald-500/15"
-                style={{ width: `${Math.max(widthPct, 1.5)}%` }}
-                aria-hidden
-              />
-              <div className="relative flex items-center justify-between gap-3 px-4 py-3">
+          return (
+            <g key={stage.label}>
+              {/* Track, so an empty stage still reads as a slot. */}
+              <rect x={0} y={y} width={W} height={BAND} rx={4} fill="rgb(9 9 11)" stroke="rgb(39 39 42)" />
+              <rect x={0} y={y} width={w} height={BAND} rx={4} fill="url(#funnel-band)" />
+
+              {/* Taper into the next stage: the gap is the drop-off. */}
+              {nextW !== null ? (
+                <polygon
+                  points={`0,${y + BAND} ${w},${y + BAND} ${nextW},${y + BAND + GAP} 0,${y + BAND + GAP}`}
+                  fill="rgb(16 185 129)"
+                  fillOpacity="0.1"
+                />
+              ) : null}
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Labels sit outside the SVG so text is never distorted by the
+          non-uniform scaling that makes the chart fill its container. */}
+      <div className="-mt-[19rem] flex h-[19rem] flex-col">
+        {stages.map((stage, index) => {
+          const previous = index === 0 ? null : (stages[index - 1]?.value ?? 0);
+          const lost = previous === null ? 0 : previous - stage.value;
+          const dropPct = previous && previous > 0 ? (lost / previous) * 100 : 0;
+          const severe = dropPct >= 50;
+          const ofTotal = top > 0 ? (stage.value / top) * 100 : 0;
+
+          return (
+            <div key={stage.label} className="flex flex-1 flex-col justify-center">
+              <div className="flex items-center justify-between gap-3 px-3">
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-zinc-100">{stage.label}</p>
-                  <p className="truncate text-xs text-zinc-400">{stage.note}</p>
+                  <p className="truncate text-sm font-semibold text-white">{stage.label}</p>
+                  <p className="truncate text-xs text-zinc-200">{stage.note}</p>
                 </div>
                 <div className="shrink-0 text-right">
-                  <p className="text-lg font-bold text-zinc-100 tnum">
+                  <p className="text-lg font-bold text-white tnum">
                     {stage.value.toLocaleString()}
                   </p>
-                  <p className="text-[11px] text-zinc-400 tnum">{ofTotal.toFixed(0)}% of landings</p>
+                  <p className="text-[11px] text-zinc-200 tnum">{ofTotal.toFixed(0)}%</p>
                 </div>
               </div>
+              {previous !== null ? (
+                <p
+                  className={`px-3 pt-0.5 text-[11px] font-semibold ${
+                    severe ? 'text-red-400' : 'text-zinc-300'
+                  }`}
+                >
+                  ↓ {lost.toLocaleString()} lost ({dropPct.toFixed(0)}%)
+                </p>
+              ) : null}
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Hourly activity grid: 24 columns of one hour each, most recent on the right.
+ * Cell opacity scales with volume against the busiest hour, so peak trading
+ * hours are visible at a glance without axes.
+ */
+function HourlyGrid({
+  buckets,
+}: {
+  buckets: readonly { hour: string; landed: number; converted: number }[];
+}) {
+  const peak = Math.max(1, ...buckets.map((b) => b.landed));
+
+  return (
+    <div>
+      <div className="flex items-end gap-[3px]">
+        {buckets.map((bucket) => {
+          const share = bucket.landed / peak;
+          return (
+            <div key={bucket.hour} className="group relative flex-1">
+              <div className="flex h-24 items-end">
+                <div className="w-full rounded-sm bg-zinc-800" style={{ height: '100%' }}>
+                  <div className="flex h-full w-full flex-col justify-end">
+                    <div
+                      className="w-full rounded-sm bg-emerald-500/70"
+                      style={{ height: `${Math.max(share * 100, bucket.landed > 0 ? 6 : 0)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Conversions as a second, denser mark under each column. */}
+              <div
+                className={`mt-[3px] h-1 rounded-sm ${
+                  bucket.converted > 0 ? 'bg-emerald-300' : 'bg-zinc-800'
+                }`}
+              />
+              <span className="pointer-events-none absolute -top-7 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded border border-zinc-700 bg-zinc-950 px-1.5 py-0.5 font-mono text-[10px] text-zinc-100 group-hover:block">
+                {bucket.hour} · {bucket.landed} in / {bucket.converted} conv
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-1.5 flex justify-between font-mono text-[10px] text-zinc-300">
+        <span>{buckets[0]?.hour ?? ''}</span>
+        <span>{buckets[buckets.length - 1]?.hour ?? ''}</span>
+      </div>
+      <div className="mt-2 flex items-center gap-4 text-[11px] text-zinc-200">
+        <span className="flex items-center gap-1.5">
+          <span className="size-2 rounded-sm bg-emerald-500/70" /> landings
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="size-2 rounded-sm bg-emerald-300" /> conversions
+        </span>
+      </div>
     </div>
   );
 }
@@ -205,14 +306,13 @@ export default async function MetricsPage({ searchParams }: PageProps) {
   let rows: EventRow[] | null = null;
   let dbError: string | null = null;
 
-  if (!hasSupabaseEnv() || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    dbError =
-      'Supabase is not configured, so nothing can be read back. Events are still being captured — they are printed to the server terminal instead of the database.';
+  if (!hasServerSupabaseEnv()) {
+    dbError = `No server credentials resolved (found: ${describeSupabaseEnv()}). Set SUPABASE_URL and SUPABASE_SECRET_KEY. Events are still captured — they print to the server log instead of the database.`;
   } else {
     try {
       const { data, error } = await createAdminClient()
         .from('telemetry_events')
-        .select('event, session_id, bank_slug, dialect, country, ip, error_code, created_at')
+        .select('event, session_id, bank_slug, dialect, country, ip, browser, os, error_code, created_at')
         .gte('created_at', since)
         .order('created_at', { ascending: false })
         .limit(20_000);
@@ -262,16 +362,35 @@ export default async function MetricsPage({ searchParams }: PageProps) {
     }, new Map<string, number>()),
   ].sort((a, b) => b[1] - a[1]);
 
+  // 24 one-hour buckets ending at the current hour, oldest on the left.
+  const nowMs = Date.now();
+  const buckets = Array.from({ length: 24 }, (_, index) => {
+    const slotEnd = nowMs - (23 - index) * 3_600_000;
+    const start = new Date(slotEnd);
+    start.setMinutes(0, 0, 0);
+    const from = start.getTime();
+    const to = from + 3_600_000;
+    const inSlot = all.filter((row) => {
+      const at = Date.parse(row.created_at);
+      return at >= from && at < to;
+    });
+    return {
+      hour: `${String(start.getUTCHours()).padStart(2, '0')}:00`,
+      landed: inSlot.filter((row) => row.event === 'visitor_landed').length,
+      converted: inSlot.filter((row) => row.event === 'conversion_success').length,
+    };
+  });
+
   const topFailure = failureCounts[0];
   const recent = all.slice(0, 40);
 
   return (
     <main className="min-h-dvh bg-zinc-950">
-      <div className="mx-auto max-w-[84rem] px-6 py-8">
+      <div className="mx-auto max-w-[110rem] px-6 py-8 xl:px-10">
         <header className="border-b border-zinc-800 pb-4">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div className="flex items-baseline gap-3">
-              <h1 className="text-lg font-bold tracking-tight text-zinc-100">Analytics console</h1>
+              <h1 className="text-lg font-bold tracking-tight text-white">Analytics console</h1>
               <span className="font-mono text-[0.6875rem] text-zinc-400">not indexed</span>
             </div>
             <span className="font-mono text-[0.6875rem] text-zinc-400">
@@ -333,6 +452,18 @@ export default async function MetricsPage({ searchParams }: PageProps) {
           />
         </div>
 
+        {/* Hourly activity ---------------------------------------------------- */}
+        <div className="mt-3">
+          <Panel
+            title="Hourly activity"
+            right={
+              <span className="font-mono text-[0.6875rem] text-zinc-200">last 24h · UTC</span>
+            }
+          >
+            <HourlyGrid buckets={buckets} />
+          </Panel>
+        </div>
+
         {/* Funnel + event matrix -------------------------------------------- */}
         <div className="mt-3 grid gap-3 lg:grid-cols-2">
           <Panel
@@ -342,7 +473,7 @@ export default async function MetricsPage({ searchParams }: PageProps) {
             {landed.size === 0 ? (
               <EmptyNote>No landings recorded in this range.</EmptyNote>
             ) : (
-              <Funnel stages={stages} />
+              <FunnelChart stages={stages} />
             )}
 
             {failureCounts.length > 0 ? (
@@ -379,16 +510,19 @@ export default async function MetricsPage({ searchParams }: PageProps) {
                 <table className="w-full text-left">
                   <thead className="sticky top-0 bg-zinc-900">
                     <tr className="border-b border-zinc-800">
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
                         Time
                       </th>
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
                         Event
                       </th>
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
                         Country
                       </th>
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
+                        Client engine
+                      </th>
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
                         Status
                       </th>
                     </tr>
@@ -411,8 +545,11 @@ export default async function MetricsPage({ searchParams }: PageProps) {
                             {row.event}
                           </span>
                         </td>
-                        <td className="py-1.5 pr-3 font-mono text-xs text-zinc-200">
+                        <td className="py-1.5 pr-3 font-mono text-xs text-zinc-100">
                           {row.country ?? '—'}
+                        </td>
+                        <td className="py-1.5 pr-3 font-mono text-[0.6875rem] text-zinc-200">
+                          {row.browser ? `${row.browser} · ${row.os ?? '—'}` : '—'}
                         </td>
                         <td className="py-1.5 font-mono text-[0.6875rem]">
                           {row.error_code ? (

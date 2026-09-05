@@ -56,6 +56,10 @@ create table if not exists public.telemetry_events (
   country      text check (country is null or country ~ '^[A-Z]{2}$'),
   -- Visitor IP, for unique-visitor counts. Personal data: purge on schedule.
   ip           inet,
+  -- Client engine, inferred from the User-Agent and mapped to a closed set.
+  -- The raw header is never stored: it is a strong fingerprinting vector.
+  browser      text,
+  os           text,
   -- Structural failure reason for conversion_failed, e.g. TIMEOUT_EXCEEDED.
   error_code   text,
   created_at   timestamptz not null default now()
@@ -65,6 +69,8 @@ create table if not exists public.telemetry_events (
 alter table public.telemetry_events add column if not exists country text;
 alter table public.telemetry_events add column if not exists ip inet;
 alter table public.telemetry_events add column if not exists error_code text;
+alter table public.telemetry_events add column if not exists browser text;
+alter table public.telemetry_events add column if not exists os text;
 
 create index if not exists telemetry_events_created_at_idx
   on public.telemetry_events (created_at desc);

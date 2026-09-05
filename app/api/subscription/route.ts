@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/app/lib/supabase/server';
-import { hasSupabaseEnv } from '@/app/lib/supabase/env';
+import { supabaseAnonKey, supabaseUrl } from '@/app/lib/supabase/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +16,7 @@ export interface SubscriptionState {
 }
 
 export async function GET() {
-  if (!hasSupabaseEnv()) {
+  if (!supabaseUrl() || !supabaseAnonKey()) {
     return NextResponse.json({
       configured: false,
       signedIn: false,

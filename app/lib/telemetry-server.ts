@@ -1,5 +1,5 @@
 import { createAdminClient } from '@/app/lib/supabase/server';
-import { hasSupabaseEnv } from '@/app/lib/supabase/env';
+import { describeSupabaseEnv, hasServerSupabaseEnv } from '@/app/lib/supabase/env';
 import { SEO_BANKS } from '@/app/lib/seo-banks-data';
 
 /**
@@ -101,6 +101,8 @@ export interface TelemetryRow {
   referrer_host: string | null;
   country: string | null;
   ip: string | null;
+  browser: string | null;
+  os: string | null;
   error_code: string | null;
 }
 
@@ -134,11 +136,66 @@ export function ipFrom(headers: Headers): string | null {
   return looksIpv4 || looksIpv6 ? candidate : null;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Client engine                                                              */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Browser and OS inferred from the User-Agent.
+ *
+ * The header is attacker-controlled, so it is treated as hostile: truncated
+ * before matching, tested only against anchored patterns with no nested
+ * quantifiers (nothing that can backtrack pathologically), and mapped onto a
+ * closed set of names. An unrecognised agent becomes "Other", never the raw
+ * string — the UA is a strong fingerprinting vector and storing it verbatim
+ * would undo the point of keeping this table non-identifying.
+ *
+ * Order matters: Edge and Opera both claim "Chrome", and Chrome claims
+ * "Safari", so the more specific engines are tested first.
+ */
+const UA_MAX = 400;
+
+const BROWSERS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/edg[ea]?\//i, 'Edge'],
+  [/opr\/|opera/i, 'Opera'],
+  [/samsungbrowser/i, 'Samsung'],
+  [/firefox|fxios/i, 'Firefox'],
+  [/chrome|crios|chromium/i, 'Chrome'],
+  [/safari/i, 'Safari'],
+  [/bot|crawler|spider|slurp|headless/i, 'Bot'],
+];
+
+const SYSTEMS: ReadonlyArray<readonly [RegExp, string]> = [
+  [/windows nt/i, 'Windows'],
+  [/iphone|ipad|ipod/i, 'iOS'],
+  [/mac os x|macintosh/i, 'macOS'],
+  [/android/i, 'Android'],
+  [/cros/i, 'ChromeOS'],
+  [/linux|x11/i, 'Linux'],
+];
+
+function matchFirst(value: string, table: ReadonlyArray<readonly [RegExp, string]>): string {
+  for (const [pattern, name] of table) {
+    if (pattern.test(value)) return name;
+  }
+  return 'Other';
+}
+
+/** "Chrome on macOS", or null when no User-Agent was sent. */
+export function clientEngineFrom(headers: Headers): { browser: string; os: string } | null {
+  const raw = headers.get('user-agent');
+  if (!raw) return null;
+  const ua = raw.slice(0, UA_MAX);
+  return { browser: matchFirst(ua, BROWSERS), os: matchFirst(ua, SYSTEMS) };
+}
+
 export function buildRow(input: TelemetryInput, headers: Headers): TelemetryRow | null {
   const event = pick(input.event, EVENTS);
   const sessionId =
     typeof input.sessionId === 'string' && UUID.test(input.sessionId) ? input.sessionId : null;
   if (!event || !sessionId) return null;
+
+  const engine = clientEngineFrom(headers);
 
   return {
     event,
@@ -150,6 +207,8 @@ export function buildRow(input: TelemetryInput, headers: Headers): TelemetryRow 
     referrer_host: pick(input.referrerHost, REFERRER_ALLOW),
     country: countryFrom(headers),
     ip: ipFrom(headers),
+    browser: engine?.browser ?? null,
+    os: engine?.os ?? null,
     error_code: event === 'conversion_failed' ? normaliseErrorCode(input.errorCode) : null,
   };
 }
@@ -165,9 +224,14 @@ export async function recordEvent(input: TelemetryInput, headers: Headers): Prom
   const row = buildRow(input, headers);
   if (!row) return;
 
-  if (!hasSupabaseEnv() || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (!hasServerSupabaseEnv()) {
     // eslint-disable-next-line no-console
-    console.log('[telemetry:local]', JSON.stringify(row));
+    // Naming the resolved vars makes a misconfigured deploy obvious in the
+    // Vercel function log rather than looking like a silent no-op.
+    console.log(
+      `[telemetry:local] no server credentials (resolved: ${describeSupabaseEnv()})`,
+      JSON.stringify(row),
+    );
     return;
   }
 

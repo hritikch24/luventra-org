@@ -1,7 +1,11 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
 import { createClient as createSupabaseClient } from '@supabase/supabase-js';
-import { requireEnv } from './env';
+import {
+  requireSupabaseAnonKey,
+  requireSupabaseSecretKey,
+  requireSupabaseUrl,
+} from './env';
 
 /**
  * Server-side client bound to the request's cookie jar.
@@ -14,8 +18,8 @@ export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
-    requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
-    requireEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'),
+    requireSupabaseUrl(),
+    requireSupabaseAnonKey(),
     {
       cookies: {
         getAll() {
@@ -42,8 +46,8 @@ export async function createClient() {
  */
 export function createAdminClient() {
   return createSupabaseClient(
-    requireEnv('NEXT_PUBLIC_SUPABASE_URL'),
-    requireEnv('SUPABASE_SERVICE_ROLE_KEY'),
+    requireSupabaseUrl(),
+    requireSupabaseSecretKey(),
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
 }
