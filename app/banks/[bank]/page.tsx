@@ -7,6 +7,7 @@ import { resolvePresetRoles } from '@/app/lib/preset-resolve';
 import { copyFor } from '@/app/lib/market-context';
 import { StatementWorkbench } from '@/app/dashboard/StatementWorkbench';
 import { AuthLink } from '@/app/components/AuthLink';
+import { PageViewTracker } from '@/app/components/PageViewTracker';
 
 interface PageProps {
   /** `params` is a promise in this version of Next and must be awaited. */
@@ -85,6 +86,7 @@ export default async function BankPage({ params }: PageProps) {
 
   return (
     <main className="min-h-dvh">
+      <PageViewTracker surface="bank" bankSlug={profile.slug} />
       <script
         type="application/ld+json"
         // Values come from the static table in this repo, never user input.
@@ -95,13 +97,13 @@ export default async function BankPage({ params }: PageProps) {
         <div className="mx-auto flex max-w-[80rem] items-center justify-between px-6 py-3">
           <Link
             href="/banks"
-            className="flex items-center gap-1.5 font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-200"
+            className="flex items-center gap-1.5 font-mono text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
           >
             <ArrowLeft className="size-3" aria-hidden />
             all banks
           </Link>
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[0.625rem] text-zinc-600">csv → ofx/qbo/qfx</span>
+            <span className="font-mono text-[0.625rem] text-zinc-400">csv → ofx/qbo/qfx</span>
             <AuthLink />
           </div>
         </div>
@@ -121,7 +123,7 @@ export default async function BankPage({ params }: PageProps) {
           file is generated on this page. Your statement is parsed by a Web Worker inside your own
           browser and never leaves the device.
         </p>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500">
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
           {copy.integrationLine}
         </p>
 
@@ -131,8 +133,8 @@ export default async function BankPage({ params }: PageProps) {
             { icon: Zap, text: 'Pre-mapped for this layout' },
             { icon: ShieldCheck, text: `Ready for ${copy.primaryIntegration}` },
           ].map(({ icon: Icon, text }) => (
-            <li key={text} className="flex items-center gap-1.5 text-xs text-zinc-500">
-              <Icon className="size-3.5 text-zinc-600" aria-hidden />
+            <li key={text} className="flex items-center gap-1.5 text-xs text-zinc-400">
+              <Icon className="size-3.5 text-zinc-400" aria-hidden />
               {text}
             </li>
           ))}
@@ -164,7 +166,7 @@ export default async function BankPage({ params }: PageProps) {
 
               <dl className="mt-5 space-y-3 border-t border-zinc-800/60 pt-4">
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-600">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
                     Date format
                   </dt>
                   <dd className="mt-0.5 font-mono text-xs text-zinc-300">
@@ -172,7 +174,7 @@ export default async function BankPage({ params }: PageProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-600">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
                     Amount convention
                   </dt>
                   <dd className="mt-0.5 text-xs leading-relaxed text-zinc-300">
@@ -180,7 +182,7 @@ export default async function BankPage({ params }: PageProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-600">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
                     Header row
                   </dt>
                   <dd className="mt-0.5 font-mono text-xs text-zinc-300 tnum">
@@ -188,7 +190,7 @@ export default async function BankPage({ params }: PageProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-600">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
                     Currency
                   </dt>
                   <dd className="mt-0.5 font-mono text-xs text-zinc-300 tnum">
@@ -196,7 +198,7 @@ export default async function BankPage({ params }: PageProps) {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-600">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
                     Layout checked
                   </dt>
                   <dd className="mt-0.5 font-mono text-xs text-zinc-300">
@@ -227,19 +229,19 @@ export default async function BankPage({ params }: PageProps) {
                       <tr className="border-b border-zinc-800/60">
                         <th
                           scope="col"
-                          className="w-10 px-3 py-2 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-600"
+                          className="w-10 px-3 py-2 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400"
                         >
                           #
                         </th>
                         <th
                           scope="col"
-                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-500"
+                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400"
                         >
                           Column in export
                         </th>
                         <th
                           scope="col"
-                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-500"
+                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400"
                         >
                           Pre-selected as
                         </th>
@@ -253,14 +255,14 @@ export default async function BankPage({ params }: PageProps) {
                             key={header}
                             className="border-b border-zinc-800/40 transition-colors duration-150 last:border-b-0 hover:bg-zinc-800/30"
                           >
-                            <td className="px-3 py-2 text-right font-mono text-[0.625rem] text-zinc-700 tnum">
+                            <td className="px-3 py-2 text-right font-mono text-[0.625rem] text-zinc-400 tnum">
                               {index + 1}
                             </td>
                             <td className="px-3 py-2 font-mono text-xs text-zinc-200">{header}</td>
                             <td
                               className={`px-3 py-2 font-mono text-xs ${
                                 role === undefined || role === 'ignored'
-                                  ? 'text-zinc-600'
+                                  ? 'text-zinc-400'
                                   : 'text-zinc-400'
                               }`}
                             >
@@ -316,11 +318,12 @@ export default async function BankPage({ params }: PageProps) {
               deadline, so a malformed file fails with a clear message rather than hanging.
             </p>
             <p>
-              Two things do touch the network, and neither carries statement data: a subscription
-              check when a file exceeds the free row limit, and an advertising tag that records
-              that <em>a</em> conversion happened — an event name and nothing else. No filename,
-              no row count, no amounts, no payee names. The file stays in the tab, and closing the
-              tab discards it.
+              Three things touch the network, and none carries statement data: a subscription
+              check when a file exceeds the free row limit, an advertising tag recording that{' '}
+              <em>a</em> conversion happened, and anonymous usage counters — the output format and
+              a coarse size band such as &ldquo;51&ndash;200 rows&rdquo;. No filename, no amounts,
+              no payee names, no account numbers. The file stays in the tab, and closing the tab
+              discards it.
             </p>
           </div>
         </div>

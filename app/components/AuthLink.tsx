@@ -88,7 +88,7 @@ export function AuthLink() {
   return (
     <Link
       href="/login"
-      className="border border-zinc-800/60 px-2 py-1 font-mono text-[0.625rem] text-zinc-500 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+      className="border border-zinc-800/60 px-2 py-1 font-mono text-[0.625rem] text-zinc-400 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
     >
       Sign in
     </Link>

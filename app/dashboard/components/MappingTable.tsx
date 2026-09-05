@@ -82,7 +82,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
                     title={column.header || `column ${column.index + 1}`}
                   >
                     {column.header || (
-                      <span className="text-zinc-600">col{column.index + 1}</span>
+                      <span className="text-zinc-400">col{column.index + 1}</span>
                     )}
                   </span>
                   {!column.userAssigned && column.confidence >= 0.9 && assigned ? (
@@ -93,7 +93,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
                   ) : null}
                 </div>
                 <span
-                  className="block truncate font-mono text-[0.625rem] text-zinc-600"
+                  className="block truncate font-mono text-[0.625rem] text-zinc-400"
                   title={sampleValue(preview, column.index)}
                 >
                   {sampleValue(preview, column.index)}
@@ -110,7 +110,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
                 className={`w-full border px-1.5 py-1 font-mono text-[0.6875rem] transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
                   assigned
                     ? 'border-zinc-700 bg-zinc-800 text-zinc-100'
-                    : 'border-zinc-800 bg-zinc-900 text-zinc-600 hover:border-zinc-700'
+                    : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700'
                 }`}
               >
                 {ASSIGNABLE_ROLES.map((role) => (
@@ -125,7 +125,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
       </ul>
 
       <footer className="flex items-center justify-between border-t border-zinc-800/60 px-3 py-1.5">
-        <span className="text-[0.625rem] uppercase tracking-wider text-zinc-600">convention</span>
+        <span className="text-[0.625rem] uppercase tracking-wider text-zinc-400">convention</span>
         <span className="font-mono text-[0.625rem] text-zinc-400">{convention}</span>
       </footer>
     </section>

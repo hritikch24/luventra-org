@@ -18,6 +18,7 @@ export const metadata: Metadata = {
  *   - card data handled by Stripe         -> app/api/checkout
  *   - subscription row contents           -> supabase/schema.sql
  *   - ad event carries a name only        -> app/components/GoogleAdsTracker.tsx
+ *   - usage counters hold no content      -> app/api/telemetry/route.ts, supabase/schema.sql
  *
  * If any of those change, change this page in the same commit. A privacy
  * policy that overstates protection is worse than none at all.
@@ -43,13 +44,13 @@ export default function PrivacyPage() {
       <div className="mx-auto max-w-[46rem] px-6 py-12">
         <Link
           href="/dashboard"
-          className="font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-200"
+          className="font-mono text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
         >
           ← converter
         </Link>
 
         <h1 className="mt-6 text-2xl font-medium tracking-tight text-zinc-100">Privacy Policy</h1>
-        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-600">Last updated 5 September 2026</p>
+        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-400">Last updated 5 September 2026</p>
 
         <Section title="The short version">
           <p>
@@ -59,8 +60,8 @@ export default function PrivacyPage() {
             reach us.
           </p>
           <p>
-            We do collect the small amount of data needed to run accounts, billing and advertising,
-            described in full below.
+            We do collect the small amount of data needed to run accounts, billing, advertising
+            and anonymous usage counting, described in full below.
           </p>
         </Section>
 
@@ -101,6 +102,15 @@ export default function PrivacyPage() {
             conversion tracking. When a conversion is recorded, the only thing sent is an event name
             — no filename, row count, amounts or payee names. Google may set cookies and receive
             your IP address and page URL, subject to consent below.
+          </p>
+          <p>
+            <strong className="text-zinc-200">Anonymous usage counters.</strong> We record that a
+            page was viewed, that a file was loaded, that the checks passed and that an export
+            happened, together with which of our own pages you were on, the output format you
+            chose and a coarse size band such as &ldquo;51&ndash;200 rows&rdquo;. These rows are
+            keyed to a random identifier generated per browser tab, which is discarded when the
+            tab closes and is never linked to your account. The table that stores them has no
+            column capable of holding a filename, an amount, a payee or an account number.
           </p>
           <p>
             <strong className="text-zinc-200">Server logs.</strong> Our hosting provider records

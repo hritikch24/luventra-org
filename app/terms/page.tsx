@@ -33,7 +33,7 @@ export default function TermsPage() {
       <div className="mx-auto max-w-[46rem] px-6 py-12">
         <Link
           href="/dashboard"
-          className="font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-200"
+          className="font-mono text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
         >
           ← converter
         </Link>
@@ -41,7 +41,7 @@ export default function TermsPage() {
         <h1 className="mt-6 text-2xl font-medium tracking-tight text-zinc-100">
           Terms of Service
         </h1>
-        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-600">Last updated 5 September 2026</p>
+        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-400">Last updated 5 September 2026</p>
 
         <Section title="The service">
           <p>

@@ -27,7 +27,7 @@ const PANELS: Readonly<Record<Panel, { title: string; body: string }>> = {
   },
   security: {
     title: 'Data Provenance Guarantee',
-    body: 'Financial statements are parsed and generated 100% locally inside an isolated browser Web Worker container on your local machine. No text bytes, numbers, or account names ever touch the network or any server.',
+    body: 'Financial statements are parsed and generated 100% locally inside an isolated browser Web Worker container on your local machine. No text bytes, amounts, payees, filenames or account names ever touch the network or any server. We count anonymous usage only: that a conversion happened, the output format, and a coarse size band such as "51-200 rows" — never the statement itself.',
   },
 };
 
@@ -69,7 +69,7 @@ function InfoModal({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="p-1 text-zinc-600 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+              className="p-1 text-zinc-400 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
             >
               <X className="size-3.5" aria-hidden />
             </button>
@@ -84,7 +84,7 @@ function InfoModal({
 }
 
 const LINK_CLASS =
-  'text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500';
+  'text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500';
 
 export function SiteFooter() {
   const [panel, setPanel] = useState<Panel | null>(null);
@@ -92,7 +92,7 @@ export function SiteFooter() {
   return (
     <>
       <footer className="flex h-[var(--footer-h)] shrink-0 items-center justify-between gap-4 border-t border-zinc-800/60 px-4">
-        <p className="truncate text-[0.6875rem] text-zinc-600">
+        <p className="truncate text-[0.6875rem] text-zinc-400">
           © 2026 luventra.co. Client-side processing utility.
         </p>
 

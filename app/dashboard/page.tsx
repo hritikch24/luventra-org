@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { StatementWorkbench } from './StatementWorkbench';
+import { PageViewTracker } from '@/app/components/PageViewTracker';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 export default function DashboardPage() {
   return (
     <main className="min-h-dvh">
+      <PageViewTracker surface="dashboard" />
       <StatementWorkbench />
     </main>
   );

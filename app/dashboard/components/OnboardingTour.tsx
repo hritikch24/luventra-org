@@ -231,7 +231,7 @@ export function OnboardingTour({ controller }: { readonly controller: TourContro
           <h2 id="tour-title" className="text-xs font-medium text-zinc-100">
             {step.title}
           </h2>
-          <span className="font-mono text-[0.625rem] text-zinc-600 tnum">
+          <span className="font-mono text-[0.625rem] text-zinc-400 tnum">
             {stepIndex + 1}/{TOUR_STEPS.length}
           </span>
         </div>
@@ -261,7 +261,7 @@ export function OnboardingTour({ controller }: { readonly controller: TourContro
                 <button
                   type="button"
                   onClick={back}
-                  className="px-2 py-1 text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+                  className="px-2 py-1 text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
                 >
                   Back
                 </button>
@@ -280,7 +280,7 @@ export function OnboardingTour({ controller }: { readonly controller: TourContro
           <button
             type="button"
             onClick={dismiss}
-            className="mt-2 w-full border border-zinc-800 py-1 text-[0.625rem] text-zinc-500 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+            className="mt-2 w-full border border-zinc-800 py-1 text-[0.625rem] text-zinc-400 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
           >
             Skip Tour
           </button>

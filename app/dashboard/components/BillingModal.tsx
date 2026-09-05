@@ -75,7 +75,7 @@ export function BillingModal({ open, rowCount, signedIn, onClose }: BillingModal
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="p-1 text-zinc-600 transition-colors duration-150 hover:text-zinc-200"
+          className="p-1 text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -120,8 +120,9 @@ export function BillingModal({ open, rowCount, signedIn, onClose }: BillingModal
           </p>
         ) : null}
 
-        <p className="mt-2 text-[0.625rem] leading-relaxed text-zinc-600">
-          Your file never leaves the browser — only the subscription check touches the network.
+        <p className="mt-2 text-[0.625rem] leading-relaxed text-zinc-400">
+          Your file never leaves the browser. Only the subscription check and anonymous usage
+          counters touch the network, and neither carries statement data.
         </p>
       </div>
     </dialog>

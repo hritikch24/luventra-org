@@ -26,7 +26,7 @@ const STATUS: Readonly<
     sr: 'failed',
   },
   // Unchecked stays matte: a glow here would read as a result.
-  skip: { icon: Minus, tone: 'text-zinc-600', dot: 'bg-zinc-700', sr: 'not checked' },
+  skip: { icon: Minus, tone: 'text-zinc-400', dot: 'bg-zinc-700', sr: 'not checked' },
 };
 
 const DIALECTS: readonly OfxDialect[] = ['ofx', 'qbo', 'qfx'];
@@ -66,11 +66,11 @@ export function ValidationPanel({
           </h2>
           {report ? (
             <span className="font-mono text-[0.625rem] tnum">
-              <span className={report.failures > 0 ? 'text-red-400' : 'text-zinc-600'}>
+              <span className={report.failures > 0 ? 'text-red-400' : 'text-zinc-400'}>
                 {report.failures} fail
               </span>
-              <span className="text-zinc-700"> / </span>
-              <span className={report.warnings > 0 ? 'text-amber-400' : 'text-zinc-600'}>
+              <span className="text-zinc-400"> / </span>
+              <span className={report.warnings > 0 ? 'text-amber-400' : 'text-zinc-400'}>
                 {report.warnings} warn
               </span>
             </span>
@@ -79,7 +79,7 @@ export function ValidationPanel({
 
         <div className="scroll-thin lg:min-h-0 lg:flex-1 lg:overflow-y-auto" aria-live="polite">
           {report === null ? (
-            <p className="px-3 py-8 text-center font-mono text-xs text-zinc-700">
+            <p className="px-3 py-8 text-center font-mono text-xs text-zinc-400">
               awaiting file
             </p>
           ) : (
@@ -101,7 +101,7 @@ export function ValidationPanel({
                       <span className="text-xs font-medium text-zinc-200">{check.label}</span>
                       <span className="sr-only">{style.sr}</span>
                     </div>
-                    <p className="mt-1 pl-[1.875rem] text-[0.6875rem] leading-relaxed text-zinc-500">
+                    <p className="mt-1 pl-[1.875rem] text-[0.6875rem] leading-relaxed text-zinc-400">
                       {check.detail}
                     </p>
                   </li>
@@ -113,7 +113,7 @@ export function ValidationPanel({
       </section>
 
       <section data-tour="export" className="shrink-0 border border-zinc-800/60 bg-zinc-900 p-3">
-        <label htmlFor="acctid" className="mb-1 block text-[0.625rem] uppercase tracking-wider text-zinc-600">
+        <label htmlFor="acctid" className="mb-1 block text-[0.625rem] uppercase tracking-wider text-zinc-400">
           Account ID
         </label>
         <input
@@ -142,7 +142,7 @@ export function ValidationPanel({
                 className={`py-1 font-mono text-[0.6875rem] uppercase transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
                   active
                     ? 'bg-zinc-800 text-zinc-100'
-                    : 'bg-zinc-900 text-zinc-600 hover:text-zinc-300'
+                    : 'bg-zinc-900 text-zinc-400 hover:text-zinc-300'
                 }`}
               >
                 {option}
@@ -175,13 +175,13 @@ export function ValidationPanel({
                 ? 'text-red-400'
                 : exportState === 'done'
                   ? 'text-emerald-400'
-                  : 'text-zinc-500'
+                  : 'text-zinc-400'
             }`}
           >
             {exportMessage}
           </p>
         ) : report !== null && !report.ready ? (
-          <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-600">
+          <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-400">
             Export is gated until every failing check above is cleared.
           </p>
         ) : null}

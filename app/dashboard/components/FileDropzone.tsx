@@ -59,10 +59,10 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
   if (preview) {
     return (
       <div className="flex items-center gap-2.5 border border-zinc-800/60 bg-zinc-900 px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-700 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]">
-        <FileText className="size-4 shrink-0 text-zinc-500" aria-hidden />
+        <FileText className="size-4 shrink-0 text-zinc-400" aria-hidden />
         <div className="min-w-0 flex-1">
           <p className="truncate font-mono text-xs text-zinc-100">{preview.fileName}</p>
-          <p className="mt-1 font-mono text-[0.6875rem] text-zinc-500 tnum">
+          <p className="mt-1 font-mono text-[0.6875rem] text-zinc-400 tnum">
             {formatBytes(preview.byteSize)} · {preview.rows.length.toLocaleString()}×
             {preview.headers.length} · {delimiterLabel(preview.delimiter)}
           </p>
@@ -71,7 +71,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           type="button"
           onClick={onClear}
           aria-label="Remove file"
-          className="shrink-0 p-1 text-zinc-600 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="shrink-0 p-1 text-zinc-400 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -113,13 +113,13 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
             className={`size-4 transition-colors duration-150 ${
               dragging
                 ? 'text-emerald-400 drop-shadow-[0_0_6px_rgba(16,185,129,0.55)]'
-                : 'text-zinc-600 group-hover:text-zinc-400'
+                : 'text-zinc-400 group-hover:text-zinc-400'
             }`}
             aria-hidden
           />
           <span
             className={`font-mono text-xs transition-colors duration-150 ${
-              dragging ? 'text-emerald-300' : 'text-zinc-500'
+              dragging ? 'text-emerald-300' : 'text-zinc-400'
             }`}
           >
             {busy ? 'reading…' : dragging ? 'release to load' : 'drop statement'}

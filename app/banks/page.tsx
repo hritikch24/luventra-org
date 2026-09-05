@@ -34,7 +34,7 @@ export default function BanksIndexPage() {
               No bank pages are published yet. Each profile describes a named company&rsquo;s export
               format, so it stays unpublished until a person has checked it against a real download.
             </p>
-            <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-500">
+            <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-400">
               To publish one: verify its headers, date order and sign convention against a real
               export, then set <code className="font-mono text-zinc-400">confidence: &lsquo;verified&rsquo;</code>{' '}
               and stamp <code className="font-mono text-zinc-400">lastVerified</code> in{' '}
@@ -50,7 +50,7 @@ export default function BanksIndexPage() {
                   className="block border border-zinc-800/60 bg-zinc-900 px-4 py-3 transition-colors duration-150 hover:border-zinc-700"
                 >
                   <span className="block text-sm font-medium text-zinc-100">{bank.name}</span>
-                  <span className="mt-0.5 block font-mono text-[0.625rem] text-zinc-600">
+                  <span className="mt-0.5 block font-mono text-[0.625rem] text-zinc-400">
                     {bank.accountKind} · {bank.region} · {bank.dateFormat}
                   </span>
                 </Link>
@@ -59,7 +59,7 @@ export default function BanksIndexPage() {
           </ul>
         )}
 
-        <p className="mt-10 text-xs text-zinc-600">
+        <p className="mt-10 text-xs text-zinc-400">
           Your bank not listed?{' '}
           <Link
             href="/dashboard"

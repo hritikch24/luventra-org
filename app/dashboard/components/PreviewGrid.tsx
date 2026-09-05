@@ -81,7 +81,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
         <h2 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
           Live preview
         </h2>
-        <span className="font-mono text-[0.625rem] text-zinc-600 tnum">
+        <span className="font-mono text-[0.625rem] text-zinc-400 tnum">
           {rows.length} of {preview.rows.length.toLocaleString()} rows
           {remaining > 0 ? ` · +${remaining.toLocaleString()}` : ''}
         </span>
@@ -91,14 +91,14 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
         <table className="w-full table-fixed border-collapse">
           <thead className="sticky top-0 z-10 bg-zinc-900">
             <tr className="border-b border-zinc-800/60">
-              <th scope="col" className="w-9 px-2 py-1.5 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-600">
+              <th scope="col" className="w-9 px-2 py-1.5 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400">
                 #
               </th>
               {fields.map((field) => (
                 <th
                   key={field.key}
                   scope="col"
-                  className={`${field.width} px-2 py-1.5 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-500 ${
+                  className={`${field.width} px-2 py-1.5 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400 ${
                     field.numeric ? 'text-right' : 'text-left'
                   }`}
                 >
@@ -112,7 +112,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
               <tr>
                 <td
                   colSpan={fields.length + 1}
-                  className="px-3 py-12 text-center font-mono text-xs text-zinc-600"
+                  className="px-3 py-12 text-center font-mono text-xs text-zinc-400"
                 >
                   no rows
                 </td>
@@ -130,13 +130,13 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
                     key={rowIndex}
                     className="border-b border-zinc-800/40 transition-colors duration-150 last:border-b-0 hover:bg-zinc-800/30"
                   >
-                    <td className="px-2 py-1.5 text-right font-mono text-[0.625rem] text-zinc-700 tnum">
+                    <td className="px-2 py-1.5 text-right font-mono text-[0.625rem] text-zinc-400 tnum">
                       {rowIndex + 1}
                     </td>
 
                     <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-300 tnum" title={date}>
                       {unmapped('date') ? (
-                        <span className="text-zinc-700">—</span>
+                        <span className="text-zinc-400">—</span>
                       ) : date === '' ? (
                         <span className="text-amber-500/70">empty</span>
                       ) : (
@@ -146,7 +146,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
 
                     <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-100" title={description}>
                       {unmapped('description') ? (
-                        <span className="text-zinc-700">—</span>
+                        <span className="text-zinc-400">—</span>
                       ) : description === '' ? (
                         <span className="text-amber-500/70">empty</span>
                       ) : (
@@ -155,15 +155,15 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
                     </td>
 
                     {refIndex !== -1 ? (
-                      <td className="truncate px-2 py-1.5 font-mono text-[0.6875rem] text-zinc-500" title={reference}>
-                        {reference === '' ? <span className="text-zinc-700">—</span> : reference}
+                      <td className="truncate px-2 py-1.5 font-mono text-[0.6875rem] text-zinc-400" title={reference}>
+                        {reference === '' ? <span className="text-zinc-400">—</span> : reference}
                       </td>
                     ) : null}
 
                     <td
                       className={`px-2 py-1.5 text-right font-mono text-xs tnum ${
                         amount.value === null
-                          ? 'text-zinc-700'
+                          ? 'text-zinc-400'
                           : amount.value < 0
                             ? 'text-red-400'
                             : 'text-emerald-400'
@@ -171,7 +171,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
                       title={amount.text}
                     >
                       {unmapped('amount') ? (
-                        <span className="text-zinc-700">—</span>
+                        <span className="text-zinc-400">—</span>
                       ) : amount.value === null ? (
                         <span className="text-amber-500/70">{amount.text || 'empty'}</span>
                       ) : (
@@ -181,7 +181,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
 
                     {balanceIndex !== -1 ? (
                       <td className="px-2 py-1.5 text-right font-mono text-xs text-zinc-400 tnum" title={balance}>
-                        {balance === '' ? <span className="text-zinc-700">—</span> : balance}
+                        {balance === '' ? <span className="text-zinc-400">—</span> : balance}
                       </td>
                     ) : null}
                   </tr>
@@ -193,10 +193,10 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
       </div>
 
       <footer className="flex shrink-0 items-center justify-between border-t border-zinc-800/60 px-3 py-1.5">
-        <span className="font-mono text-[0.625rem] text-zinc-600">
+        <span className="font-mono text-[0.625rem] text-zinc-400">
           {fields.map((field) => field.label.toLowerCase()).join(' · ')}
         </span>
-        <span className="font-mono text-[0.625rem] text-zinc-600">
+        <span className="font-mono text-[0.625rem] text-zinc-400">
           {hasPair ? 'debit/credit → signed' : amountIndex !== -1 ? 'signed amount' : 'no amount'}
         </span>
       </footer>

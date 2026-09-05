@@ -25,6 +25,7 @@ import { BillingModal, FREE_ROW_LIMIT } from './components/BillingModal';
 import { AuthLink } from '@/app/components/AuthLink';
 import { OnboardingTour, useOnboardingTour } from './components/OnboardingTour';
 import { trackGoogleConversion } from '@/app/components/GoogleAdsTracker';
+import { rowBucket, track } from '@/app/lib/telemetry';
 
 /**
  * Week-one launch toggle: lifts the free-tier row limit for everyone.
@@ -169,6 +170,8 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         : response.schema.columns;
       const schema = { ...response.schema, columns };
 
+      track({ event: 'file_loaded', rowBucket: rowBucket(schema.rowCount) });
+
       setLoaded({
         fileName: file.name,
         bytes,
@@ -235,6 +238,21 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         : null,
     [loaded],
   );
+
+  // preflight_pass fires once per loaded file, the first time the gate opens.
+  // A ref rather than state so re-running checks on a mapping edit does not
+  // emit a second event for the same statement.
+  const passReported = useRef(false);
+  useEffect(() => {
+    if (!loaded) {
+      passReported.current = false;
+      return;
+    }
+    if (report?.ready && !passReported.current) {
+      passReported.current = true;
+      track({ event: 'preflight_pass', rowBucket: rowBucket(loaded.schema.rowCount) });
+    }
+  }, [loaded, report]);
 
   /* -- billing gate ------------------------------------------------------- */
 
@@ -308,6 +326,11 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
       // was handed to the browser — not on button click, so a gated or failed
       // export never counts as a conversion.
       trackGoogleConversion('file_converted');
+      track({
+        event: 'export',
+        dialect,
+        rowBucket: rowBucket(response.transactionCount),
+      });
 
       const skipped = response.issues.filter((issue) => issue.level === 'warning').length;
       setExportState('done');
@@ -335,10 +358,10 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
               Statement Converter
             </h1>
           )}
-          <span className="font-mono text-[0.625rem] text-zinc-600">csv → ofx/qbo/qfx</span>
+          <span className="font-mono text-[0.625rem] text-zinc-400">csv → ofx/qbo/qfx</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[0.625rem] text-zinc-600">parsed locally</span>
+          <span className="font-mono text-[0.625rem] text-zinc-400">parsed locally</span>
           {embedded ? null : <AuthLink />}
         </div>
       </header>
@@ -369,7 +392,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
               />
             ) : (
               <div className="border border-zinc-800/60 bg-zinc-900/40 px-3 py-6 text-center">
-                <p className="font-mono text-[0.6875rem] text-zinc-700">mapping rules</p>
+                <p className="font-mono text-[0.6875rem] text-zinc-400">mapping rules</p>
               </div>
             )}
           </div>
@@ -380,7 +403,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
           <PreviewGrid preview={loaded.preview} columns={loaded.schema.columns} />
         ) : (
           <div className="flex items-center justify-center border border-zinc-800/60 bg-zinc-900/40">
-            <p className="font-mono text-xs text-zinc-700">no statement loaded</p>
+            <p className="font-mono text-xs text-zinc-400">no statement loaded</p>
           </div>
         )}
 
