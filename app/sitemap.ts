@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 import { SEO_BANKS } from './lib/seo-banks-data';
 
 export default function sitemap(): MetadataRoute.Sitemap {
