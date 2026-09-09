@@ -76,11 +76,16 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
   }
 
   return (
-    <section className="flex flex-col border border-zinc-800/60 bg-zinc-900 lg:min-h-0">
+    <section
+      role="region"
+      aria-labelledby="preview-heading"
+      aria-describedby="preview-description"
+      className="flex flex-col border border-zinc-800/60 bg-zinc-900 lg:min-h-0"
+    >
       <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-        <h2 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
+        <h3 id="preview-heading" className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
           Live preview
-        </h2>
+        </h3>
         <span className="font-mono text-[0.625rem] text-zinc-400 tnum">
           {rows.length} of {preview.rows.length.toLocaleString()} rows
           {remaining > 0 ? ` · +${remaining.toLocaleString()}` : ''}
@@ -88,7 +93,14 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
       </header>
 
       <div className="scroll-thin overflow-x-auto lg:min-h-0 lg:flex-1 lg:overflow-auto">
-        <table className="w-full table-fixed border-collapse">
+        <table
+          aria-describedby="preview-description"
+          className="w-full table-fixed border-collapse"
+        >
+          <caption id="preview-description" className="sr-only">
+            Canonical preview of the parsed statement: a debit and credit pair is collapsed into a
+            single signed Amount, showing what will be written to the converted file.
+          </caption>
           <thead className="sticky top-0 z-10 bg-zinc-900">
             <tr className="border-b border-zinc-800/60">
               <th scope="col" className="w-9 px-2 py-1.5 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400">

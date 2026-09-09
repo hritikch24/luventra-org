@@ -28,9 +28,23 @@
   --header-h: 2.75rem;
 }
 
-html,
-body {
+html {
   height: 100%;
+}
+
+/*
+ * `body` must NOT take `height: 100%`.
+ *
+ * Body is the flex column that ends in the compliance footer. A definite
+ * one-viewport height pins that footer to the bottom of the *first* viewport,
+ * so on any page taller than the screen — every bank landing page, /privacy,
+ * /terms — the footer rendered in the middle of the document and the rest of
+ * the content scrolled past it. `min-height` lets the column grow with its
+ * content, which keeps the footer flush at the true base. The dashboard is
+ * unaffected: it sizes itself in dvh units, not percentages.
+ */
+body {
+  min-height: 100%;
 }
 
 body {

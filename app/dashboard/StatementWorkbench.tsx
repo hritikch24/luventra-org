@@ -119,9 +119,9 @@ export interface BankPreset {
  * decorative trust badge.
  */
 const COMPLIANCE_ASSERTIONS = [
-  'OFX SGML Spec 1.0.2 Compliant',
-  'Intuit BID Tag Synchronization',
-  'SHA-1 Transaction Deduplication Protection',
+  'OFX SGML Specification v1.0.2 Compliant',
+  'Intuit BID Registry Token Matching',
+  'Deterministic SHA-1 Hash Deduplication Protection',
 ] as const;
 
 export interface StatementWorkbenchProps {
@@ -407,30 +407,50 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         duplicate copy on the pages that carry the search traffic.
       */}
       {embedded ? null : (
-        <section
+        // <article>: a self-contained description of the product, the one block
+        // here that would still make sense lifted out of the workspace.
+        <article
           aria-labelledby="workbench-summary"
           className="shrink-0 border-b border-zinc-800/60 bg-zinc-900/40 px-4 py-3"
         >
-          <h2
-            id="workbench-summary"
-            className="text-xs font-medium tracking-tight text-zinc-100"
-          >
-            Deterministic CSV → OFX/QBO/QFX conversion, executed in-browser
+          <h2 id="workbench-summary" className="text-xs font-semibold tracking-tight text-zinc-100">
+            Secure Client-Side Financial Data Transcoder
           </h2>
-          <p className="mt-1.5 max-w-5xl text-xs leading-relaxed text-zinc-300">
-            Luventra is a zero-latency financial data formatting instrument designed to fix broken
-            spreadsheet rows. We auto-infer column mapping configurations, calculate deterministic
-            unique transaction identifiers (FITID), strip dynamic byte order marks (BOM), and parse
-            inputs 100% locally inside an isolated client-side thread.
+          <p className="mt-1.5 max-w-5xl text-xs leading-relaxed text-zinc-200">
+            Format irregular banking statement rows into specification-compliant bookkeeping entries
+            instantly. Our isolated local background processing environment completely ensures that
+            no financial text, numeric values, or business account names ever touch the network or
+            hit an external server.
           </p>
-        </section>
+        </article>
       )}
 
-      <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto p-3 lg:grid-cols-[17rem_minmax(0,1fr)_19rem] lg:overflow-hidden">
+      {/*
+        A <section>, not a <main>: both host pages already own the document's
+        single `main` landmark (app/dashboard/page.tsx and the bank route), so
+        emitting one here nested a second main inside the first on the dashboard
+        and on all 20 bank pages — invalid HTML and a duplicate landmark for
+        assistive tech.
+      */}
+      <section
+        aria-labelledby="workspace-heading"
+        className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto p-3 lg:grid-cols-[17rem_minmax(0,1fr)_19rem] lg:overflow-hidden"
+      >
+        {/* Anchors the h3s of the three panels under a single h2 in both the
+            standalone and embedded heading outlines. */}
+        <h2 id="workspace-heading" className="sr-only">
+          Statement conversion workspace
+        </h2>
+
         {/* LEFT — ingestion and mapping rules */}
         <div className="scroll-thin flex flex-col gap-3 lg:min-h-0 lg:overflow-y-auto">
-          {/* TARGET 1 */}
-          <div data-tour="dropzone">
+          {/* TARGET 1. The tour resolves `[data-tour]` with querySelector and
+              only reads a bounding box, so moving the attribute onto the
+              semantic <section> keeps the highlight anchored. */}
+          <section data-tour="dropzone" aria-labelledby="ingest-heading">
+            <h3 id="ingest-heading" className="sr-only">
+              Statement file input
+            </h3>
             <FileDropzone
               preview={loaded?.preview ?? null}
               busy={busy}
@@ -440,7 +460,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
               }}
               onClear={onClear}
             />
-          </div>
+          </section>
 
           {/* TARGET 2 — present in both states so the step always has an anchor. */}
           <div data-tour="mapping">
@@ -451,46 +471,27 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
                 onAssign={onAssign}
               />
             ) : (
-              <div className="border border-zinc-800/60 bg-zinc-900/40 px-3 py-6 text-center">
+              <section
+                aria-labelledby="mapping-placeholder-heading"
+                className="border border-zinc-800/60 bg-zinc-900/40 px-3 py-6 text-center"
+              >
+                <h3 id="mapping-placeholder-heading" className="sr-only">
+                  Column mapping rules
+                </h3>
                 <p className="font-mono text-[0.6875rem] text-zinc-400">mapping rules</p>
-              </div>
+              </section>
             )}
           </div>
         </div>
 
-        {/*
-          CENTRE — live preview matrix over the format compliance row.
-
-          A grid, not a flex column: the first track takes the leftover space
-          and the assertions row is auto-height, which lets the preview keep its
-          own `lg:min-h-0` internal scrolling without threading a flex-1 through
-          PreviewGrid's root.
-        */}
-        <div className="grid gap-3 lg:min-h-0 lg:grid-rows-[minmax(0,1fr)_auto]">
-          {loaded ? (
-            <PreviewGrid preview={loaded.preview} columns={loaded.schema.columns} />
-          ) : (
-            <div className="flex items-center justify-center border border-zinc-800/60 bg-zinc-900/40 py-12 lg:py-0">
-              <p className="font-mono text-xs text-zinc-400">no statement loaded</p>
-            </div>
-          )}
-
-          {/* Single-pixel gaps via the parent background, so the row reads as
-              one panel split into cells rather than three detached chips. */}
-          <section
-            aria-label="Format compliance"
-            className="grid shrink-0 grid-cols-1 gap-px border border-zinc-800/60 bg-zinc-800/60 sm:grid-cols-3"
-          >
-            {COMPLIANCE_ASSERTIONS.map((assertion) => (
-              <div key={assertion} className="flex items-center gap-2 bg-zinc-900 px-3 py-2">
-                <ShieldCheck className="size-3 shrink-0 text-emerald-500" aria-hidden />
-                <span className="font-mono text-[0.625rem] leading-tight text-zinc-300">
-                  [{assertion}]
-                </span>
-              </div>
-            ))}
-          </section>
-        </div>
+        {/* CENTRE — live preview matrix */}
+        {loaded ? (
+          <PreviewGrid preview={loaded.preview} columns={loaded.schema.columns} />
+        ) : (
+          <div className="flex items-center justify-center border border-zinc-800/60 bg-zinc-900/40 py-12 lg:py-0">
+            <p className="font-mono text-xs text-zinc-400">no statement loaded</p>
+          </div>
+        )}
 
         {/* RIGHT — validation and the export gate */}
         <ValidationPanel
@@ -505,7 +506,30 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
             void onExport();
           }}
         />
-      </main>
+      </section>
+
+      {/*
+        Verification badges, spanning the full width directly beneath the drop
+        workspace rather than nested in the preview column: the assertions cover
+        the whole engine, not just the grid, and a full-width row keeps each one
+        on a single line instead of wrapping inside a narrow track.
+      */}
+      <section
+        aria-labelledby="compliance-heading"
+        className="grid shrink-0 grid-cols-1 gap-px border-t border-zinc-800/60 bg-zinc-800/60 sm:grid-cols-3"
+      >
+        <h3 id="compliance-heading" className="sr-only">
+          Output format compliance
+        </h3>
+        {COMPLIANCE_ASSERTIONS.map((assertion) => (
+          <div key={assertion} className="flex items-center gap-2 bg-zinc-950 px-4 py-2">
+            <ShieldCheck className="size-3 shrink-0 text-emerald-500" aria-hidden />
+            <span className="font-mono text-[0.625rem] leading-tight text-zinc-200">
+              [{assertion}]
+            </span>
+          </div>
+        ))}
+      </section>
 
       {embedded ? null : <OnboardingTour controller={tour} />}
 

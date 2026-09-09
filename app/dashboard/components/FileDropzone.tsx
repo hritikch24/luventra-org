@@ -43,6 +43,7 @@ interface FileDropzoneProps {
 
 export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDropzoneProps) {
   const inputId = useId();
+  const hintId = useId();
   const [dragging, setDragging] = useState(false);
   // Drag events bubble from every child, so depth-count instead of toggling
   // on enter/leave — otherwise the highlight strobes as the cursor moves.
@@ -58,7 +59,11 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
 
   if (preview) {
     return (
-      <div className="flex items-center gap-2.5 border border-zinc-800/60 bg-zinc-900 px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-700 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]">
+      <div
+        role="region"
+        aria-label="Loaded statement file"
+        className="flex items-center gap-2.5 border border-zinc-800/60 bg-zinc-900 px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-700 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]"
+      >
         <FileText className="size-4 shrink-0 text-zinc-400" aria-hidden />
         <div className="min-w-0 flex-1">
           <p className="truncate font-mono text-xs text-zinc-100">{preview.fileName}</p>
@@ -80,7 +85,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
   }
 
   return (
-    <div>
+    <div role="region" aria-label="Statement file input" aria-describedby={hintId}>
       <div
         onDragEnter={(event) => {
           event.preventDefault();
@@ -107,6 +112,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
       >
         <label
           htmlFor={inputId}
+          aria-describedby={hintId}
           className="group flex cursor-pointer flex-col items-center justify-center gap-2 px-4 py-8"
         >
           <Upload
@@ -137,6 +143,11 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           />
         </label>
       </div>
+
+      <p id={hintId} className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-400">
+        Accepts CSV, TSV and delimited TXT exports. The file is read in your browser and is never
+        uploaded.
+      </p>
 
       {error ? (
         <p role="alert" className="mt-2 border-l border-red-500/60 bg-red-500/5 px-2 py-1.5 text-xs text-red-400">

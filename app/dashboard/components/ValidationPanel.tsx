@@ -61,9 +61,9 @@ export function ValidationPanel({
     <div data-tour="validation" className="flex flex-col gap-3 lg:min-h-0">
       <section className="flex flex-col border border-zinc-800/60 bg-zinc-900 lg:min-h-0">
         <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-          <h2 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
+          <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
             Pre-flight
-          </h2>
+          </h3>
           {report ? (
             <span className="font-mono text-[0.625rem] tnum">
               <span className={report.failures > 0 ? 'text-red-400' : 'text-zinc-400'}>
@@ -139,10 +139,13 @@ export function ValidationPanel({
                 role="radio"
                 aria-checked={active}
                 onClick={() => onDialectChange(option)}
-                className={`py-1 font-mono text-[0.6875rem] uppercase transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
+                // Selected reads as white on the vivid accent rather than as
+                // one grey on another, so the target format is unmistakable
+                // before the user commits to Generate.
+                className={`py-1 font-mono text-[0.6875rem] font-semibold uppercase transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
                   active
-                    ? 'bg-zinc-800 text-zinc-100'
-                    : 'bg-zinc-900 text-zinc-400 hover:text-zinc-300'
+                    ? 'bg-accent text-white'
+                    : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100'
                 }`}
               >
                 {option}
