@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ShieldCheck } from 'lucide-react';
 import type {
   ColumnRole,
   DetectedColumn,
@@ -108,6 +109,20 @@ export interface BankPreset {
   /** `normaliseHeader(header)` -> role to pre-select. */
   readonly headerMap: Readonly<Record<string, ColumnRole>>;
 }
+
+/**
+ * Format assertions rendered under the preview grid.
+ *
+ * Each line states something the emitter actually does — see `app/worker/ofx.ts`
+ * for the SGML profile and Intuit BID tag, and `app/worker/sha1.ts` for the
+ * FITID digest — so this row stays a description of the engine rather than a
+ * decorative trust badge.
+ */
+const COMPLIANCE_ASSERTIONS = [
+  'OFX SGML Spec 1.0.2 Compliant',
+  'Intuit BID Tag Synchronization',
+  'SHA-1 Transaction Deduplication Protection',
+] as const;
 
 export interface StatementWorkbenchProps {
   /** Pre-seeds the mapping selectors from a known bank layout. */
@@ -353,7 +368,14 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
   }, [loaded, dialect, accountId, checkEntitlement]);
 
   return (
-    <div className={`flex flex-col ${embedded ? 'h-[44rem] max-h-[85vh]' : 'h-[calc(100dvh-var(--footer-h))]'}`}>
+    <div
+      className={`flex flex-col ${
+        embedded
+          ? 'h-[44rem] max-h-[85vh]'
+          : // Both global bars are siblings of this subtree, so subtract both.
+            'h-[calc(100dvh-var(--header-h)-var(--footer-h))]'
+      }`}
+    >
       <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-4 py-2.5">
         <div className="flex items-baseline gap-2.5">
           {/* The bank page owns the page-level h1, so this drops to a span. */}
@@ -373,6 +395,36 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
           {embedded ? null : <AuthLink />}
         </div>
       </header>
+
+      {/*
+        Sits above the workspace rather than inside the left rail: the dropzone
+        is the conversion action, and a paragraph stacked on top of it in a
+        17rem column would push it below the fold. Full-width keeps the copy to
+        a few lines and leaves the dropzone where it was.
+
+        Suppressed when embedded — the bank pages state the same guarantees in
+        their own hero, and repeating the block across 20 static routes would be
+        duplicate copy on the pages that carry the search traffic.
+      */}
+      {embedded ? null : (
+        <section
+          aria-labelledby="workbench-summary"
+          className="shrink-0 border-b border-zinc-800/60 bg-zinc-900/40 px-4 py-3"
+        >
+          <h2
+            id="workbench-summary"
+            className="text-xs font-medium tracking-tight text-zinc-100"
+          >
+            Deterministic CSV → OFX/QBO/QFX conversion, executed in-browser
+          </h2>
+          <p className="mt-1.5 max-w-5xl text-xs leading-relaxed text-zinc-300">
+            Luventra is a zero-latency financial data formatting instrument designed to fix broken
+            spreadsheet rows. We auto-infer column mapping configurations, calculate deterministic
+            unique transaction identifiers (FITID), strip dynamic byte order marks (BOM), and parse
+            inputs 100% locally inside an isolated client-side thread.
+          </p>
+        </section>
+      )}
 
       <main className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto p-3 lg:grid-cols-[17rem_minmax(0,1fr)_19rem] lg:overflow-hidden">
         {/* LEFT — ingestion and mapping rules */}
@@ -406,14 +458,39 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
           </div>
         </div>
 
-        {/* CENTRE — live preview matrix */}
-        {loaded ? (
-          <PreviewGrid preview={loaded.preview} columns={loaded.schema.columns} />
-        ) : (
-          <div className="flex items-center justify-center border border-zinc-800/60 bg-zinc-900/40">
-            <p className="font-mono text-xs text-zinc-400">no statement loaded</p>
-          </div>
-        )}
+        {/*
+          CENTRE — live preview matrix over the format compliance row.
+
+          A grid, not a flex column: the first track takes the leftover space
+          and the assertions row is auto-height, which lets the preview keep its
+          own `lg:min-h-0` internal scrolling without threading a flex-1 through
+          PreviewGrid's root.
+        */}
+        <div className="grid gap-3 lg:min-h-0 lg:grid-rows-[minmax(0,1fr)_auto]">
+          {loaded ? (
+            <PreviewGrid preview={loaded.preview} columns={loaded.schema.columns} />
+          ) : (
+            <div className="flex items-center justify-center border border-zinc-800/60 bg-zinc-900/40 py-12 lg:py-0">
+              <p className="font-mono text-xs text-zinc-400">no statement loaded</p>
+            </div>
+          )}
+
+          {/* Single-pixel gaps via the parent background, so the row reads as
+              one panel split into cells rather than three detached chips. */}
+          <section
+            aria-label="Format compliance"
+            className="grid shrink-0 grid-cols-1 gap-px border border-zinc-800/60 bg-zinc-800/60 sm:grid-cols-3"
+          >
+            {COMPLIANCE_ASSERTIONS.map((assertion) => (
+              <div key={assertion} className="flex items-center gap-2 bg-zinc-900 px-3 py-2">
+                <ShieldCheck className="size-3 shrink-0 text-emerald-500" aria-hidden />
+                <span className="font-mono text-[0.625rem] leading-tight text-zinc-300">
+                  [{assertion}]
+                </span>
+              </div>
+            ))}
+          </section>
+        </div>
 
         {/* RIGHT — validation and the export gate */}
         <ValidationPanel

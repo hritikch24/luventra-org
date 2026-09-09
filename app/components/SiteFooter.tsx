@@ -101,7 +101,7 @@ export function SiteFooter() {
             About
           </button>
           <button type="button" onClick={() => setPanel('security')} className={LINK_CLASS}>
-            Security
+            Security Protocol
           </button>
           <Link href="/privacy" className={LINK_CLASS}>
             Privacy Policy

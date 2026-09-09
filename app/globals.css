@@ -20,6 +20,12 @@
    * avoid a scrollbar; see StatementWorkbench.
    */
   --footer-h: 2.75rem;
+  /*
+   * Height of the global enterprise header mounted by app/dashboard/layout.tsx.
+   * Single-sourced for the same reason as --footer-h: the workbench owns the
+   * full viewport and subtracts both bars exactly.
+   */
+  --header-h: 2.75rem;
 }
 
 html,

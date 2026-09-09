@@ -12,7 +12,7 @@ export default function LoginPage() {
       <div className="w-full max-w-[20rem]">
         <div className="mb-6">
           <h1 className="text-sm font-medium tracking-tight text-zinc-100">Statement Converter</h1>
-          <p className="mt-1 font-mono text-[0.6875rem] text-zinc-600">
+          <p className="mt-1 font-mono text-[0.6875rem] text-zinc-400">
             sign in with a one-time link
           </p>
         </div>

@@ -122,7 +122,7 @@ export function ValidationPanel({
           onChange={(event) => onAccountIdChange(event.target.value)}
           placeholder="from filename"
           spellCheck={false}
-          className="mb-2 w-full border border-zinc-800 bg-zinc-950 px-2 py-1 font-mono text-[0.6875rem] text-zinc-100 placeholder:text-zinc-700 transition-colors duration-150 hover:border-zinc-700 focus:border-accent focus:outline-none"
+          className="mb-2 w-full border border-zinc-800 bg-zinc-950 px-2 py-1 font-mono text-[0.6875rem] text-zinc-100 placeholder:text-zinc-500 transition-colors duration-150 hover:border-zinc-700 focus:border-accent focus:outline-none"
         />
 
         <div

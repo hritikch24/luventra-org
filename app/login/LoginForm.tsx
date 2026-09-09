@@ -72,7 +72,7 @@ export function LoginForm() {
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         disabled={status === 'sending' || status === 'sent'}
-        className="w-full border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 placeholder:text-zinc-700 transition-colors duration-150 hover:border-zinc-700 focus:border-accent focus:outline-none disabled:opacity-60"
+        className="w-full border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 placeholder:text-zinc-500 transition-colors duration-150 hover:border-zinc-700 focus:border-accent focus:outline-none disabled:opacity-60"
       />
 
       <button
@@ -96,7 +96,7 @@ export function LoginForm() {
         <p
           role={status === 'error' || linkError ? 'alert' : 'status'}
           className={`text-[0.6875rem] leading-relaxed ${
-            status === 'error' || linkError ? 'text-red-400' : 'text-zinc-500'
+            status === 'error' || linkError ? 'text-red-400' : 'text-zinc-400'
           }`}
         >
           {message ?? linkError}
