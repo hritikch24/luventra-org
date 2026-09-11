@@ -83,7 +83,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
       className="flex flex-col border border-zinc-800 bg-zinc-900 lg:min-h-0"
     >
       <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-        <h3 id="preview-heading" className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-100">
+        <h3 id="preview-heading" className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-50">
           Live preview
         </h3>
         <span className="font-mono text-[0.625rem] text-zinc-400 tnum">
@@ -146,7 +146,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
                       {rowIndex + 1}
                     </td>
 
-                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-300 tnum" title={date}>
+                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-200 tnum" title={date}>
                       {unmapped('date') ? (
                         <span className="text-zinc-400">—</span>
                       ) : date === '' ? (
@@ -156,7 +156,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
                       )}
                     </td>
 
-                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-100" title={description}>
+                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-200" title={description}>
                       {unmapped('description') ? (
                         <span className="text-zinc-400">—</span>
                       ) : description === '' ? (

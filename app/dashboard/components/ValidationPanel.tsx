@@ -61,7 +61,7 @@ export function ValidationPanel({
     <div data-tour="validation" className="flex flex-col gap-3 lg:min-h-0">
       <section className="flex flex-col border border-zinc-800 bg-zinc-900 lg:min-h-0">
         <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-          <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-100">
+          <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-50">
             Pre-flight
           </h3>
           {report ? (
@@ -145,7 +145,7 @@ export function ValidationPanel({
                 className={`py-1 font-mono text-[0.6875rem] font-semibold uppercase transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
                   active
                     ? 'bg-accent text-white'
-                    : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100'
+                    : 'bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-50'
                 }`}
               >
                 {option}
@@ -158,7 +158,7 @@ export function ValidationPanel({
           type="button"
           onClick={onExport}
           disabled={!gateOpen}
-          className="flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.12)_inset] transition-[colors,box-shadow] duration-150 hover:bg-accent-hover hover:shadow-[0_0_24px_rgba(16,185,129,0.5),0_0_0_1px_rgba(52,211,153,0.6)] active:bg-accent disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+          className="flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.12)_inset] transition-[colors,box-shadow] duration-150 hover:bg-accent-hover hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] active:bg-accent disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
         >
           {working ? (
             <>

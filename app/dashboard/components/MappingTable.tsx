@@ -47,7 +47,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
   return (
     <section className="shrink-0 border border-zinc-800 bg-zinc-900">
       <header className="flex items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-        <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-100">
+        <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-50">
           Mapping rules
         </h3>
         <div className="flex items-center gap-1">
@@ -78,7 +78,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
               <div className="min-w-0">
                 <div className="flex items-center gap-1">
                   <span
-                    className="truncate font-mono text-xs text-zinc-300"
+                    className="truncate font-mono text-xs text-zinc-200"
                     title={column.header || `column ${column.index + 1}`}
                   >
                     {column.header || (

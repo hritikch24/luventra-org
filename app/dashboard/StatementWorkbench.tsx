@@ -380,11 +380,11 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         <div className="flex items-baseline gap-2.5">
           {/* The bank page owns the page-level h1, so this drops to a span. */}
           {embedded ? (
-            <span className="text-sm font-medium tracking-tight text-zinc-100">
+            <span className="text-sm font-medium tracking-tight text-zinc-50">
               {preset ? `${preset.name} converter` : 'Statement Converter'}
             </span>
           ) : (
-            <h1 className="text-sm font-medium tracking-tight text-zinc-100">
+            <h1 className="text-sm font-medium tracking-tight text-zinc-50">
               Statement Converter
             </h1>
           )}
@@ -413,7 +413,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
           aria-labelledby="workbench-summary"
           className="shrink-0 border-b border-zinc-800/60 bg-zinc-900/40 px-4 py-3"
         >
-          <h2 id="workbench-summary" className="text-xs font-semibold tracking-tight text-zinc-100">
+          <h2 id="workbench-summary" className="text-xs font-semibold tracking-tight text-zinc-50">
             Secure Client-Side Financial Data Transcoder
           </h2>
           <p className="mt-1.5 max-w-5xl text-xs leading-relaxed text-zinc-200">
