@@ -6,6 +6,7 @@ import { SEO_BANKS, bankBySlug } from '@/app/lib/seo-banks-data';
 import { resolvePresetRoles } from '@/app/lib/preset-resolve';
 import { copyFor } from '@/app/lib/market-context';
 import { StatementWorkbench } from '@/app/dashboard/StatementWorkbench';
+import { bankFaq, bankFaqSchema } from '@/app/lib/bank-faq';
 import { AuthLink } from '@/app/components/AuthLink';
 import { PageViewTracker } from '@/app/components/PageViewTracker';
 
@@ -71,8 +72,15 @@ export default async function BankPage({ params }: PageProps) {
   // `commonGotcha`; rendering both would print the same paragraph twice.
   const quirks = profile.quirks.filter((quirk) => quirk.body !== profile.commonGotcha);
 
-  const structuredData = {
-    '@context': 'https://schema.org',
+  const faq = bankFaq(profile);
+
+  /*
+   * Two schema types describe this page: the HowTo is the conversion
+   * procedure, the FAQPage is the questions people actually ask. They are
+   * emitted in one @graph rather than as two sibling <script> tags so the
+   * page declares a single connected description of itself.
+   */
+  const howTo = {
     '@type': 'HowTo',
     name: `Convert ${profile.name} CSV to QBO or OFX`,
     description: `Convert a ${profile.legalName} ${profile.accountKind} CSV export into QuickBooks QBO, OFX or QFX without uploading the file.`,
@@ -84,13 +92,19 @@ export default async function BankPage({ params }: PageProps) {
     ],
   };
 
+  const { '@context': _faqContext, ...faqNode } = bankFaqSchema(profile);
+  const pageSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [howTo, faqNode],
+  };
+
   return (
     <main className="min-h-dvh">
       <PageViewTracker surface="bank" bankSlug={profile.slug} />
       <script
         type="application/ld+json"
         // Values come from the static table in this repo, never user input.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
       />
 
       <header className="border-b border-zinc-800/60">
@@ -326,6 +340,33 @@ export default async function BankPage({ params }: PageProps) {
               discards it.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/*
+        Questions --------------------------------------------------------
+
+        Rendered as visible prose, not schema alone. An answer engine quotes
+        what is actually on the page, and structured data that has no visible
+        counterpart is both unquotable and a structured-data policy violation.
+        Each answer is self-contained so it still means something once lifted
+        out of this page and into someone else's answer.
+      */}
+      <section className="border-t border-zinc-800/60">
+        <div className="mx-auto max-w-[80rem] px-6 py-12">
+          <h2 className="text-lg font-medium tracking-tight text-zinc-100">
+            {profile.name} CSV conversion questions
+          </h2>
+          <dl className="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2">
+            {faq.map((entry) => (
+              <div key={entry.question}>
+                <dt className="text-sm font-medium leading-snug text-zinc-100">
+                  {entry.question}
+                </dt>
+                <dd className="mt-2 text-sm leading-relaxed text-zinc-400">{entry.answer}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </section>
 
