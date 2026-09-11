@@ -59,9 +59,9 @@ export function ValidationPanel({
 
   return (
     <div data-tour="validation" className="flex flex-col gap-3 lg:min-h-0">
-      <section className="flex flex-col border border-zinc-800/60 bg-zinc-900 lg:min-h-0">
+      <section className="flex flex-col border border-zinc-800 bg-zinc-900 lg:min-h-0">
         <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-          <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
+          <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-100">
             Pre-flight
           </h3>
           {report ? (
@@ -112,8 +112,8 @@ export function ValidationPanel({
         </div>
       </section>
 
-      <section data-tour="export" className="shrink-0 border border-zinc-800/60 bg-zinc-900 p-3">
-        <label htmlFor="acctid" className="mb-1 block text-[0.625rem] uppercase tracking-wider text-zinc-400">
+      <section data-tour="export" className="shrink-0 border border-zinc-800 bg-zinc-900 p-3">
+        <label htmlFor="acctid" className="mb-1 block text-[0.625rem] uppercase tracking-wider text-zinc-200">
           Account ID
         </label>
         <input

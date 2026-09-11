@@ -62,7 +62,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
       <div
         role="region"
         aria-label="Loaded statement file"
-        className="flex items-center gap-2.5 border border-zinc-800/60 bg-zinc-900 px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-700 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]"
+        className="flex items-center gap-2.5 border border-zinc-800 bg-zinc-900 px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-700 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]"
       >
         <FileText className="size-4 shrink-0 text-zinc-400" aria-hidden />
         <div className="min-w-0 flex-1">
@@ -107,7 +107,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
         className={`border border-dashed transition-[colors,box-shadow] duration-150 ${
           dragging
             ? 'border-emerald-500/70 bg-emerald-500/[0.07] shadow-[0_0_24px_rgba(16,185,129,0.22),inset_0_0_20px_rgba(16,185,129,0.06)]'
-            : 'border-zinc-800 bg-zinc-900/40 hover:border-zinc-700 hover:bg-zinc-900/70 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]'
+            : 'border-zinc-700 bg-zinc-900 hover:border-emerald-500/50 hover:bg-zinc-900 hover:shadow-[0_0_20px_rgba(16,185,129,0.12),inset_0_1px_0_rgba(255,255,255,0.04)]'
         }`}
       >
         <label
@@ -125,7 +125,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           />
           <span
             className={`font-mono text-xs transition-colors duration-150 ${
-              dragging ? 'text-emerald-300' : 'text-zinc-400'
+              dragging ? 'text-emerald-300' : 'text-zinc-100 group-hover:text-emerald-300'
             }`}
           >
             {busy ? 'reading…' : dragging ? 'release to load' : 'drop statement'}

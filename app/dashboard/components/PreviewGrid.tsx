@@ -80,10 +80,10 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
       role="region"
       aria-labelledby="preview-heading"
       aria-describedby="preview-description"
-      className="flex flex-col border border-zinc-800/60 bg-zinc-900 lg:min-h-0"
+      className="flex flex-col border border-zinc-800 bg-zinc-900 lg:min-h-0"
     >
       <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-        <h3 id="preview-heading" className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
+        <h3 id="preview-heading" className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-100">
           Live preview
         </h3>
         <span className="font-mono text-[0.625rem] text-zinc-400 tnum">
@@ -103,14 +103,14 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
           </caption>
           <thead className="sticky top-0 z-10 bg-zinc-900">
             <tr className="border-b border-zinc-800/60">
-              <th scope="col" className="w-9 px-2 py-1.5 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400">
+              <th scope="col" className="w-9 px-2 py-1.5 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-200">
                 #
               </th>
               {fields.map((field) => (
                 <th
                   key={field.key}
                   scope="col"
-                  className={`${field.width} px-2 py-1.5 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400 ${
+                  className={`${field.width} px-2 py-1.5 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-200 ${
                     field.numeric ? 'text-right' : 'text-left'
                   }`}
                 >
@@ -177,7 +177,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
                         amount.value === null
                           ? 'text-zinc-400'
                           : amount.value < 0
-                            ? 'text-red-400'
+                            ? 'text-rose-400'
                             : 'text-emerald-400'
                       }`}
                       title={amount.text}

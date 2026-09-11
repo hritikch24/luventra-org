@@ -25,7 +25,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
 const structuredData = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Luventra Automated Client-Side Statement Converter',
+  name: 'Luventra Automated Client-Side Statement Transcoder',
   url: `${siteUrl}/dashboard`,
   applicationCategory: ['BusinessApplication', 'FinanceApplication'],
   operatingSystem: 'All modern web browsers (Windows, macOS, Linux)',
@@ -33,7 +33,7 @@ const structuredData = {
   featureList: [
     'Local Web Worker processing',
     '100% data privacy sandbox',
-    'Byte-exact OFX/QBO specs generation',
+    'Byte-exact QBO/OFX file generation',
   ],
   description:
     'Format irregular banking statement rows into specification-compliant bookkeeping entries. ' +

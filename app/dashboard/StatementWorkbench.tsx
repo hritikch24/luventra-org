@@ -121,7 +121,7 @@ export interface BankPreset {
 const COMPLIANCE_ASSERTIONS = [
   'OFX SGML Specification v1.0.2 Compliant',
   'Intuit BID Registry Token Matching',
-  'Deterministic SHA-1 Hash Deduplication Protection',
+  'SHA-1 Transaction Deduplication Protection',
 ] as const;
 
 export interface StatementWorkbenchProps {
