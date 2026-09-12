@@ -3,6 +3,7 @@
 import { Check, Loader2, Minus, TriangleAlert, X } from 'lucide-react';
 import type { CheckStatus, PreflightReport } from '@/app/lib/preflight';
 import type { OfxDialect } from '@/app/worker/types';
+import { PANEL, PANEL_HEADER, CONFIG_LABEL } from './surface';
 
 const STATUS: Readonly<
   Record<CheckStatus, { icon: typeof Check; tone: string; dot: string; sr: string }>
@@ -59,9 +60,9 @@ export function ValidationPanel({
 
   return (
     <div data-tour="validation" className="flex flex-col gap-3 lg:min-h-0">
-      <section className="flex flex-col border border-zinc-800 bg-zinc-900 lg:min-h-0">
-        <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-          <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-50">
+      <section className={`flex flex-col lg:min-h-0 ${PANEL}`}>
+        <header className={PANEL_HEADER}>
+          <h3 className={CONFIG_LABEL}>
             Pre-flight
           </h3>
           {report ? (
@@ -112,8 +113,8 @@ export function ValidationPanel({
         </div>
       </section>
 
-      <section data-tour="export" className="shrink-0 border border-zinc-800 bg-zinc-900 p-3">
-        <label htmlFor="acctid" className="mb-1 block text-[0.625rem] uppercase tracking-wider text-zinc-200">
+      <section data-tour="export" className={`shrink-0 p-3 ${PANEL}`}>
+        <label htmlFor="acctid" className={`mb-1 block ${CONFIG_LABEL}`}>
           Account ID
         </label>
         <input
@@ -144,8 +145,8 @@ export function ValidationPanel({
                 // before the user commits to Generate.
                 className={`py-1 font-mono text-[0.6875rem] font-semibold uppercase transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
                   active
-                    ? 'bg-accent text-white'
-                    : 'bg-zinc-900 text-zinc-200 hover:bg-zinc-800 hover:text-zinc-50'
+                    ? 'bg-white text-zinc-950'
+                    : 'bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50'
                 }`}
               >
                 {option}
@@ -158,7 +159,11 @@ export function ValidationPanel({
           type="button"
           onClick={onExport}
           disabled={!gateOpen}
-          className="flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-semibold text-white shadow-[0_1px_0_rgba(255,255,255,0.12)_inset] transition-[colors,box-shadow] duration-150 hover:bg-accent-hover hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] active:bg-accent disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+          // Solid white on the matte canvas: the one element in the workspace with
+          // no transparency and no border, so it reads as the single committed
+          // action. The emerald halo is spent only on hover — at rest the block
+          // is flush and silent. Disabled keeps the standard dim treatment.
+          className="flex w-full items-center justify-center gap-2 bg-white px-3 py-2 text-xs font-semibold tracking-tight text-zinc-950 transition-[colors,box-shadow] duration-150 hover:bg-white hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] active:bg-zinc-100 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
         >
           {working ? (
             <>

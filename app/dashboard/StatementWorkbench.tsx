@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
+import { PANEL, CONFIG_LABEL } from './components/surface';
 import type {
   ColumnRole,
   DetectedColumn,
@@ -20,7 +21,7 @@ import {
 } from '@/app/lib/worker-client';
 import { FileDropzone } from './components/FileDropzone';
 import { MappingTable } from './components/MappingTable';
-import { PreviewGrid } from './components/PreviewGrid';
+import { PreviewGrid, PreviewGridEmpty } from './components/PreviewGrid';
 import { ValidationPanel, type ExportState } from './components/ValidationPanel';
 import { BillingModal, FREE_ROW_LIMIT } from './components/BillingModal';
 import { AuthLink } from '@/app/components/AuthLink';
@@ -369,7 +370,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
 
   return (
     <div
-      className={`flex flex-col ${
+      className={`flex flex-col bg-zinc-950 ${
         embedded
           ? 'h-[44rem] max-h-[85vh]'
           : // Both global bars are siblings of this subtree, so subtract both.
@@ -388,10 +389,10 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
               Statement Converter
             </h1>
           )}
-          <span className="font-mono text-[0.625rem] text-zinc-400">csv → ofx/qbo/qfx</span>
+          <span className={CONFIG_LABEL}>csv → ofx/qbo/qfx</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="font-mono text-[0.625rem] text-zinc-400">parsed locally</span>
+          <span className={CONFIG_LABEL}>parsed locally</span>
           {embedded ? null : <AuthLink />}
         </div>
       </header>
@@ -411,7 +412,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         // here that would still make sense lifted out of the workspace.
         <article
           aria-labelledby="workbench-summary"
-          className="shrink-0 border-b border-zinc-800/60 bg-zinc-900/40 px-4 py-3"
+          className="shrink-0 border-b border-zinc-800/60 bg-zinc-900/30 px-4 py-3 backdrop-blur-md"
         >
           <h2 id="workbench-summary" className="text-xs font-semibold tracking-tight text-zinc-50">
             Secure Client-Side Financial Data Transcoder
@@ -473,12 +474,12 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
             ) : (
               <section
                 aria-labelledby="mapping-placeholder-heading"
-                className="border border-zinc-800/60 bg-zinc-900/40 px-3 py-6 text-center"
+                className={`px-3 py-6 text-center ${PANEL}`}
               >
                 <h3 id="mapping-placeholder-heading" className="sr-only">
                   Column mapping rules
                 </h3>
-                <p className="font-mono text-[0.6875rem] text-zinc-400">mapping rules</p>
+                <p className={CONFIG_LABEL}>mapping rules</p>
               </section>
             )}
           </div>
@@ -488,9 +489,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         {loaded ? (
           <PreviewGrid preview={loaded.preview} columns={loaded.schema.columns} />
         ) : (
-          <div className="flex items-center justify-center border border-zinc-800/60 bg-zinc-900/40 py-12 lg:py-0">
-            <p className="font-mono text-xs text-zinc-400">no statement loaded</p>
-          </div>
+          <PreviewGridEmpty />
         )}
 
         {/* RIGHT — validation and the export gate */}
@@ -524,7 +523,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         {COMPLIANCE_ASSERTIONS.map((assertion) => (
           <div key={assertion} className="flex items-center gap-2 bg-zinc-950 px-4 py-2">
             <ShieldCheck className="size-3 shrink-0 text-emerald-500" aria-hidden />
-            <span className="font-mono text-[0.625rem] leading-tight text-zinc-200">
+            <span className="font-mono text-[10px] uppercase tracking-widest leading-tight text-zinc-300">
               [{assertion}]
             </span>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { Sparkle } from 'lucide-react';
+import { PANEL, PANEL_HEADER, CONFIG_LABEL } from './surface';
 import type { ColumnRole, DetectedColumn } from '@/app/worker/types';
 import {
   ASSIGNABLE_ROLES,
@@ -45,9 +46,9 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
   ];
 
   return (
-    <section className="shrink-0 border border-zinc-800 bg-zinc-900">
-      <header className="flex items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-        <h3 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-50">
+    <section className={`shrink-0 ${PANEL}`}>
+      <header className={PANEL_HEADER}>
+        <h3 className={CONFIG_LABEL}>
           Mapping rules
         </h3>
         <div className="flex items-center gap-1">
@@ -125,7 +126,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
       </ul>
 
       <footer className="flex items-center justify-between border-t border-zinc-800/60 px-3 py-1.5">
-        <span className="text-[0.625rem] uppercase tracking-wider text-zinc-200">convention</span>
+        <span className={CONFIG_LABEL}>convention</span>
         <span className="font-mono text-[0.625rem] text-zinc-400">{convention}</span>
       </footer>
     </section>

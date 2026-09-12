@@ -9,6 +9,7 @@ import {
   type CsvPreview,
 } from '@/app/lib/preview';
 import { readNumber } from '@/app/lib/numeric';
+import { PANEL, PANEL_HEADER, CONFIG_LABEL, META, COLUMN_LABEL } from './surface';
 
 interface PreviewGridProps {
   readonly preview: CsvPreview;
@@ -80,13 +81,13 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
       role="region"
       aria-labelledby="preview-heading"
       aria-describedby="preview-description"
-      className="flex flex-col border border-zinc-800 bg-zinc-900 lg:min-h-0"
+      className={`flex flex-col lg:min-h-0 ${PANEL}`}
     >
-      <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-        <h3 id="preview-heading" className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-50">
+      <header className={PANEL_HEADER}>
+        <h3 id="preview-heading" className={CONFIG_LABEL}>
           Live preview
         </h3>
-        <span className="font-mono text-[0.625rem] text-zinc-400 tnum">
+        <span className={META}>
           {rows.length} of {preview.rows.length.toLocaleString()} rows
           {remaining > 0 ? ` · +${remaining.toLocaleString()}` : ''}
         </span>
@@ -101,16 +102,16 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
             Canonical preview of the parsed statement: a debit and credit pair is collapsed into a
             single signed Amount, showing what will be written to the converted file.
           </caption>
-          <thead className="sticky top-0 z-10 bg-zinc-900">
+          <thead className="sticky top-0 z-10 bg-zinc-900/95 backdrop-blur-md">
             <tr className="border-b border-zinc-800/60">
-              <th scope="col" className="w-9 px-2 py-1.5 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-200">
+              <th scope="col" className={`w-9 px-2 py-1.5 text-right ${COLUMN_LABEL}`}>
                 #
               </th>
               {fields.map((field) => (
                 <th
                   key={field.key}
                   scope="col"
-                  className={`${field.width} px-2 py-1.5 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-200 ${
+                  className={`${field.width} px-2 py-1.5 ${COLUMN_LABEL} ${
                     field.numeric ? 'text-right' : 'text-left'
                   }`}
                 >
@@ -205,13 +206,85 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
       </div>
 
       <footer className="flex shrink-0 items-center justify-between border-t border-zinc-800/60 px-3 py-1.5">
-        <span className="font-mono text-[0.625rem] text-zinc-400">
+        <span className={META}>
           {fields.map((field) => field.label.toLowerCase()).join(' · ')}
         </span>
-        <span className="font-mono text-[0.625rem] text-zinc-400">
+        <span className={META}>
           {hasPair ? 'debit/credit → signed' : amountIndex !== -1 ? 'signed amount' : 'no amount'}
         </span>
       </footer>
+    </section>
+  );
+}
+
+/**
+ * The ledger before a file exists.
+ *
+ * An instrument at rest still shows its graticule — an oscilloscope does not
+ * go blank between traces. Left empty, this panel is the largest object on the
+ * screen and says nothing; ruled, it states the shape of what is coming: these
+ * are the columns, this is the row pitch, your data lands here. The rules are
+ * drawn dim enough to stay clearly inert, so it never reads as content that
+ * failed to load or as a skeleton mid-fetch.
+ */
+export function PreviewGridEmpty() {
+  const columns = ['Date', 'Description', 'Amount', 'Balance'] as const;
+
+  return (
+    <section
+      aria-label="Transaction preview, awaiting a statement"
+      className={`flex flex-col lg:min-h-0 ${PANEL}`}
+    >
+      <header className={PANEL_HEADER}>
+        <h3 className={CONFIG_LABEL}>Live preview</h3>
+        <span className={META}>0 rows</span>
+      </header>
+
+      <div className="relative min-h-0 flex-1 overflow-hidden">
+        {/* Column graticule */}
+        <table className="w-full table-fixed border-collapse" aria-hidden>
+          <thead>
+            <tr className="border-b border-zinc-800/60">
+              <th className={`w-9 px-2 py-1.5 text-right ${COLUMN_LABEL}`}>#</th>
+              {columns.map((label, index) => (
+                <th
+                  key={label}
+                  className={`px-2 py-1.5 ${COLUMN_LABEL} ${
+                    index === 0 ? 'w-[7.5rem]' : index === 1 ? 'w-auto' : 'w-[8rem] text-right'
+                  }`}
+                >
+                  {label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: 14 }, (_, row) => (
+              <tr key={row} className="border-b border-zinc-800/25">
+                <td className="px-2 py-1.5 text-right font-mono text-[10px] text-zinc-800 tnum">
+                  {row + 1}
+                </td>
+                {columns.map((label) => (
+                  <td key={label} className="px-2 py-1.5">
+                    <span className="block h-px w-full bg-zinc-800/40" />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* The one statement the panel makes, over the ruling. */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-2 bg-zinc-950/70 px-6 py-4 backdrop-blur-sm">
+            <span className={CONFIG_LABEL}>Awaiting statement</span>
+            <span aria-hidden className="h-px w-8 bg-zinc-700" />
+            <span className="font-mono text-[10px] tracking-wide text-zinc-500">
+              rows render here as they parse
+            </span>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
