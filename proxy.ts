@@ -11,13 +11,12 @@
  *
  *   /            -> 307 redirect to /dashboard. One wasted hop, always.
  *
- *   /dashboard   -> AUTH-GATED. Read this carefully: once the Supabase env
- *                   vars are set in production, the proxy below redirects any
- *                   signed-out visitor from /dashboard to /login. Paid traffic
- *                   is signed out by definition, so an ad pointed here does
- *                   not land on the converter at all — it lands on a sign-in
- *                   form. Sent via `/` that is two hops to a page that cannot
- *                   convert. This is the expensive mistake, not the hop.
+ *   /dashboard   -> Reachable by guests, but still one hop behind `/`, and it
+ *                   is not a keyword-matched landing page. It is no longer
+ *                   auth-gated: the redirect to /login was removed once the
+ *                   Supabase env vars went live in production, because it made
+ *                   the converter unreachable for signed-out traffic. Prefer a
+ *                   bank page for any campaign that has a bank in its intent.
  *
  * USE these as ad target URLs:
  *
@@ -31,10 +30,9 @@
  *
  *   /banks         -> Public index, if a campaign is not bank-specific.
  *
- * If /dashboard must become an ad target, either drop it from `isProtected`
- * below so signed-out visitors can use the converter, or add its slug to a
- * public allowlist. Do not "fix" this by removing the auth check without
- * checking what else depends on it.
+ * The auth gate that used to sit on /dashboard is gone; see the comment above
+ * the remaining redirect below for what replaced it and what to check before
+ * gating any path at this layer again.
  * ============================================================================
  */
 
@@ -80,14 +78,27 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
-  const isProtected = pathname.startsWith('/dashboard');
 
-  if (isProtected && !user) {
-    const redirect = request.nextUrl.clone();
-    redirect.pathname = '/login';
-    redirect.searchParams.set('next', pathname);
-    return NextResponse.redirect(redirect);
-  }
+  /*
+   * No route is auth-gated here, deliberately.
+   *
+   * /dashboard used to redirect signed-out visitors to /login. That made the
+   * converter unreachable for exactly the audience it is built for: a guest
+   * arriving from an ad or a search result is signed out by definition, and
+   * conversion runs entirely client-side, so there is nothing an account is
+   * needed to do. The gate also took the dashboard's SoftwareApplication
+   * schema and its sitemap entry offline, since a crawler is never signed in.
+   *
+   * Authentication is still enforced where it actually protects something, and
+   * in the place that cannot be bypassed — the route handler itself.
+   * /api/checkout returns 401 without a user, /api/subscription reports
+   * `signedIn: false`, and the dashboard renders a guest state from that. This
+   * proxy's remaining job is to refresh the session cookie on every request.
+   *
+   * Before gating a path here again: a redirect at this layer applies to
+   * crawlers and paid traffic too, so anything listed must be a page that has
+   * no reason to be indexed or landed on.
+   */
 
   if (pathname === '/login' && user) {
     const redirect = request.nextUrl.clone();
