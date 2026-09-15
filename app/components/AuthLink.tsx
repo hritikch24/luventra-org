@@ -21,6 +21,12 @@ import { resetAnonAllowance } from '@/app/lib/conversion-limiter';
  *
  * Renders nothing when Supabase is unconfigured, so local development does not
  * show a link that leads to a setup notice.
+ *
+ * Bracket convention: `[ ... ]` marks a system label or a navigation target —
+ * something to read. Anything that performs an action carries a border or a
+ * fill and no brackets. Before this split every control on the page was
+ * bracketed mono, so a status readout and a sign-in button were drawn
+ * identically and neither looked pressable.
  */
 
 type Session = { readonly kind: 'guest' } | { readonly kind: 'user'; readonly email: string };
@@ -110,7 +116,7 @@ export function AuthLink() {
           disabled={leaving}
           className="border border-l-0 border-zinc-800/60 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-400 transition-colors duration-150 hover:border-zinc-700 hover:text-rose-300 disabled:cursor-not-allowed disabled:text-zinc-600 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
         >
-          {leaving ? 'ending' : 'sign out'}
+          {leaving ? 'Ending' : 'Sign out'}
         </button>
       </span>
     );
@@ -129,13 +135,13 @@ export function AuthLink() {
         href="/login"
         className="font-mono text-[10px] uppercase tracking-widest text-zinc-400 transition-colors duration-150 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
       >
-        [ Sign in ]
+        Sign in
       </Link>
       <Link
         href="/login?intent=register"
-        className="border border-zinc-700 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-100 transition-[colors,box-shadow] duration-150 hover:border-emerald-500/60 hover:text-white hover:shadow-[0_0_15px_rgba(16,185,129,0.25)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+        className="whitespace-nowrap border border-zinc-700 bg-zinc-900 px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-100 transition-[colors,box-shadow] duration-150 hover:border-emerald-500/60 hover:bg-zinc-800 hover:text-white hover:shadow-[0_0_15px_rgba(16,185,129,0.25)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
       >
-        [ Register free ]
+        Register free
       </Link>
     </span>
   );

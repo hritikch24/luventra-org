@@ -405,22 +405,28 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
             'h-[calc(100dvh-var(--header-h)-var(--footer-h))]'
       }`}
     >
-      <header className="flex shrink-0 items-center justify-between border-b border-zinc-800/60 px-4 py-2.5">
-        <div className="flex items-baseline gap-2.5">
+      {/*
+        `min-w-0` + `shrink-0` on the two groups, and the decorative status
+        readouts dropped below sm. Without this the bar collapsed to 76px on a
+        390px phone: the title wrapped to two lines, the format string wrapped
+        under it, and "parsed locally" ran straight into it with no separator.
+      */}
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-zinc-800/60 px-4 py-2.5">
+        <div className="flex min-w-0 items-baseline gap-2.5">
           {/* The bank page owns the page-level h1, so this drops to a span. */}
           {embedded ? (
-            <span className="text-sm font-medium tracking-tight text-zinc-50">
+            <span className="truncate text-sm font-medium tracking-tight text-zinc-50">
               {preset ? `${preset.name} converter` : 'Statement Converter'}
             </span>
           ) : (
-            <h1 className="text-sm font-medium tracking-tight text-zinc-50">
+            <h1 className="whitespace-nowrap text-sm font-medium tracking-tight text-zinc-50">
               Statement Converter
             </h1>
           )}
-          <span className={CONFIG_LABEL}>csv → ofx/qbo/qfx</span>
+          <span className={`hidden shrink-0 sm:inline ${CONFIG_LABEL}`}>csv → ofx/qbo/qfx</span>
         </div>
-        <div className="flex items-center gap-3">
-          <span className={CONFIG_LABEL}>parsed locally</span>
+        <div className="flex shrink-0 items-center gap-3">
+          <span className={`hidden md:inline ${CONFIG_LABEL}`}>parsed locally</span>
           {embedded ? null : <AuthLink />}
         </div>
       </header>

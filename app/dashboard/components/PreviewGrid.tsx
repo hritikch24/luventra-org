@@ -94,9 +94,16 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
       </header>
 
       <div className="scroll-thin overflow-x-auto lg:min-h-0 lg:flex-1 lg:overflow-auto">
+        {/*
+          `min-w` is load-bearing. The fixed column widths total 412px; inside a
+          390px phone the `w-auto` Description column was squeezed to exactly
+          0px, hiding the single most useful field in the grid. Giving the table
+          a floor lets the wrapper scroll horizontally instead, which is the
+          normal contract for a dense ledger on a narrow screen.
+        */}
         <table
           aria-describedby="preview-description"
-          className="w-full table-fixed border-collapse"
+          className="w-full min-w-[38rem] table-fixed border-collapse"
         >
           <caption id="preview-description" className="sr-only">
             Canonical preview of the parsed statement: a debit and credit pair is collapsed into a
@@ -240,9 +247,9 @@ export function PreviewGridEmpty() {
         <span className={META}>0 rows</span>
       </header>
 
-      <div className="relative min-h-0 flex-1 overflow-hidden">
+      <div className="scroll-thin relative min-h-0 flex-1 overflow-x-auto overflow-y-hidden">
         {/* Column graticule */}
-        <table className="w-full table-fixed border-collapse" aria-hidden>
+        <table className="w-full min-w-[38rem] table-fixed border-collapse" aria-hidden>
           <thead>
             <tr className="border-b border-zinc-800/60">
               <th className={`w-9 px-2 py-1.5 text-right ${COLUMN_LABEL}`}>#</th>
