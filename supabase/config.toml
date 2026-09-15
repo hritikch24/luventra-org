@@ -1,0 +1,92 @@
+# Supabase auth + SMTP configuration.
+#
+# Applies to `supabase start` locally and to `supabase db push` / the CLI's
+# config sync. The hosted project's equivalents live in Dashboard >
+# Authentication > URL Configuration, Emails, and SMTP Settings — the two must
+# be kept in step by hand, because the dashboard is authoritative in production.
+#
+# Secrets are referenced as env(...) and never inlined. Set them in the shell
+# (local) or as project secrets (hosted); none of them belong in this file.
+
+[auth]
+enabled = true
+
+# The origin Supabase appends its callback path to. Must be the production
+# host, not a loopback interface: when this is wrong the magic link in a real
+# inbox points at 127.0.0.1 and silently fails for every recipient.
+site_url = "env(NEXT_PUBLIC_SITE_URL)"
+
+# Every origin a link is permitted to return to. Supabase rejects a redirect
+# that matches nothing here, so preview deployments need their own entry.
+additional_redirect_urls = [
+  "env(NEXT_PUBLIC_SITE_URL)/auth/callback",
+  "https://www.luventra.co/auth/callback",
+  "http://localhost:3000/auth/callback",
+]
+
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+refresh_token_reuse_interval = 10
+
+[auth.email]
+enable_signup = true
+# Magic-link only: the app never collects a password (see LoginForm and the
+# comment in app/auth/callback/route.ts). Leave this false unless a password
+# flow is actually added, or Supabase will mail confirmations for a credential
+# that does not exist.
+enable_confirmations = true
+secure_password_change = false
+max_frequency = "60s"
+# One-time codes are exchanged by /auth/callback; the window only needs to
+# cover the trip from inbox to browser.
+otp_expiry = 3600
+
+# ---------------------------------------------------------------------------
+# Templates
+#
+# Paths are relative to this file. Each template is also pasted into Dashboard
+# > Authentication > Emails for the hosted project.
+#
+# {{ .ConfirmationURL }} already resolves against site_url above, so no
+# template hardcodes a host. That is the single point where the production
+# domain enters the mail path.
+# ---------------------------------------------------------------------------
+
+[auth.email.template.confirmation]
+subject = "Confirm your Luventra account"
+content_path = "./templates/confirmation.html"
+
+[auth.email.template.magic_link]
+subject = "Your Luventra sign-in link"
+content_path = "./templates/magic-link.html"
+
+[auth.email.template.recovery]
+subject = "Reset your Luventra password"
+content_path = "./templates/recovery.html"
+
+# ---------------------------------------------------------------------------
+# Production SMTP.
+#
+# Without this block Supabase sends from its own shared domain, which is rate
+# limited to a handful of messages per hour and stamps Supabase branding on the
+# envelope. Any provider below works — the block is identical apart from host,
+# port and credentials.
+#
+#   Resend    smtp.resend.com          :465   user "resend",    pass = API key
+#   AWS SES   email-smtp.<region>...   :465   user = SMTP user, pass = SMTP pass
+#                                             (SES SMTP credentials, NOT the
+#                                             IAM access key pair)
+#   Mailgun   smtp.mailgun.org         :465   user postmaster@<domain>
+#
+# sender_email must sit on a domain with SPF, DKIM and DMARC published, or
+# transactional mail lands in spam regardless of provider.
+# ---------------------------------------------------------------------------
+
+[auth.email.smtp]
+enabled = true
+host = "env(SMTP_HOST)"
+port = 465
+user = "env(SMTP_USER)"
+pass = "env(SMTP_PASS)"
+admin_email = "env(SMTP_SENDER_EMAIL)"
+sender_name = "Luventra"

@@ -28,7 +28,17 @@ export function LoginForm() {
 
     try {
       const supabase = createClient();
-      const callback = new URL('/auth/callback', window.location.origin);
+      /*
+       * The callback origin is the configured production host, not
+       * `window.location.origin`. The origin of the tab is whichever host the
+       * visitor happened to land on — apex or www, a Vercel preview URL, or
+       * localhost — and whatever it is gets baked into a link that has to
+       * still resolve when opened from an inbox on another device. Falling
+       * back to the tab's origin only covers local development, where the
+       * variable is unset.
+       */
+      const origin = process.env.NEXT_PUBLIC_SITE_URL?.trim() || window.location.origin;
+      const callback = new URL('/auth/callback', origin);
       if (next && next.startsWith('/')) callback.searchParams.set('next', next);
 
       const { error } = await supabase.auth.signInWithOtp({

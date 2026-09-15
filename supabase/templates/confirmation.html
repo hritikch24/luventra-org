@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Confirm your Luventra account</title>
+  </head>
+  <body style="margin:0;padding:0;background:#09090b;">
+    <!--
+      Table layout and inline styles throughout: Outlook renders with Word's
+      engine and Gmail strips <style> blocks, so neither flexbox nor a
+      stylesheet survives the trip. Dark ground with light text matches the
+      product; every colour is stated explicitly because clients that force
+      dark mode will otherwise invert only half the message.
+    -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#09090b;">
+      <tr>
+        <td align="center" style="padding:40px 16px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;background:#18181b;border:1px solid #27272a;">
+            <tr>
+              <td style="padding:20px 24px 0 24px;">
+                <p style="margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#a1a1aa;">
+                  Luventra
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:12px 24px 0 24px;">
+                <h1 style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:18px;font-weight:600;letter-spacing:-0.01em;color:#fafafa;">
+                  Confirm your account
+                </h1>
+                <p style="margin:10px 0 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.65;color:#d4d4d8;">
+                  Confirm this address to finish creating your Luventra account. Statement conversion runs entirely in your browser — this link only verifies the address.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px 20px 24px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="background:#ffffff;">
+                      <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:11px 22px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#09090b;text-decoration:none;">
+                        Confirm account
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 24px 24px 24px;">
+                <p style="margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.6;color:#71717a;word-break:break-all;">
+                  Or paste this link into your browser:<br />
+                  <a href="{{ .ConfirmationURL }}" style="color:#a1a1aa;">{{ .ConfirmationURL }}</a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:16px 24px;border-top:1px solid #27272a;">
+                <p style="margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;line-height:1.6;color:#71717a;">
+                  Link expires in 60 minutes and can be used once. If you did not create a Luventra account, ignore this message — no account is created until the link is opened.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

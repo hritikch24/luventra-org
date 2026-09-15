@@ -24,6 +24,8 @@ import { MappingTable } from './components/MappingTable';
 import { PreviewGrid, PreviewGridEmpty } from './components/PreviewGrid';
 import { ValidationPanel, type ExportState } from './components/ValidationPanel';
 import { BillingModal, FREE_ROW_LIMIT } from './components/BillingModal';
+import { GuestLimitModal } from './components/GuestLimitModal';
+import { consumeAnonConversion, type AnonAllowance } from '@/app/lib/conversion-limiter';
 import { AuthLink } from '@/app/components/AuthLink';
 import { OnboardingTour, useOnboardingTour } from './components/OnboardingTour';
 import { trackGoogleConversion } from '@/app/components/GoogleAdsTracker';
@@ -141,6 +143,8 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
   const [exportState, setExportState] = useState<ExportState>('idle');
   const [exportMessage, setExportMessage] = useState<string | null>(null);
   const [billingOpen, setBillingOpen] = useState(false);
+  const [guestLimitOpen, setGuestLimitOpen] = useState(false);
+  const [guestResetsAt, setGuestResetsAt] = useState<number | null>(null);
   const [subscription, setSubscription] = useState<SubscriptionState | null>(null);
   const tour = useOnboardingTour(!embedded);
 
@@ -272,6 +276,25 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
 
   /* -- billing gate ------------------------------------------------------- */
 
+  /**
+   * Spends one of a guest's daily conversions.
+   *
+   * Runs before the subscription gate and only for signed-out visitors, so a
+   * subscriber never touches the counter. It is advisory — see the module
+   * header on `conversion-limiter` for why nothing client-side can be an
+   * entitlement boundary in an app that converts in the browser.
+   */
+  const checkGuestAllowance = useCallback((): boolean => {
+    if (subscription?.signedIn) return true;
+
+    const allowance: AnonAllowance = consumeAnonConversion();
+    if (allowance.allowed) return true;
+
+    setGuestResetsAt(allowance.resetsAt);
+    setGuestLimitOpen(true);
+    return false;
+  }, [subscription]);
+
   /** Returns true when conversion may proceed. */
   const checkEntitlement = useCallback(async (rowCount: number): Promise<boolean> => {
     // Free-for-all week: skip the row check and the subscription round trip
@@ -304,6 +327,11 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
     setExportMessage(null);
 
     try {
+      if (!checkGuestAllowance()) {
+        setExportState('idle');
+        return;
+      }
+
       const allowed = await checkEntitlement(loaded.schema.rowCount);
       if (!allowed) {
         setExportState('idle');
@@ -366,7 +394,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
       setExportState('error');
       setExportMessage(cause instanceof Error ? cause.message : 'Conversion failed.');
     }
-  }, [loaded, dialect, accountId, checkEntitlement]);
+  }, [loaded, dialect, accountId, checkGuestAllowance, checkEntitlement]);
 
   return (
     <div
@@ -531,6 +559,12 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
       </section>
 
       {embedded ? null : <OnboardingTour controller={tour} />}
+
+      <GuestLimitModal
+        open={guestLimitOpen}
+        resetsAt={guestResetsAt}
+        onClose={() => setGuestLimitOpen(false)}
+      />
 
       <BillingModal
         open={billingOpen}
