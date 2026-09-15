@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { LoginForm } from './LoginForm';
+import { AuthHeading } from './AuthHeading';
 
 export const metadata: Metadata = {
   title: 'Sign in',
@@ -10,13 +11,13 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center px-4">
       <div className="w-full max-w-[20rem]">
-        <div className="mb-6">
-          <h1 className="text-sm font-medium tracking-tight text-zinc-100">Statement Converter</h1>
-          <p className="mt-1 font-mono text-[0.6875rem] text-zinc-400">
-            sign in with a one-time link
-          </p>
-        </div>
-        <Suspense fallback={<div className="h-24" />}>
+        {/*
+          The heading lives inside LoginForm because it varies with `?intent`,
+          and only a client component may read search params without opting
+          this route into dynamic rendering. The fallback repeats the default
+          heading so the prerendered HTML still ships an h1 rather than a gap.
+        */}
+        <Suspense fallback={<AuthHeading intent="signin" />}>
           <LoginForm />
         </Suspense>
       </div>

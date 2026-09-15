@@ -5,6 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { createClient } from '@/app/lib/supabase/client';
 import { hasSupabaseEnv } from '@/app/lib/supabase/env';
+import { AUTH_COPY, readIntent } from './copy';
+import { AuthHeading } from './AuthHeading';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -12,6 +14,8 @@ export function LoginForm() {
   const params = useSearchParams();
   const next = params.get('next');
   const linkError = params.get('error');
+  const intent = readIntent(params.get('intent'));
+  const copy = AUTH_COPY[intent];
 
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
@@ -52,7 +56,7 @@ export function LoginForm() {
         return;
       }
       setStatus('sent');
-      setMessage(`Check ${email} for a sign-in link.`);
+      setMessage(`Check ${email} for your ${intent === 'register' ? 'account' : 'sign-in'} link.`);
     } catch (cause) {
       setStatus('error');
       setMessage(cause instanceof Error ? cause.message : 'Could not send the link.');
@@ -61,15 +65,20 @@ export function LoginForm() {
 
   if (!configured) {
     return (
-      <p className="border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-[0.6875rem] leading-relaxed text-amber-400">
+      <>
+        <AuthHeading intent={intent} />
+        <p className="border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-[0.6875rem] leading-relaxed text-amber-400">
         Supabase is not configured. Copy <code className="font-mono">.env.example</code> to{' '}
-        <code className="font-mono">.env.local</code> and set the project URL and anon key.
-      </p>
+          <code className="font-mono">.env.local</code> and set the project URL and anon key.
+        </p>
+      </>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-2">
+    <>
+      <AuthHeading intent={intent} />
+      <form onSubmit={onSubmit} className="space-y-2">
       <label htmlFor="email" className="sr-only">
         Email address
       </label>
@@ -93,12 +102,12 @@ export function LoginForm() {
         {status === 'sending' ? (
           <>
             <Loader2 className="size-3.5 animate-spin" aria-hidden />
-            Sending…
+            {copy.pending}…
           </>
         ) : status === 'sent' ? (
           'Link sent'
         ) : (
-          'Email me a link'
+          copy.submit
         )}
       </button>
 
@@ -112,6 +121,7 @@ export function LoginForm() {
           {message ?? linkError}
         </p>
       ) : null}
-    </form>
+      </form>
+    </>
   );
 }
