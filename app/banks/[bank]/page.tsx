@@ -42,8 +42,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title,
     description,
     alternates: { canonical: `/banks/${profile.slug}` },
-    openGraph: { title, description, type: 'website', url: `/banks/${profile.slug}` },
-    twitter: { card: 'summary', title, description },
+    /*
+     * `images` is stated explicitly. Declaring an `openGraph` block here
+     * suppresses the file-based app/opengraph-image convention for this route,
+     * so these 20 pages — the ones most likely to be pasted into a Slack or a
+     * forum thread — were the only ones shipping no card at all. The path is
+     * the unhashed route, which `metadataBase` resolves to an absolute URL.
+     */
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `/banks/${profile.slug}`,
+      images: ['/opengraph-image'],
+    },
+    twitter: { card: 'summary_large_image', title, description, images: ['/opengraph-image'] },
   };
 }
 
