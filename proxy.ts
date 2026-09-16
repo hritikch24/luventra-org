@@ -45,7 +45,40 @@ import { createServerClient } from '@supabase/ssr';
  * This file was called `middleware.ts` before Next 16; the convention is now
  * `proxy.ts` exporting `proxy`. Note that `runtime` cannot be set here.
  */
+/*
+ * Paths retired with the previous site on this domain.
+ *
+ * luventra.co served an India travel guide before it served this converter.
+ * Search Console still lists several hundred of those URLs as indexed and they
+ * all 404, which is the worst of both states: Google keeps them in the index,
+ * keeps spending crawl budget re-checking them, and reads the domain as a site
+ * that broke rather than one that changed hands.
+ *
+ * 410 says the resource is intentionally gone and is not coming back, and
+ * Google drops a 410 faster than a 404. There is nothing to redirect these to
+ * — the travel content does not exist any more, and pointing them at the
+ * converter would be a deceptive soft-404 for anyone who followed a link about
+ * hostels in Goa.
+ *
+ * None of these prefixes collide with a route in app/; verified before adding.
+ */
+const RETIRED_PREFIXES = ['/blog', '/city', '/state', '/travel-guide', '/travel-partner'] as const;
+
+function isRetired(pathname: string): boolean {
+  return RETIRED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
 export async function proxy(request: NextRequest) {
+  // Answered before any Supabase work: a gone URL needs no session refresh.
+  if (isRetired(request.nextUrl.pathname)) {
+    return new NextResponse('410 Gone — this page was part of a previous site on this domain.', {
+      status: 410,
+      headers: { 'content-type': 'text/plain; charset=utf-8' },
+    });
+  }
+
   let response = NextResponse.next({ request });
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
