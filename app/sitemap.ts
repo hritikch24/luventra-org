@@ -8,6 +8,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseRoutes = [
     { url: baseUrl, lastModified: new Date() },
     { url: `${baseUrl}/dashboard`, lastModified: new Date() },
+    // The bank index. Omitting it was a real gap: Search Console reported
+    // /banks as "URL is unknown to Google" with "No referring sitemaps
+    // detected", even though it is the hub linking to all 20 bank pages and
+    // therefore the cheapest single page for a crawler to enter the section
+    // through. Every page it links to was in the sitemap; the hub itself
+    // was not.
+    { url: `${baseUrl}/banks`, lastModified: new Date() },
     { url: `${baseUrl}/privacy`, lastModified: new Date() },
     { url: `${baseUrl}/terms`, lastModified: new Date() },
   ];
