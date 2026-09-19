@@ -9,7 +9,9 @@
  *
  * DO NOT use these as ad target URLs:
  *
- *   /            -> 307 redirect to /dashboard. One wasted hop, always.
+ *   /            -> Now a real landing page, not a redirect. Safe as an ad
+ *                   target, though a bank page still converts better for a
+ *                   query that names a bank.
  *
  *   /dashboard   -> Reachable by guests, but still one hop behind `/`, and it
  *                   is not a keyword-matched landing page. It is no longer
