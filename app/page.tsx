@@ -27,6 +27,40 @@ import { PageViewTracker } from '@/app/components/PageViewTracker';
  * a void with text floating in it.
  */
 
+/**
+ * `SoftwareApplication` description of the converter.
+ *
+ * It lives on / rather than /dashboard because this is now the page a crawler
+ * and a person both meet the product on. Schema describing the application
+ * belongs on the application's public page, not on an app surface that is
+ * noindex.
+ *
+ * `applicationCategory` is an enumeration, so the two valid values are emitted
+ * as an array rather than one slash-joined string, and the finance one is
+ * spelled `FinanceApplication` in the vocabulary. No `offers` or
+ * `aggregateRating`: both need real commercial data, and inventing either to
+ * unlock a rich-result badge would be fabricating a claim about the product.
+ */
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Luventra Automated Client-Side Statement Transcoder',
+  url: siteUrl,
+  applicationCategory: ['BusinessApplication', 'FinanceApplication'],
+  operatingSystem: 'All modern web browsers (Windows, macOS, Linux)',
+  browserRequirements: 'Requires JavaScript and Web Worker support.',
+  featureList: [
+    'Local Web Worker processing',
+    '100% data privacy sandbox',
+    'Byte-exact QBO/OFX file generation',
+  ],
+  description:
+    'Format irregular banking statement rows into specification-compliant bookkeeping entries. ' +
+    'Statements are parsed in an isolated client-side thread and never leave the device.',
+};
+
 export const metadata: Metadata = {
   title: 'Convert Bank CSV Statements to QBO, OFX and QFX',
   description:
@@ -57,6 +91,12 @@ export default function HomePage() {
 
   return (
     <main className="min-h-dvh">
+      <script
+        type="application/ld+json"
+        // Values are static literals from this file, never user input.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+
       {/*
         'other', not a new 'home' value: telemetry_events carries a CHECK
         constraint pinned to ('dashboard','bank','other') in supabase/schema.sql,

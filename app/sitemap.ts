@@ -6,8 +6,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   
   // Base core application utility routes
   const baseRoutes = [
+    // The landing page. /dashboard is deliberately absent: it is noindex, and
+    // listing a noindexed URL in a sitemap asks a crawler to fetch something
+    // it is then told to discard.
     { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/dashboard`, lastModified: new Date() },
     // The bank index. Omitting it was a real gap: Search Console reported
     // /banks as "URL is unknown to Google" with "No referring sitemaps
     // detected", even though it is the hub linking to all 20 bank pages and
