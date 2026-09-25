@@ -1,9 +1,9 @@
 @import 'tailwindcss';
 
 /*
- * Dark-first. The palette is stock Tailwind zinc so component classes stay
- * readable (`bg-zinc-900`, `border-zinc-800/60`) rather than hiding behind
- * bespoke token names. Only the accent and a few primitives are defined here.
+ * Light. The palette is stock Tailwind zinc so component classes stay readable
+ * (`bg-white`, `border-zinc-200`) rather than hiding behind bespoke token
+ * names. Only the accent and a few primitives are defined here.
  */
 @theme {
   --color-accent: oklch(62% 0.17 255);
@@ -13,7 +13,7 @@
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   /*
    * Height of the global compliance footer. Single-sourced because the
    * dashboard owns the full viewport and must subtract exactly this much to
@@ -48,8 +48,8 @@ body {
 }
 
 body {
-  background-color: var(--color-zinc-950);
-  color: var(--color-zinc-100);
+  background-color: var(--color-zinc-50);
+  color: var(--color-zinc-900);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -64,7 +64,7 @@ body {
   background-image: linear-gradient(
     to right,
     transparent,
-    var(--color-zinc-800),
+    var(--color-zinc-300),
     transparent
   );
 }
@@ -76,7 +76,7 @@ body {
 /* Native selects render an OS-styled control on dark backgrounds; strip it. */
 select {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2371717a' stroke-width='1.5'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%2352525b' stroke-width='1.5'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
   padding-right: 1.5rem;
@@ -85,5 +85,5 @@ select {
 /* Thin scrollbars inside the data panes. */
 .scroll-thin {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-zinc-700) transparent;
+  scrollbar-color: var(--color-zinc-300) transparent;
 }

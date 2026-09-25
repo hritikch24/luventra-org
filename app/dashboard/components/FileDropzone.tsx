@@ -66,12 +66,12 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
       <div
         role="region"
         aria-label="Loaded statement file"
-        className="flex items-center gap-2.5 border border-zinc-800 bg-zinc-900 px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-700 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]"
+        className="flex items-center gap-2.5 border border-zinc-200 bg-white px-3 py-2.5 transition-[colors,box-shadow] duration-150 hover:border-zinc-300 hover:shadow-[0_0_20px_rgba(39,39,42,0.6)]"
       >
-        <FileText className="size-4 shrink-0 text-zinc-400" aria-hidden />
+        <FileText className="size-4 shrink-0 text-zinc-500" aria-hidden />
         <div className="min-w-0 flex-1">
-          <p className="truncate font-mono text-xs text-zinc-100">{preview.fileName}</p>
-          <p className="mt-1 font-mono text-[0.6875rem] text-zinc-400 tnum">
+          <p className="truncate font-mono text-xs text-zinc-900">{preview.fileName}</p>
+          <p className="mt-1 font-mono text-[0.6875rem] text-zinc-500 tnum">
             {formatBytes(preview.byteSize)} · {preview.rows.length.toLocaleString()}×
             {preview.headers.length} · {delimiterLabel(preview.delimiter)}
           </p>
@@ -80,7 +80,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           type="button"
           onClick={onClear}
           aria-label="Remove file"
-          className="shrink-0 p-1 text-zinc-400 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="shrink-0 p-1 text-zinc-500 transition-colors duration-150 hover:text-zinc-700 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -121,17 +121,17 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
         className={`relative transition-[colors,box-shadow] duration-150 ${
           dragging
             ? 'bg-emerald-500/[0.06] ring-1 ring-emerald-400/70 shadow-[0_0_0_1px_rgba(16,185,129,0.25),inset_0_0_28px_rgba(16,185,129,0.08)]'
-            : 'border border-zinc-800/60 bg-zinc-950/40 hover:border-zinc-700 hover:bg-zinc-900/40'
+            : 'border border-zinc-200 bg-zinc-50 hover:border-zinc-300 hover:bg-zinc-50'
         }`}
       >
         {/* Registration marks. Four 8px corner rules, drawn only at rest so the
             drag ring reads as a single uninterrupted outline. */}
         {dragging ? null : (
           <>
-            <span aria-hidden className="pointer-events-none absolute left-0 top-0 size-2 border-l border-t border-zinc-700" />
-            <span aria-hidden className="pointer-events-none absolute right-0 top-0 size-2 border-r border-t border-zinc-700" />
-            <span aria-hidden className="pointer-events-none absolute bottom-0 left-0 size-2 border-b border-l border-zinc-700" />
-            <span aria-hidden className="pointer-events-none absolute bottom-0 right-0 size-2 border-b border-r border-zinc-700" />
+            <span aria-hidden className="pointer-events-none absolute left-0 top-0 size-2 border-l border-t border-zinc-300" />
+            <span aria-hidden className="pointer-events-none absolute right-0 top-0 size-2 border-r border-t border-zinc-300" />
+            <span aria-hidden className="pointer-events-none absolute bottom-0 left-0 size-2 border-b border-l border-zinc-300" />
+            <span aria-hidden className="pointer-events-none absolute bottom-0 right-0 size-2 border-b border-r border-zinc-300" />
           </>
         )}
 
@@ -143,8 +143,8 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           <span
             className={`flex size-11 items-center justify-center rounded-full border transition-colors duration-150 ${
               dragging
-                ? 'border-emerald-400/70 bg-emerald-500/10 text-emerald-300'
-                : 'border-zinc-700 bg-zinc-900 text-zinc-300 group-hover:border-emerald-500/50 group-hover:text-emerald-300'
+                ? 'border-emerald-400/70 bg-emerald-500/10 text-emerald-700'
+                : 'border-zinc-300 bg-white text-zinc-600 group-hover:border-emerald-500/50 group-hover:text-emerald-700'
             }`}
           >
             <Upload className="size-5" aria-hidden />
@@ -153,12 +153,12 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           <span className="flex flex-col items-center gap-1 text-center">
             <span
               className={`text-sm font-medium tracking-tight transition-colors duration-150 ${
-                dragging ? 'text-emerald-300' : 'text-zinc-50'
+                dragging ? 'text-emerald-700' : 'text-zinc-900'
               }`}
             >
               {busy ? 'Reading your file…' : dragging ? 'Release to load' : 'Drop your statement here'}
             </span>
-            <span className="text-xs text-zinc-400">
+            <span className="text-xs text-zinc-500">
               {busy ? 'Parsing in your browser' : 'or choose a file from your computer'}
             </span>
           </span>
@@ -174,8 +174,8 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           <span
             className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-tight transition-[colors,box-shadow] duration-150 ${
               dragging
-                ? 'bg-emerald-400 text-zinc-950'
-                : 'bg-white text-zinc-950 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.45)]'
+                ? 'bg-emerald-400 text-white'
+                : 'bg-zinc-900 text-white group-hover:shadow-[0_0_15px_rgba(16,185,129,0.45)]'
             }`}
           >
             Choose file
@@ -186,7 +186,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
               <span
                 key={label}
                 className={`${PILL} transition-colors duration-150 ${
-                  dragging ? 'border-emerald-500/40 text-emerald-300/90' : ''
+                  dragging ? 'border-emerald-500/40 text-emerald-700/90' : ''
                 }`}
               >
                 {label}
@@ -212,14 +212,14 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
           so it reads as an annotation on the zone rather than body copy. */}
       <p
         id={hintId}
-        className="mt-2 border-l border-zinc-800 pl-2.5 text-[11px] leading-relaxed text-zinc-400"
+        className="mt-2 border-l border-zinc-200 pl-2.5 text-[11px] leading-relaxed text-zinc-500"
       >
         Data is parsed entirely in local memory via client-side Web Workers. Zero server uploads.
         Impenetrable compliance.
       </p>
 
       {error ? (
-        <p role="alert" className="mt-2 border-l border-red-500/60 bg-red-500/5 px-2 py-1.5 text-xs text-red-400">
+        <p role="alert" className="mt-2 border-l border-red-500/60 bg-red-500/5 px-2 py-1.5 text-xs text-red-600">
           {error}
         </p>
       ) : null}

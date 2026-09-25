@@ -57,25 +57,25 @@ function InfoModal({
       onClose={onClose}
       onCancel={onClose}
       aria-labelledby="info-modal-title"
-      className="m-auto w-[26rem] max-w-[calc(100vw-2rem)] border border-zinc-800 bg-zinc-900 p-0 text-zinc-100 backdrop:bg-black/70"
+      className="m-auto w-[26rem] max-w-[calc(100vw-2rem)] border border-zinc-200 bg-white p-0 text-zinc-900 backdrop:bg-black/70"
     >
       {content ? (
         <>
-          <div className="flex items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-            <h2 id="info-modal-title" className="text-xs font-medium text-zinc-100">
+          <div className="flex items-center justify-between border-b border-zinc-200 px-3 py-2">
+            <h2 id="info-modal-title" className="text-xs font-medium text-zinc-900">
               {content.title}
             </h2>
             <button
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="p-1 text-zinc-400 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+              className="p-1 text-zinc-500 transition-colors duration-150 hover:text-zinc-700 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
             >
               <X className="size-3.5" aria-hidden />
             </button>
           </div>
           <div className="px-3 py-3">
-            <p className="text-xs leading-relaxed text-zinc-400">{content.body}</p>
+            <p className="text-xs leading-relaxed text-zinc-500">{content.body}</p>
           </div>
         </>
       ) : null}
@@ -84,15 +84,15 @@ function InfoModal({
 }
 
 const LINK_CLASS =
-  'text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500';
+  'text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-900 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500';
 
 export function SiteFooter() {
   const [panel, setPanel] = useState<Panel | null>(null);
 
   return (
     <>
-      <footer className="flex h-[var(--footer-h)] shrink-0 items-center justify-between gap-4 border-t border-zinc-800/60 px-4">
-        <p className="truncate text-[0.6875rem] text-zinc-400">
+      <footer className="flex h-[var(--footer-h)] shrink-0 items-center justify-between gap-4 border-t border-zinc-200 px-4">
+        <p className="truncate text-[0.6875rem] text-zinc-500">
           © 2026 luventra.co. Client-side processing utility.
         </p>
 

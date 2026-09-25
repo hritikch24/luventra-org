@@ -20,25 +20,25 @@ export default function BanksIndexPage() {
   return (
     <main className="min-h-dvh">
       <div className="mx-auto max-w-[80rem] px-6 py-12">
-        <h1 className="text-2xl font-medium tracking-tight text-zinc-100">
+        <h1 className="text-2xl font-medium tracking-tight text-zinc-900">
           Convert bank CSV statements to QBO, OFX and QFX
         </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500">
           Each page below embeds the converter pre-configured for that bank&rsquo;s export layout.
           Files are parsed by a Web Worker in your browser and never uploaded.
         </p>
 
         {banks.length === 0 ? (
           <div className="mt-8 max-w-2xl border-l border-amber-500/40 bg-amber-500/5 px-4 py-3">
-            <p className="text-sm leading-relaxed text-amber-400/90">
+            <p className="text-sm leading-relaxed text-amber-600/90">
               No bank pages are published yet. Each profile describes a named company&rsquo;s export
               format, so it stays unpublished until a person has checked it against a real download.
             </p>
-            <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-400">
+            <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-500">
               To publish one: verify its headers, date order and sign convention against a real
-              export, then set <code className="font-mono text-zinc-400">confidence: &lsquo;verified&rsquo;</code>{' '}
-              and stamp <code className="font-mono text-zinc-400">lastVerified</code> in{' '}
-              <code className="font-mono text-zinc-400">app/lib/seo-banks-data.ts</code>.
+              export, then set <code className="font-mono text-zinc-500">confidence: &lsquo;verified&rsquo;</code>{' '}
+              and stamp <code className="font-mono text-zinc-500">lastVerified</code> in{' '}
+              <code className="font-mono text-zinc-500">app/lib/seo-banks-data.ts</code>.
             </p>
           </div>
         ) : (
@@ -47,10 +47,10 @@ export default function BanksIndexPage() {
               <li key={bank.slug}>
                 <Link
                   href={`/banks/${bank.slug}`}
-                  className="block border border-zinc-800/60 bg-zinc-900 px-4 py-3 transition-colors duration-150 hover:border-zinc-700"
+                  className="block border border-zinc-200 bg-white px-4 py-3 transition-colors duration-150 hover:border-zinc-300"
                 >
-                  <span className="block text-sm font-medium text-zinc-100">{bank.name}</span>
-                  <span className="mt-0.5 block font-mono text-[0.625rem] text-zinc-400">
+                  <span className="block text-sm font-medium text-zinc-900">{bank.name}</span>
+                  <span className="mt-0.5 block font-mono text-[0.625rem] text-zinc-500">
                     {bank.accountKind} · {bank.region} · {bank.dateFormat}
                   </span>
                 </Link>
@@ -59,11 +59,11 @@ export default function BanksIndexPage() {
           </ul>
         )}
 
-        <p className="mt-10 text-xs text-zinc-400">
+        <p className="mt-10 text-xs text-zinc-500">
           Your bank not listed?{' '}
           <Link
             href="/dashboard"
-            className="text-zinc-400 underline underline-offset-2 transition-colors duration-150 hover:text-zinc-100"
+            className="text-zinc-500 underline underline-offset-2 transition-colors duration-150 hover:text-zinc-900"
           >
             The general converter
           </Link>{' '}

@@ -10,24 +10,24 @@ const STATUS: Readonly<
 > = {
   pass: {
     icon: Check,
-    tone: 'text-emerald-400',
+    tone: 'text-emerald-600',
     dot: 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]',
     sr: 'passed',
   },
   warn: {
     icon: TriangleAlert,
-    tone: 'text-amber-400',
+    tone: 'text-amber-600',
     dot: 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]',
     sr: 'warning',
   },
   fail: {
     icon: X,
-    tone: 'text-red-400',
+    tone: 'text-red-600',
     dot: 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.45)]',
     sr: 'failed',
   },
   // Unchecked stays matte: a glow here would read as a result.
-  skip: { icon: Minus, tone: 'text-zinc-400', dot: 'bg-zinc-700', sr: 'not checked' },
+  skip: { icon: Minus, tone: 'text-zinc-500', dot: 'bg-zinc-300', sr: 'not checked' },
 };
 
 const DIALECTS: readonly OfxDialect[] = ['ofx', 'qbo', 'qfx'];
@@ -82,11 +82,11 @@ export function ValidationPanel({
           onChange={(event) => onAccountIdChange(event.target.value)}
           placeholder="from filename"
           spellCheck={false}
-          className="mb-2 w-full border border-zinc-800 bg-zinc-950 px-2 py-1 font-mono text-[0.6875rem] text-zinc-100 placeholder:text-zinc-500 transition-colors duration-150 hover:border-zinc-700 focus:border-accent focus:outline-none"
+          className="mb-2 w-full border border-zinc-200 bg-zinc-50 px-2 py-1 font-mono text-[0.6875rem] text-zinc-900 placeholder:text-zinc-400 transition-colors duration-150 hover:border-zinc-300 focus:border-accent focus:outline-none"
         />
 
         <div
-          className="mb-2 grid grid-cols-3 gap-px border border-zinc-800 bg-zinc-800"
+          className="mb-2 grid grid-cols-3 gap-px border border-zinc-200 bg-zinc-200"
           role="radiogroup"
           aria-label="Output format"
         >
@@ -104,8 +104,8 @@ export function ValidationPanel({
                 // before the user commits to Generate.
                 className={`py-1 font-mono text-[0.6875rem] font-semibold uppercase transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
                   active
-                    ? 'bg-white text-zinc-950'
-                    : 'bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50'
+                    ? 'bg-zinc-900 text-white'
+                    : 'bg-white text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900'
                 }`}
               >
                 {option}
@@ -122,7 +122,7 @@ export function ValidationPanel({
           // no transparency and no border, so it reads as the single committed
           // action. The emerald halo is spent only on hover — at rest the block
           // is flush and silent. Disabled keeps the standard dim treatment.
-          className="flex w-full items-center justify-center gap-2 bg-white px-3 py-2 text-xs font-semibold tracking-tight text-zinc-950 transition-[colors,box-shadow] duration-150 hover:bg-white hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] active:bg-zinc-100 disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+          className="flex w-full items-center justify-center gap-2 bg-zinc-900 px-3 py-2 text-xs font-semibold tracking-tight text-white transition-[colors,box-shadow] duration-150 hover:bg-zinc-800 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] active:bg-zinc-700 disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400 disabled:shadow-none focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
         >
           {working ? (
             <>
@@ -139,16 +139,16 @@ export function ValidationPanel({
             role={exportState === 'error' ? 'alert' : undefined}
             className={`mt-2 text-[0.6875rem] leading-relaxed ${
               exportState === 'error'
-                ? 'text-red-400'
+                ? 'text-red-600'
                 : exportState === 'done'
-                  ? 'text-emerald-400'
-                  : 'text-zinc-400'
+                  ? 'text-emerald-600'
+                  : 'text-zinc-500'
             }`}
           >
             {exportMessage}
           </p>
         ) : report !== null && !report.ready ? (
-          <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-400">
+          <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-500">
             Export is gated until every failing check below is cleared.
           </p>
         ) : null}
@@ -160,11 +160,11 @@ export function ValidationPanel({
           </h3>
           {report ? (
             <span className="font-mono text-[0.625rem] tnum">
-              <span className={report.failures > 0 ? 'text-red-400' : 'text-zinc-400'}>
+              <span className={report.failures > 0 ? 'text-red-600' : 'text-zinc-500'}>
                 {report.failures} fail
               </span>
-              <span className="text-zinc-400"> / </span>
-              <span className={report.warnings > 0 ? 'text-amber-400' : 'text-zinc-400'}>
+              <span className="text-zinc-500"> / </span>
+              <span className={report.warnings > 0 ? 'text-amber-600' : 'text-zinc-500'}>
                 {report.warnings} warn
               </span>
             </span>
@@ -173,18 +173,18 @@ export function ValidationPanel({
 
         <div className="scroll-thin lg:min-h-0 lg:flex-1 lg:overflow-y-auto" aria-live="polite">
           {report === null ? (
-            <p className="px-3 py-8 text-center font-mono text-xs text-zinc-400">
+            <p className="px-3 py-8 text-center font-mono text-xs text-zinc-500">
               awaiting file
             </p>
           ) : (
-            <ul className="divide-y divide-zinc-800/40">
+            <ul className="divide-y divide-zinc-200">
               {report.checks.map((check) => {
                 const style = STATUS[check.status];
                 const Icon = style.icon;
                 return (
                   <li
                     key={check.id}
-                    className="px-3 py-2 transition-colors duration-150 hover:bg-zinc-800/30"
+                    className="px-3 py-2 transition-colors duration-150 hover:bg-zinc-100"
                   >
                     <div className="flex items-center gap-1.5">
                       <span
@@ -192,10 +192,10 @@ export function ValidationPanel({
                         aria-hidden
                       />
                       <Icon className={`size-3 shrink-0 ${style.tone}`} aria-hidden />
-                      <span className="text-xs font-medium text-zinc-200">{check.label}</span>
+                      <span className="text-xs font-medium text-zinc-700">{check.label}</span>
                       <span className="sr-only">{style.sr}</span>
                     </div>
-                    <p className="mt-1 pl-[1.875rem] text-[0.6875rem] leading-relaxed text-zinc-400">
+                    <p className="mt-1 pl-[1.875rem] text-[0.6875rem] leading-relaxed text-zinc-500">
                       {check.detail}
                     </p>
                   </li>

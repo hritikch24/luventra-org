@@ -30,8 +30,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="bg-zinc-950">
-      <body className="flex min-h-dvh flex-col bg-zinc-950 text-zinc-100 antialiased">
+    <html lang="en" className="bg-zinc-50">
+      <body className="flex min-h-dvh flex-col bg-zinc-50 text-zinc-900 antialiased">
         <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         <SiteFooter />
         <GoogleAdsTracker />

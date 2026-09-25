@@ -74,8 +74,8 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900">
-      <div className="flex items-center justify-between gap-3 border-b border-zinc-800 px-4 py-3">
+    <section className="overflow-hidden rounded-lg border border-zinc-200 bg-white">
+      <div className="flex items-center justify-between gap-3 border-b border-zinc-200 px-4 py-3">
         <h2 className="text-sm font-semibold tracking-tight text-white">{title}</h2>
         {right}
       </div>
@@ -96,12 +96,12 @@ function StatCard({
   tone?: 'default' | 'good' | 'bad';
 }) {
   const valueTone =
-    tone === 'good' ? 'text-emerald-400' : tone === 'bad' ? 'text-red-400' : 'text-zinc-100';
+    tone === 'good' ? 'text-emerald-600' : tone === 'bad' ? 'text-red-600' : 'text-zinc-900';
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-200">{label}</p>
+    <div className="rounded-lg border border-zinc-200 bg-white p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-700">{label}</p>
       <p className={`mt-2 text-3xl font-bold tracking-tight tnum ${valueTone}`}>{value}</p>
-      {sub ? <p className="mt-1.5 text-xs text-zinc-300">{sub}</p> : null}
+      {sub ? <p className="mt-1.5 text-xs text-zinc-600">{sub}</p> : null}
     </div>
   );
 }
@@ -184,19 +184,19 @@ function FunnelChart({
               <div className="flex items-center justify-between gap-3 px-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-white">{stage.label}</p>
-                  <p className="truncate text-xs text-zinc-200">{stage.note}</p>
+                  <p className="truncate text-xs text-zinc-700">{stage.note}</p>
                 </div>
                 <div className="shrink-0 text-right">
                   <p className="text-lg font-bold text-white tnum">
                     {stage.value.toLocaleString()}
                   </p>
-                  <p className="text-[11px] text-zinc-200 tnum">{ofTotal.toFixed(0)}%</p>
+                  <p className="text-[11px] text-zinc-700 tnum">{ofTotal.toFixed(0)}%</p>
                 </div>
               </div>
               {previous !== null ? (
                 <p
                   className={`px-3 pt-0.5 text-[11px] font-semibold ${
-                    severe ? 'text-red-400' : 'text-zinc-300'
+                    severe ? 'text-red-600' : 'text-zinc-600'
                   }`}
                 >
                   ↓ {lost.toLocaleString()} lost ({dropPct.toFixed(0)}%)
@@ -230,7 +230,7 @@ function HourlyGrid({
           return (
             <div key={bucket.hour} className="group relative flex-1">
               <div className="flex h-24 items-end">
-                <div className="w-full rounded-sm bg-zinc-800" style={{ height: '100%' }}>
+                <div className="w-full rounded-sm bg-zinc-200" style={{ height: '100%' }}>
                   <div className="flex h-full w-full flex-col justify-end">
                     <div
                       className="w-full rounded-sm bg-emerald-500/70"
@@ -242,21 +242,21 @@ function HourlyGrid({
               {/* Conversions as a second, denser mark under each column. */}
               <div
                 className={`mt-[3px] h-1 rounded-sm ${
-                  bucket.converted > 0 ? 'bg-emerald-300' : 'bg-zinc-800'
+                  bucket.converted > 0 ? 'bg-emerald-300' : 'bg-zinc-200'
                 }`}
               />
-              <span className="pointer-events-none absolute -top-7 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded border border-zinc-700 bg-zinc-950 px-1.5 py-0.5 font-mono text-[10px] text-zinc-100 group-hover:block">
+              <span className="pointer-events-none absolute -top-7 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded border border-zinc-300 bg-zinc-50 px-1.5 py-0.5 font-mono text-[10px] text-zinc-900 group-hover:block">
                 {bucket.hour} · {bucket.landed} in / {bucket.converted} conv
               </span>
             </div>
           );
         })}
       </div>
-      <div className="mt-1.5 flex justify-between font-mono text-[10px] text-zinc-300">
+      <div className="mt-1.5 flex justify-between font-mono text-[10px] text-zinc-600">
         <span>{buckets[0]?.hour ?? ''}</span>
         <span>{buckets[buckets.length - 1]?.hour ?? ''}</span>
       </div>
-      <div className="mt-2 flex items-center gap-4 text-[11px] text-zinc-200">
+      <div className="mt-2 flex items-center gap-4 text-[11px] text-zinc-700">
         <span className="flex items-center gap-1.5">
           <span className="size-2 rounded-sm bg-emerald-500/70" /> landings
         </span>
@@ -270,18 +270,18 @@ function HourlyGrid({
 
 function EmptyNote({ children }: { children: React.ReactNode }) {
   return (
-    <p className="rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-6 text-center text-sm text-zinc-400">
+    <p className="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-6 text-center text-sm text-zinc-500">
       {children}
     </p>
   );
 }
 
 const EVENT_STYLE: Readonly<Record<string, string>> = {
-  visitor_landed: 'bg-zinc-800 text-zinc-200',
-  file_loaded: 'bg-zinc-800 text-zinc-200',
-  preflight_pass: 'bg-zinc-800 text-zinc-200',
-  conversion_success: 'bg-emerald-500/15 text-emerald-300',
-  conversion_failed: 'bg-red-500/15 text-red-300',
+  visitor_landed: 'bg-zinc-200 text-zinc-700',
+  file_loaded: 'bg-zinc-200 text-zinc-700',
+  preflight_pass: 'bg-zinc-200 text-zinc-700',
+  conversion_success: 'bg-emerald-500/15 text-emerald-700',
+  conversion_failed: 'bg-red-500/15 text-red-700',
   user_logged_in: 'bg-blue-500/15 text-blue-300',
 };
 
@@ -385,15 +385,15 @@ export default async function MetricsPage({ searchParams }: PageProps) {
   const recent = all.slice(0, 40);
 
   return (
-    <main className="min-h-dvh bg-zinc-950">
+    <main className="min-h-dvh bg-zinc-50">
       <div className="mx-auto max-w-[110rem] px-6 py-8 xl:px-10">
-        <header className="border-b border-zinc-800 pb-4">
+        <header className="border-b border-zinc-200 pb-4">
           <div className="flex flex-wrap items-baseline justify-between gap-3">
             <div className="flex items-baseline gap-3">
               <h1 className="text-lg font-bold tracking-tight text-white">Analytics console</h1>
-              <span className="font-mono text-[0.6875rem] text-zinc-400">not indexed</span>
+              <span className="font-mono text-[0.6875rem] text-zinc-500">not indexed</span>
             </div>
-            <span className="font-mono text-[0.6875rem] text-zinc-400">
+            <span className="font-mono text-[0.6875rem] text-zinc-500">
               {new Date().toISOString().replace('T', ' ').slice(0, 19)} UTC
             </span>
           </div>
@@ -409,8 +409,8 @@ export default async function MetricsPage({ searchParams }: PageProps) {
                   aria-current={active ? 'page' : undefined}
                   className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors duration-150 ${
                     active
-                      ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-300'
-                      : 'border-zinc-800 bg-zinc-900 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100'
+                      ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-700'
+                      : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:text-zinc-900'
                   }`}
                 >
                   {range.label}
@@ -421,7 +421,7 @@ export default async function MetricsPage({ searchParams }: PageProps) {
         </header>
 
         {dbError ? (
-          <p className="mt-6 rounded-lg border border-amber-500/40 bg-amber-500/5 px-4 py-3 text-sm leading-relaxed text-amber-300">
+          <p className="mt-6 rounded-lg border border-amber-500/40 bg-amber-500/5 px-4 py-3 text-sm leading-relaxed text-amber-700">
             {dbError}
           </p>
         ) : null}
@@ -457,7 +457,7 @@ export default async function MetricsPage({ searchParams }: PageProps) {
           <Panel
             title="Hourly activity"
             right={
-              <span className="font-mono text-[0.6875rem] text-zinc-200">last 24h · UTC</span>
+              <span className="font-mono text-[0.6875rem] text-zinc-700">last 24h · UTC</span>
             }
           >
             <HourlyGrid buckets={buckets} />
@@ -468,7 +468,7 @@ export default async function MetricsPage({ searchParams }: PageProps) {
         <div className="mt-3 grid gap-3 lg:grid-cols-2">
           <Panel
             title="Conversion funnel"
-            right={<span className="font-mono text-[0.6875rem] text-zinc-400">by session</span>}
+            right={<span className="font-mono text-[0.6875rem] text-zinc-500">by session</span>}
           >
             {landed.size === 0 ? (
               <EmptyNote>No landings recorded in this range.</EmptyNote>
@@ -477,15 +477,15 @@ export default async function MetricsPage({ searchParams }: PageProps) {
             )}
 
             {failureCounts.length > 0 ? (
-              <div className="mt-4 border-t border-zinc-800 pt-3">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+              <div className="mt-4 border-t border-zinc-200 pt-3">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
                   Failure reasons
                 </p>
                 <div className="mt-2 space-y-1.5">
                   {failureCounts.map(([code, count]) => (
                     <div key={code} className="flex items-baseline justify-between gap-3">
-                      <span className="truncate font-mono text-xs text-red-300">{code}</span>
-                      <span className="shrink-0 text-sm font-semibold text-zinc-100 tnum">
+                      <span className="truncate font-mono text-xs text-red-700">{code}</span>
+                      <span className="shrink-0 text-sm font-semibold text-zinc-900 tnum">
                         {count.toLocaleString()}
                       </span>
                     </div>
@@ -498,7 +498,7 @@ export default async function MetricsPage({ searchParams }: PageProps) {
           <Panel
             title="Recent events"
             right={
-              <span className="font-mono text-[0.6875rem] text-zinc-400">
+              <span className="font-mono text-[0.6875rem] text-zinc-500">
                 latest {Math.min(recent.length, 40)}
               </span>
             }
@@ -508,21 +508,21 @@ export default async function MetricsPage({ searchParams }: PageProps) {
             ) : (
               <div className="scroll-thin max-h-[28rem] overflow-auto">
                 <table className="w-full text-left">
-                  <thead className="sticky top-0 bg-zinc-900">
-                    <tr className="border-b border-zinc-800">
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
+                  <thead className="sticky top-0 bg-white">
+                    <tr className="border-b border-zinc-200">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-700">
                         Time
                       </th>
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-700">
                         Event
                       </th>
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-700">
                         Country
                       </th>
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-700">
                         Client engine
                       </th>
-                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-200">
+                      <th className="pb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-700">
                         Status
                       </th>
                     </tr>
@@ -531,33 +531,33 @@ export default async function MetricsPage({ searchParams }: PageProps) {
                     {recent.map((row, index) => (
                       <tr
                         key={`${row.created_at}-${index}`}
-                        className="border-b border-zinc-800/60 last:border-b-0"
+                        className="border-b border-zinc-200 last:border-b-0"
                       >
-                        <td className="py-1.5 pr-3 font-mono text-[0.6875rem] text-zinc-300 tnum">
+                        <td className="py-1.5 pr-3 font-mono text-[0.6875rem] text-zinc-600 tnum">
                           {row.created_at.replace('T', ' ').slice(5, 19)}
                         </td>
                         <td className="py-1.5 pr-3">
                           <span
                             className={`inline-block rounded px-1.5 py-0.5 font-mono text-[0.625rem] ${
-                              EVENT_STYLE[row.event] ?? 'bg-zinc-800 text-zinc-200'
+                              EVENT_STYLE[row.event] ?? 'bg-zinc-200 text-zinc-700'
                             }`}
                           >
                             {row.event}
                           </span>
                         </td>
-                        <td className="py-1.5 pr-3 font-mono text-xs text-zinc-100">
+                        <td className="py-1.5 pr-3 font-mono text-xs text-zinc-900">
                           {row.country ?? '—'}
                         </td>
-                        <td className="py-1.5 pr-3 font-mono text-[0.6875rem] text-zinc-200">
+                        <td className="py-1.5 pr-3 font-mono text-[0.6875rem] text-zinc-700">
                           {row.browser ? `${row.browser} · ${row.os ?? '—'}` : '—'}
                         </td>
                         <td className="py-1.5 font-mono text-[0.6875rem]">
                           {row.error_code ? (
-                            <span className="text-red-300">{row.error_code}</span>
+                            <span className="text-red-700">{row.error_code}</span>
                           ) : row.event === 'conversion_success' ? (
-                            <span className="text-emerald-300">{row.dialect ?? 'ok'}</span>
+                            <span className="text-emerald-700">{row.dialect ?? 'ok'}</span>
                           ) : (
-                            <span className="text-zinc-400">
+                            <span className="text-zinc-500">
                               {row.bank_slug ? row.bank_slug.replace('-to-quickbooks', '') : 'ok'}
                             </span>
                           )}
@@ -571,12 +571,12 @@ export default async function MetricsPage({ searchParams }: PageProps) {
           </Panel>
         </div>
 
-        <p className="mt-6 text-xs leading-relaxed text-zinc-400">
+        <p className="mt-6 text-xs leading-relaxed text-zinc-500">
           Counters plus visitor origin. The table has no column able to hold a filename, an amount,
           an account number or a payee, and row counts are stored as coarse bands. IP addresses are
           personal data: they are kept only to count unique visitors, are never rendered on this
           page, and are purged after 90 days by{' '}
-          <code className="font-mono text-zinc-300">purge_old_telemetry()</code>.
+          <code className="font-mono text-zinc-600">purge_old_telemetry()</code>.
         </p>
       </div>
     </main>

@@ -100,7 +100,7 @@ export function AuthLink() {
         <Link
           href="/dashboard"
           title={session.email}
-          className="flex items-center gap-1.5 border border-zinc-800/60 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-50 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+          className="flex items-center gap-1.5 border border-zinc-200 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-600 transition-colors duration-150 hover:border-zinc-300 hover:text-zinc-900 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
         >
           <span
             className="size-1.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
@@ -114,7 +114,7 @@ export function AuthLink() {
           type="button"
           onClick={() => void signOut()}
           disabled={leaving}
-          className="border border-l-0 border-zinc-800/60 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-400 transition-colors duration-150 hover:border-zinc-700 hover:text-rose-300 disabled:cursor-not-allowed disabled:text-zinc-600 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+          className="border border-l-0 border-zinc-200 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-500 transition-colors duration-150 hover:border-zinc-300 hover:text-rose-700 disabled:cursor-not-allowed disabled:text-zinc-400 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
         >
           {leaving ? 'Ending' : 'Sign out'}
         </button>
@@ -133,13 +133,13 @@ export function AuthLink() {
     <span className="flex items-center gap-2">
       <Link
         href="/login"
-        className="font-mono text-[10px] uppercase tracking-widest text-zinc-400 transition-colors duration-150 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+        className="font-mono text-[10px] uppercase tracking-widest text-zinc-500 transition-colors duration-150 hover:text-zinc-900 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
       >
         Sign in
       </Link>
       <Link
         href="/login?intent=register"
-        className="whitespace-nowrap border border-zinc-700 bg-zinc-900 px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-100 transition-[colors,box-shadow] duration-150 hover:border-emerald-500/60 hover:bg-zinc-800 hover:text-white hover:shadow-[0_0_15px_rgba(16,185,129,0.25)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+        className="whitespace-nowrap border border-zinc-300 bg-white px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-900 transition-[colors,box-shadow] duration-150 hover:border-emerald-500/60 hover:bg-zinc-50 hover:text-zinc-900 hover:shadow-[0_0_15px_rgba(16,185,129,0.25)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
       >
         Register free
       </Link>

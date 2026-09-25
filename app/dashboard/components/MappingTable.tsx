@@ -58,8 +58,8 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
               title={satisfied ? `${label} mapped` : `${label} not mapped`}
               className={`font-mono text-[0.625rem] px-1.5 py-0.5 transition-colors duration-150 ${
                 satisfied
-                  ? 'bg-emerald-500/10 text-emerald-400'
-                  : 'bg-red-500/10 text-red-400'
+                  ? 'bg-emerald-500/10 text-emerald-600'
+                  : 'bg-red-500/10 text-red-600'
               }`}
             >
               {label}
@@ -68,22 +68,22 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
         </div>
       </header>
 
-      <ul className="divide-y divide-zinc-800/40">
+      <ul className="divide-y divide-zinc-200">
         {columns.map((column) => {
           const assigned = column.role !== 'ignored';
           return (
             <li
               key={column.index}
-              className="group grid grid-cols-[1fr_7.5rem] items-center gap-2 px-3 py-1.5 transition-colors duration-150 hover:bg-zinc-800/30"
+              className="group grid grid-cols-[1fr_7.5rem] items-center gap-2 px-3 py-1.5 transition-colors duration-150 hover:bg-zinc-100"
             >
               <div className="min-w-0">
                 <div className="flex items-center gap-1">
                   <span
-                    className="truncate font-mono text-xs text-zinc-200"
+                    className="truncate font-mono text-xs text-zinc-700"
                     title={column.header || `column ${column.index + 1}`}
                   >
                     {column.header || (
-                      <span className="text-zinc-400">col{column.index + 1}</span>
+                      <span className="text-zinc-500">col{column.index + 1}</span>
                     )}
                   </span>
                   {!column.userAssigned && column.confidence >= 0.9 && assigned ? (
@@ -94,7 +94,7 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
                   ) : null}
                 </div>
                 <span
-                  className="block truncate font-mono text-[0.625rem] text-zinc-400"
+                  className="block truncate font-mono text-[0.625rem] text-zinc-500"
                   title={sampleValue(preview, column.index)}
                 >
                   {sampleValue(preview, column.index)}
@@ -110,12 +110,12 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
                 onChange={(event) => onAssign(column.index, event.target.value as ColumnRole)}
                 className={`w-full border px-1.5 py-1 font-mono text-[0.6875rem] transition-colors duration-150 focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-accent ${
                   assigned
-                    ? 'border-zinc-700 bg-zinc-800 text-zinc-100'
-                    : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700'
+                    ? 'border-zinc-300 bg-zinc-200 text-zinc-900'
+                    : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300'
                 }`}
               >
                 {ASSIGNABLE_ROLES.map((role) => (
-                  <option key={role} value={role} className="bg-zinc-900">
+                  <option key={role} value={role} className="bg-white">
                     {ROLE_LABELS[role]}
                   </option>
                 ))}
@@ -125,9 +125,9 @@ export function MappingTable({ preview, columns, onAssign }: MappingTableProps) 
         })}
       </ul>
 
-      <footer className="flex items-center justify-between border-t border-zinc-800/60 px-3 py-1.5">
+      <footer className="flex items-center justify-between border-t border-zinc-200 px-3 py-1.5">
         <span className={CONFIG_LABEL}>convention</span>
-        <span className="font-mono text-[0.625rem] text-zinc-400">{convention}</span>
+        <span className="font-mono text-[0.625rem] text-zinc-500">{convention}</span>
       </footer>
     </section>
   );

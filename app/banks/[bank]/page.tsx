@@ -120,17 +120,17 @@ export default async function BankPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }}
       />
 
-      <header className="border-b border-zinc-800/60">
+      <header className="border-b border-zinc-200">
         <div className="mx-auto flex max-w-[80rem] items-center justify-between px-6 py-3">
           <Link
             href="/banks"
-            className="flex items-center gap-1.5 font-mono text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
+            className="flex items-center gap-1.5 font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-700"
           >
             <ArrowLeft className="size-3" aria-hidden />
             all banks
           </Link>
           <div className="flex items-center gap-3">
-            <span className="font-mono text-[0.625rem] text-zinc-400">csv → ofx/qbo/qfx</span>
+            <span className="font-mono text-[0.625rem] text-zinc-500">csv → ofx/qbo/qfx</span>
             <AuthLink />
           </div>
         </div>
@@ -141,16 +141,16 @@ export default async function BankPage({ params }: PageProps) {
         <p className="font-mono text-[0.6875rem] uppercase tracking-wider text-accent">
           {profile.legalName} · {profile.accountKind} · {profile.region}
         </p>
-        <h1 className="mt-2 max-w-3xl text-balance text-3xl font-medium leading-tight tracking-tight text-zinc-100">
+        <h1 className="mt-2 max-w-3xl text-balance text-3xl font-medium leading-tight tracking-tight text-zinc-900">
           Convert {profile.name} CSV Statements to QuickBooks QBO/OFX Format
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-500">
           Drop a {profile.name} export below. The columns are pre-selected for this
           layout, the rows are checked for the problems that break imports, and the QBO, OFX or QFX
           file is generated on this page. Your statement is parsed by a Web Worker inside your own
           browser and never leaves the device.
         </p>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500">
           {copy.integrationLine}
         </p>
 
@@ -160,8 +160,8 @@ export default async function BankPage({ params }: PageProps) {
             { icon: Zap, text: 'Pre-mapped for this layout' },
             { icon: ShieldCheck, text: `Ready for ${copy.primaryIntegration}` },
           ].map(({ icon: Icon, text }) => (
-            <li key={text} className="flex items-center gap-1.5 text-xs text-zinc-400">
-              <Icon className="size-3.5 text-zinc-400" aria-hidden />
+            <li key={text} className="flex items-center gap-1.5 text-xs text-zinc-500">
+              <Icon className="size-3.5 text-zinc-500" aria-hidden />
               {text}
             </li>
           ))}
@@ -173,69 +173,69 @@ export default async function BankPage({ params }: PageProps) {
         aria-label={`${profile.name} statement converter`}
         className="mx-auto max-w-[80rem] px-6 pb-12"
       >
-        <div className="overflow-hidden border border-zinc-800/60">
+        <div className="overflow-hidden border border-zinc-200">
           <StatementWorkbench preset={preset} embedded />
         </div>
       </section>
 
       {/* Layout schema ---------------------------------------------------- */}
-      <section className="border-t border-zinc-800/60">
+      <section className="border-t border-zinc-200">
         <div className="mx-auto max-w-[80rem] px-6 py-12">
           <div className="grid gap-10 lg:grid-cols-[22rem_minmax(0,1fr)]">
             <div>
-              <h2 className="text-lg font-medium tracking-tight text-zinc-100">
+              <h2 className="text-lg font-medium tracking-tight text-zinc-900">
                 The {profile.name} CSV layout
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+              <p className="mt-2 text-sm leading-relaxed text-zinc-500">
                 What a {profile.name} export contains, and which field each column
                 becomes in the converted file.
               </p>
 
-              <dl className="mt-5 space-y-3 border-t border-zinc-800/60 pt-4">
+              <dl className="mt-5 space-y-3 border-t border-zinc-200 pt-4">
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-500">
                     Date format
                   </dt>
-                  <dd className="mt-0.5 font-mono text-xs text-zinc-300">
+                  <dd className="mt-0.5 font-mono text-xs text-zinc-600">
                     {profile.dateFormat} ({profile.dateOrder})
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-500">
                     Amount convention
                   </dt>
-                  <dd className="mt-0.5 text-xs leading-relaxed text-zinc-300">
+                  <dd className="mt-0.5 text-xs leading-relaxed text-zinc-600">
                     {profile.amountConvention}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-500">
                     Header row
                   </dt>
-                  <dd className="mt-0.5 font-mono text-xs text-zinc-300 tnum">
+                  <dd className="mt-0.5 font-mono text-xs text-zinc-600 tnum">
                     {hasHeaderRow ? `${profile.headers.length} columns` : 'none'}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-500">
                     Currency
                   </dt>
-                  <dd className="mt-0.5 font-mono text-xs text-zinc-300 tnum">
+                  <dd className="mt-0.5 font-mono text-xs text-zinc-600 tnum">
                     {copy.currencySymbol} {copy.currencyCode} · e.g. {copy.amountExample}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-400">
+                  <dt className="text-[0.625rem] uppercase tracking-wider text-zinc-500">
                     Layout checked
                   </dt>
-                  <dd className="mt-0.5 font-mono text-xs text-zinc-300">
+                  <dd className="mt-0.5 font-mono text-xs text-zinc-600">
                     {profile.lastReviewed}
                   </dd>
                 </div>
               </dl>
 
               {!profile.verified ? (
-                <p className="mt-5 border-l border-amber-500/40 bg-amber-500/5 px-3 py-2 text-[0.6875rem] leading-relaxed text-amber-400/90">
+                <p className="mt-5 border-l border-amber-500/40 bg-amber-500/5 px-3 py-2 text-[0.6875rem] leading-relaxed text-amber-600/90">
                   This layout is compiled from published export formats and has not yet been
                   diffed against a live {profile.name} download. Banks change their columns, and
                   the shape differs between account types. Your conversion is unaffected — the
@@ -247,28 +247,28 @@ export default async function BankPage({ params }: PageProps) {
 
             <div className="min-w-0">
               {hasHeaderRow ? (
-                <div className="scroll-thin overflow-x-auto border border-zinc-800/60 bg-zinc-900">
+                <div className="scroll-thin overflow-x-auto border border-zinc-200 bg-white">
                   <table className="w-full min-w-[30rem] border-collapse text-left">
                     <caption className="sr-only">
                       {profile.name} CSV columns and the field each becomes
                     </caption>
                     <thead>
-                      <tr className="border-b border-zinc-800/60">
+                      <tr className="border-b border-zinc-200">
                         <th
                           scope="col"
-                          className="w-10 px-3 py-2 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400"
+                          className="w-10 px-3 py-2 text-right text-[0.625rem] font-medium uppercase tracking-wider text-zinc-500"
                         >
                           #
                         </th>
                         <th
                           scope="col"
-                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400"
+                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-500"
                         >
                           Column in export
                         </th>
                         <th
                           scope="col"
-                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-400"
+                          className="px-3 py-2 text-[0.625rem] font-medium uppercase tracking-wider text-zinc-500"
                         >
                           Pre-selected as
                         </th>
@@ -280,17 +280,17 @@ export default async function BankPage({ params }: PageProps) {
                         return (
                           <tr
                             key={header}
-                            className="border-b border-zinc-800/40 transition-colors duration-150 last:border-b-0 hover:bg-zinc-800/30"
+                            className="border-b border-zinc-200 transition-colors duration-150 last:border-b-0 hover:bg-zinc-100"
                           >
-                            <td className="px-3 py-2 text-right font-mono text-[0.625rem] text-zinc-400 tnum">
+                            <td className="px-3 py-2 text-right font-mono text-[0.625rem] text-zinc-500 tnum">
                               {index + 1}
                             </td>
-                            <td className="px-3 py-2 font-mono text-xs text-zinc-200">{header}</td>
+                            <td className="px-3 py-2 font-mono text-xs text-zinc-700">{header}</td>
                             <td
                               className={`px-3 py-2 font-mono text-xs ${
                                 role === undefined || role === 'ignored'
-                                  ? 'text-zinc-400'
-                                  : 'text-zinc-400'
+                                  ? 'text-zinc-500'
+                                  : 'text-zinc-500'
                               }`}
                             >
                               {role ?? 'detected from content'}
@@ -302,24 +302,24 @@ export default async function BankPage({ params }: PageProps) {
                   </table>
                 </div>
               ) : (
-                <p className="border-l border-zinc-800 bg-zinc-900/40 px-4 py-3 text-sm leading-relaxed text-zinc-400">
-                  This export ships <strong className="text-zinc-200">no header row</strong> — it
+                <p className="border-l border-zinc-200 bg-zinc-50 px-4 py-3 text-sm leading-relaxed text-zinc-500">
+                  This export ships <strong className="text-zinc-700">no header row</strong> — it
                   opens straight at the first transaction. There are no column names to pre-select
                   against, so every column is identified by its contents instead, and the mapping
                   table lets you reassign any of them by hand.
                 </p>
               )}
 
-              <h2 className="mt-10 text-lg font-medium tracking-tight text-zinc-100">
+              <h2 className="mt-10 text-lg font-medium tracking-tight text-zinc-900">
                 Import errors this layout causes, and what happens instead
               </h2>
-              <p className="mt-3 text-sm leading-relaxed text-zinc-400">{profile.commonGotcha}</p>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-500">{profile.commonGotcha}</p>
 
               <div className="mt-6 space-y-5">
                 {quirks.map((quirk) => (
-                  <article key={quirk.title} className="border-l border-zinc-800 pl-4">
-                    <h3 className="text-sm font-medium text-zinc-200">{quirk.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-zinc-400">{quirk.body}</p>
+                  <article key={quirk.title} className="border-l border-zinc-200 pl-4">
+                    <h3 className="text-sm font-medium text-zinc-700">{quirk.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-zinc-500">{quirk.body}</p>
                   </article>
                 ))}
               </div>
@@ -329,12 +329,12 @@ export default async function BankPage({ params }: PageProps) {
       </section>
 
       {/* Privacy model ---------------------------------------------------- */}
-      <section className="border-t border-zinc-800/60">
+      <section className="border-t border-zinc-200">
         <div className="mx-auto max-w-[80rem] px-6 py-12">
-          <h2 className="text-lg font-medium tracking-tight text-zinc-100">
+          <h2 className="text-lg font-medium tracking-tight text-zinc-900">
             {copy.residencyTitle}
           </h2>
-          <div className="mt-4 grid gap-6 text-sm leading-relaxed text-zinc-400 md:grid-cols-3">
+          <div className="mt-4 grid gap-6 text-sm leading-relaxed text-zinc-500 md:grid-cols-3">
             <p>
               {copy.residencyBody}
             </p>
@@ -365,18 +365,18 @@ export default async function BankPage({ params }: PageProps) {
         Each answer is self-contained so it still means something once lifted
         out of this page and into someone else's answer.
       */}
-      <section className="border-t border-zinc-800/60">
+      <section className="border-t border-zinc-200">
         <div className="mx-auto max-w-[80rem] px-6 py-12">
-          <h2 className="text-lg font-medium tracking-tight text-zinc-100">
+          <h2 className="text-lg font-medium tracking-tight text-zinc-900">
             {profile.name} CSV conversion questions
           </h2>
           <dl className="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2">
             {faq.map((entry) => (
               <div key={entry.question}>
-                <dt className="text-sm font-medium leading-snug text-zinc-100">
+                <dt className="text-sm font-medium leading-snug text-zinc-900">
                   {entry.question}
                 </dt>
-                <dd className="mt-2 text-sm leading-relaxed text-zinc-400">{entry.answer}</dd>
+                <dd className="mt-2 text-sm leading-relaxed text-zinc-500">{entry.answer}</dd>
               </div>
             ))}
           </dl>
@@ -385,9 +385,9 @@ export default async function BankPage({ params }: PageProps) {
 
       {/* Internal links --------------------------------------------------- */}
       {others.length > 0 ? (
-        <section className="border-t border-zinc-800/60">
+        <section className="border-t border-zinc-200">
           <div className="mx-auto max-w-[80rem] px-6 py-10">
-            <h2 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-400">
+            <h2 className="text-[0.6875rem] font-medium uppercase tracking-wider text-zinc-500">
               Other banks
             </h2>
             <ul className="mt-3 flex flex-wrap gap-2">
@@ -395,7 +395,7 @@ export default async function BankPage({ params }: PageProps) {
                 <li key={entry.slug}>
                   <Link
                     href={`/banks/${entry.slug}`}
-                    className="block border border-zinc-800/60 px-3 py-1.5 font-mono text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-100"
+                    className="block border border-zinc-200 px-3 py-1.5 font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:border-zinc-300 hover:text-zinc-900"
                   >
                     {entry.name}
                   </Link>

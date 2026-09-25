@@ -21,8 +21,8 @@ const FREE_ROW_LIMIT = 50;
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-8">
-      <h2 className="text-sm font-medium tracking-tight text-zinc-100">{title}</h2>
-      <div className="mt-2 space-y-2 text-sm leading-relaxed text-zinc-400">{children}</div>
+      <h2 className="text-sm font-medium tracking-tight text-zinc-900">{title}</h2>
+      <div className="mt-2 space-y-2 text-sm leading-relaxed text-zinc-500">{children}</div>
     </section>
   );
 }
@@ -33,15 +33,15 @@ export default function TermsPage() {
       <div className="mx-auto max-w-[46rem] px-6 py-12">
         <Link
           href="/dashboard"
-          className="font-mono text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
+          className="font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-700"
         >
           ← converter
         </Link>
 
-        <h1 className="mt-6 text-2xl font-medium tracking-tight text-zinc-100">
+        <h1 className="mt-6 text-2xl font-medium tracking-tight text-zinc-900">
           Terms of Service
         </h1>
-        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-400">Last updated 5 September 2026</p>
+        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-500">Last updated 5 September 2026</p>
 
         <Section title="The service">
           <p>
@@ -127,7 +127,7 @@ export default function TermsPage() {
             Questions about these terms:{' '}
             <a
               href={`mailto:${CONTACT}`}
-              className="text-zinc-200 underline underline-offset-2 transition-colors duration-150 hover:text-white"
+              className="text-zinc-700 underline underline-offset-2 transition-colors duration-150 hover:text-white"
             >
               {CONTACT}
             </a>
@@ -135,7 +135,7 @@ export default function TermsPage() {
           </p>
         </Section>
 
-        <p className="mt-10 border-l border-amber-500/40 bg-amber-500/5 px-3 py-2 text-[0.6875rem] leading-relaxed text-amber-400/90">
+        <p className="mt-10 border-l border-amber-500/40 bg-amber-500/5 px-3 py-2 text-[0.6875rem] leading-relaxed text-amber-600/90">
           Operator note, not part of the terms: this is an accurate description of how the product
           behaves, but it is a template rather than reviewed legal drafting. Insert your legal
           entity name and governing jurisdiction, confirm the contact address, and have counsel

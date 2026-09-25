@@ -225,19 +225,19 @@ export function OnboardingTour({ controller }: { readonly controller: TourContro
       <div
         ref={setCardEl}
         style={card ? { top: card.top, left: card.left } : { top: 24, left: 24 }}
-        className="absolute w-[20rem] border border-zinc-800 bg-zinc-900 shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
+        className="absolute w-[20rem] border border-zinc-200 bg-white shadow-[0_16px_40px_rgba(0,0,0,0.12)]"
       >
-        <div className="flex items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-          <h2 id="tour-title" className="text-xs font-medium text-zinc-100">
+        <div className="flex items-center justify-between border-b border-zinc-200 px-3 py-2">
+          <h2 id="tour-title" className="text-xs font-medium text-zinc-900">
             {step.title}
           </h2>
-          <span className="font-mono text-[0.625rem] text-zinc-400 tnum">
+          <span className="font-mono text-[0.625rem] text-zinc-500 tnum">
             {stepIndex + 1}/{TOUR_STEPS.length}
           </span>
         </div>
 
         <div className="px-3 py-3">
-          <p className="text-xs leading-relaxed text-zinc-400">{step.body}</p>
+          <p className="text-xs leading-relaxed text-zinc-500">{step.body}</p>
 
           <div className="mt-3 flex items-center justify-between gap-3">
             {/* High-intensity progress dots, matching the pre-flight panel. */}
@@ -250,7 +250,7 @@ export function OnboardingTour({ controller }: { readonly controller: TourContro
                       ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]'
                       : index < stepIndex
                         ? 'bg-emerald-500/40'
-                        : 'bg-zinc-700'
+                        : 'bg-zinc-300'
                   }`}
                 />
               ))}
@@ -261,7 +261,7 @@ export function OnboardingTour({ controller }: { readonly controller: TourContro
                 <button
                   type="button"
                   onClick={back}
-                  className="px-2 py-1 text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+                  className="px-2 py-1 text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-700 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
                 >
                   Back
                 </button>
@@ -280,7 +280,7 @@ export function OnboardingTour({ controller }: { readonly controller: TourContro
           <button
             type="button"
             onClick={dismiss}
-            className="mt-2 w-full border border-zinc-800 py-1 text-[0.625rem] text-zinc-400 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-200 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+            className="mt-2 w-full border border-zinc-200 py-1 text-[0.625rem] text-zinc-500 transition-colors duration-150 hover:border-zinc-300 hover:text-zinc-700 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
           >
             Skip Tour
           </button>

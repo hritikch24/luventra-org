@@ -109,8 +109,8 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
             Canonical preview of the parsed statement: a debit and credit pair is collapsed into a
             single signed Amount, showing what will be written to the converted file.
           </caption>
-          <thead className="sticky top-0 z-10 bg-zinc-900/95 backdrop-blur-md">
-            <tr className="border-b border-zinc-800/60">
+          <thead className="sticky top-0 z-10 bg-white/95 backdrop-blur-md">
+            <tr className="border-b border-zinc-200">
               <th scope="col" className={`w-9 px-2 py-1.5 text-right ${COLUMN_LABEL}`}>
                 #
               </th>
@@ -132,7 +132,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
               <tr>
                 <td
                   colSpan={fields.length + 1}
-                  className="px-3 py-12 text-center font-mono text-xs text-zinc-400"
+                  className="px-3 py-12 text-center font-mono text-xs text-zinc-500"
                 >
                   no rows
                 </td>
@@ -148,60 +148,60 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
                 return (
                   <tr
                     key={rowIndex}
-                    className="border-b border-zinc-800/40 transition-colors duration-150 last:border-b-0 hover:bg-zinc-800/30"
+                    className="border-b border-zinc-200 transition-colors duration-150 last:border-b-0 hover:bg-zinc-100"
                   >
-                    <td className="px-2 py-1.5 text-right font-mono text-[0.625rem] text-zinc-400 tnum">
+                    <td className="px-2 py-1.5 text-right font-mono text-[0.625rem] text-zinc-500 tnum">
                       {rowIndex + 1}
                     </td>
 
-                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-200 tnum" title={date}>
+                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-700 tnum" title={date}>
                       {unmapped('date') ? (
-                        <span className="text-zinc-400">—</span>
+                        <span className="text-zinc-500">—</span>
                       ) : date === '' ? (
-                        <span className="text-amber-500/70">empty</span>
+                        <span className="text-amber-600">empty</span>
                       ) : (
                         date
                       )}
                     </td>
 
-                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-200" title={description}>
+                    <td className="truncate px-2 py-1.5 font-mono text-xs text-zinc-700" title={description}>
                       {unmapped('description') ? (
-                        <span className="text-zinc-400">—</span>
+                        <span className="text-zinc-500">—</span>
                       ) : description === '' ? (
-                        <span className="text-amber-500/70">empty</span>
+                        <span className="text-amber-600">empty</span>
                       ) : (
                         description
                       )}
                     </td>
 
                     {refIndex !== -1 ? (
-                      <td className="truncate px-2 py-1.5 font-mono text-[0.6875rem] text-zinc-400" title={reference}>
-                        {reference === '' ? <span className="text-zinc-400">—</span> : reference}
+                      <td className="truncate px-2 py-1.5 font-mono text-[0.6875rem] text-zinc-500" title={reference}>
+                        {reference === '' ? <span className="text-zinc-500">—</span> : reference}
                       </td>
                     ) : null}
 
                     <td
                       className={`px-2 py-1.5 text-right font-mono text-xs tnum ${
                         amount.value === null
-                          ? 'text-zinc-400'
+                          ? 'text-zinc-500'
                           : amount.value < 0
-                            ? 'text-rose-400'
-                            : 'text-emerald-400'
+                            ? 'text-rose-600'
+                            : 'text-emerald-600'
                       }`}
                       title={amount.text}
                     >
                       {unmapped('amount') ? (
-                        <span className="text-zinc-400">—</span>
+                        <span className="text-zinc-500">—</span>
                       ) : amount.value === null ? (
-                        <span className="text-amber-500/70">{amount.text || 'empty'}</span>
+                        <span className="text-amber-600">{amount.text || 'empty'}</span>
                       ) : (
                         amount.text
                       )}
                     </td>
 
                     {balanceIndex !== -1 ? (
-                      <td className="px-2 py-1.5 text-right font-mono text-xs text-zinc-400 tnum" title={balance}>
-                        {balance === '' ? <span className="text-zinc-400">—</span> : balance}
+                      <td className="px-2 py-1.5 text-right font-mono text-xs text-zinc-500 tnum" title={balance}>
+                        {balance === '' ? <span className="text-zinc-500">—</span> : balance}
                       </td>
                     ) : null}
                   </tr>
@@ -212,7 +212,7 @@ export function PreviewGrid({ preview, columns }: PreviewGridProps) {
         </table>
       </div>
 
-      <footer className="flex shrink-0 items-center justify-between border-t border-zinc-800/60 px-3 py-1.5">
+      <footer className="flex shrink-0 items-center justify-between border-t border-zinc-200 px-3 py-1.5">
         <span className={META}>
           {fields.map((field) => field.label.toLowerCase()).join(' · ')}
         </span>
@@ -251,7 +251,7 @@ export function PreviewGridEmpty() {
         {/* Column graticule */}
         <table className="w-full min-w-[38rem] table-fixed border-collapse" aria-hidden>
           <thead>
-            <tr className="border-b border-zinc-800/60">
+            <tr className="border-b border-zinc-200">
               <th className={`w-9 px-2 py-1.5 text-right ${COLUMN_LABEL}`}>#</th>
               {columns.map((label, index) => (
                 <th
@@ -267,13 +267,13 @@ export function PreviewGridEmpty() {
           </thead>
           <tbody>
             {Array.from({ length: 14 }, (_, row) => (
-              <tr key={row} className="border-b border-zinc-800/25">
-                <td className="px-2 py-1.5 text-right font-mono text-[10px] text-zinc-800 tnum">
+              <tr key={row} className="border-b border-zinc-100">
+                <td className="px-2 py-1.5 text-right font-mono text-[10px] text-zinc-600 tnum">
                   {row + 1}
                 </td>
                 {columns.map((label) => (
                   <td key={label} className="px-2 py-1.5">
-                    <span className="block h-px w-full bg-zinc-800/40" />
+                    <span className="block h-px w-full bg-zinc-100" />
                   </td>
                 ))}
               </tr>
@@ -283,10 +283,10 @@ export function PreviewGridEmpty() {
 
         {/* The one statement the panel makes, over the ruling. */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="flex flex-col items-center gap-2 bg-zinc-950/70 px-6 py-4 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-2 bg-white/80 px-6 py-4 backdrop-blur-sm">
             <span className={CONFIG_LABEL}>Awaiting statement</span>
-            <span aria-hidden className="h-px w-8 bg-zinc-700" />
-            <span className="font-mono text-[10px] tracking-wide text-zinc-500">
+            <span aria-hidden className="h-px w-8 bg-zinc-300" />
+            <span className="font-mono text-[10px] tracking-wide text-zinc-400">
               rows render here as they parse
             </span>
           </div>

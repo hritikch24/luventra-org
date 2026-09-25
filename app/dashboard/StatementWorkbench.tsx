@@ -398,7 +398,7 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
 
   return (
     <div
-      className={`flex flex-col bg-zinc-950 ${
+      className={`flex flex-col bg-zinc-50 ${
         embedded
           ? 'h-[44rem] max-h-[85vh]'
           : // Both global bars are siblings of this subtree, so subtract both.
@@ -411,15 +411,15 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         390px phone: the title wrapped to two lines, the format string wrapped
         under it, and "parsed locally" ran straight into it with no separator.
       */}
-      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-zinc-800/60 px-4 py-2.5">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-zinc-200 px-4 py-2.5">
         <div className="flex min-w-0 items-baseline gap-2.5">
           {/* The bank page owns the page-level h1, so this drops to a span. */}
           {embedded ? (
-            <span className="truncate text-sm font-medium tracking-tight text-zinc-50">
+            <span className="truncate text-sm font-medium tracking-tight text-zinc-900">
               {preset ? `${preset.name} converter` : 'Statement Converter'}
             </span>
           ) : (
-            <h1 className="whitespace-nowrap text-sm font-medium tracking-tight text-zinc-50">
+            <h1 className="whitespace-nowrap text-sm font-medium tracking-tight text-zinc-900">
               Statement Converter
             </h1>
           )}
@@ -446,12 +446,12 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         // here that would still make sense lifted out of the workspace.
         <article
           aria-labelledby="workbench-summary"
-          className="shrink-0 border-b border-zinc-800/60 bg-zinc-900/30 px-4 py-3 backdrop-blur-md"
+          className="shrink-0 border-b border-zinc-200 bg-zinc-50 px-4 py-3 backdrop-blur-md"
         >
-          <h2 id="workbench-summary" className="text-xs font-semibold tracking-tight text-zinc-50">
+          <h2 id="workbench-summary" className="text-xs font-semibold tracking-tight text-zinc-900">
             Secure Client-Side Financial Data Transcoder
           </h2>
-          <p className="mt-1.5 max-w-5xl text-xs leading-relaxed text-zinc-200">
+          <p className="mt-1.5 max-w-5xl text-xs leading-relaxed text-zinc-700">
             Format irregular banking statement rows into specification-compliant bookkeeping entries
             instantly. Our isolated local background processing environment completely ensures that
             no financial text, numeric values, or business account names ever touch the network or
@@ -564,15 +564,15 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
       */}
       <section
         aria-labelledby="compliance-heading"
-        className="grid shrink-0 grid-cols-1 gap-px border-t border-zinc-800/60 bg-zinc-800/60 sm:grid-cols-3"
+        className="grid shrink-0 grid-cols-1 gap-px border-t border-zinc-200 bg-zinc-200 sm:grid-cols-3"
       >
         <h3 id="compliance-heading" className="sr-only">
           Output format compliance
         </h3>
         {COMPLIANCE_ASSERTIONS.map((assertion) => (
-          <div key={assertion} className="flex items-center gap-2 bg-zinc-950 px-4 py-2">
-            <ShieldCheck className="size-3 shrink-0 text-emerald-500" aria-hidden />
-            <span className="font-mono text-[10px] uppercase tracking-widest leading-tight text-zinc-300">
+          <div key={assertion} className="flex items-center gap-2 bg-zinc-50 px-4 py-2">
+            <ShieldCheck className="size-3 shrink-0 text-emerald-600" aria-hidden />
+            <span className="font-mono text-[10px] uppercase tracking-widest leading-tight text-zinc-600">
               [{assertion}]
             </span>
           </div>

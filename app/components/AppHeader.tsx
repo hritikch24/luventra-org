@@ -28,15 +28,15 @@ const NAV_LINKS = [
 ] as const;
 
 const NAV_LINK_CLASS =
-  'font-mono text-[0.625rem] tracking-wider text-zinc-400 whitespace-nowrap transition-colors duration-150 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500';
+  'font-mono text-[0.625rem] tracking-wider text-zinc-500 whitespace-nowrap transition-colors duration-150 hover:text-zinc-900 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500';
 
 export function AppHeader() {
   return (
-    <header className="flex h-[var(--header-h)] shrink-0 items-center justify-between gap-4 border-b border-zinc-800/60 bg-zinc-950 px-4">
+    <header className="flex h-[var(--header-h)] shrink-0 items-center justify-between gap-4 border-b border-zinc-200 bg-zinc-50 px-4">
       <div className="flex min-w-0 items-center gap-3">
         <Link
           href="/dashboard"
-          className="flex shrink-0 items-center gap-2 text-zinc-100 transition-opacity duration-150 hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+          className="flex shrink-0 items-center gap-2 text-zinc-900 transition-opacity duration-150 hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
         >
           <Mark className="size-4 shrink-0" />
           <span className="truncate font-mono text-[0.6875rem] font-medium tracking-wider">
@@ -44,7 +44,7 @@ export function AppHeader() {
             {/* The separator belongs to the suffix — shown alone it dangles. */}
             <span className="hidden sm:inline">
               {' '}
-              <span className="text-zinc-400">//</span> CORE FILE ENGINE
+              <span className="text-zinc-500">//</span> CORE FILE ENGINE
             </span>
           </span>
         </Link>
@@ -55,7 +55,7 @@ export function AppHeader() {
             aria-hidden
             className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
           />
-          <span className="font-mono text-[0.625rem] tracking-wider text-zinc-400">
+          <span className="font-mono text-[0.625rem] tracking-wider text-zinc-500">
             [ NATIVE WEB WORKER RUNTIME WARM ]
           </span>
         </span>

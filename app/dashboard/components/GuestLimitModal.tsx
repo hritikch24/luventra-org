@@ -51,9 +51,9 @@ export function GuestLimitModal({ open, resetsAt, onClose }: GuestLimitModalProp
       onClose={onClose}
       onCancel={onClose}
       aria-labelledby="guest-limit-title"
-      className="m-auto w-[24rem] max-w-[calc(100vw-2rem)] border border-zinc-800/60 bg-zinc-900/95 p-0 text-zinc-100 backdrop-blur-md backdrop:bg-black/70"
+      className="m-auto w-[24rem] max-w-[calc(100vw-2rem)] border border-zinc-200 bg-white/95 p-0 text-zinc-900 backdrop-blur-md backdrop:bg-black/70"
     >
-      <div className="flex items-center justify-between border-b border-zinc-800/60 px-3 py-2">
+      <div className="flex items-center justify-between border-b border-zinc-200 px-3 py-2">
         <h2 id="guest-limit-title" className={CONFIG_LABEL}>
           Guest threshold reached
         </h2>
@@ -61,17 +61,17 @@ export function GuestLimitModal({ open, resetsAt, onClose }: GuestLimitModalProp
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="p-1 text-zinc-400 transition-colors duration-150 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+          className="p-1 text-zinc-500 transition-colors duration-150 hover:text-zinc-900 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
         >
           <X className="size-3.5" aria-hidden />
         </button>
       </div>
 
       <div className="px-4 py-4">
-        <p className="text-sm leading-relaxed text-zinc-200">
+        <p className="text-sm leading-relaxed text-zinc-700">
           Daily guest threshold reached. Create a free account to unlock unlimited conversions.
         </p>
-        <p className="mt-2 text-[11px] leading-relaxed text-zinc-400">
+        <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
           Guests get {ANON_DAILY_LIMIT} conversions every 24 hours
           {reset ? `; this one resets ${reset}` : ''}. Your file stays loaded — close this to keep
           working on the mapping.
@@ -80,14 +80,14 @@ export function GuestLimitModal({ open, resetsAt, onClose }: GuestLimitModalProp
         <div className="mt-4 flex items-center gap-2">
           <Link
             href="/login"
-            className="flex-1 bg-white px-3 py-2 text-center text-xs font-semibold tracking-tight text-zinc-950 transition-[colors,box-shadow] duration-150 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+            className="flex-1 bg-zinc-900 px-3 py-2 text-center text-xs font-semibold tracking-tight text-white transition-[colors,box-shadow] duration-150 hover:shadow-[0_0_15px_rgba(16,185,129,0.5)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
           >
             Create free account
           </Link>
           <button
             type="button"
             onClick={onClose}
-            className="border border-zinc-800/60 px-3 py-2 font-mono text-[11px] uppercase tracking-widest text-zinc-400 transition-colors duration-150 hover:border-zinc-700 hover:text-zinc-100 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+            className="border border-zinc-200 px-3 py-2 font-mono text-[11px] uppercase tracking-widest text-zinc-500 transition-colors duration-150 hover:border-zinc-300 hover:text-zinc-900 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
           >
             Not now
           </button>

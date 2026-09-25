@@ -67,7 +67,7 @@ export function LoginForm() {
     return (
       <>
         <AuthHeading intent={intent} />
-        <p className="border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-[0.6875rem] leading-relaxed text-amber-400">
+        <p className="border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-[0.6875rem] leading-relaxed text-amber-600">
         Supabase is not configured. Copy <code className="font-mono">.env.example</code> to{' '}
           <code className="font-mono">.env.local</code> and set the project URL and anon key.
         </p>
@@ -91,13 +91,13 @@ export function LoginForm() {
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         disabled={status === 'sending' || status === 'sent'}
-        className="w-full border border-zinc-800 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-100 placeholder:text-zinc-500 transition-colors duration-150 hover:border-zinc-700 focus:border-accent focus:outline-none disabled:opacity-60"
+        className="w-full border border-zinc-200 bg-white px-3 py-2 font-mono text-xs text-zinc-900 placeholder:text-zinc-400 transition-colors duration-150 hover:border-zinc-300 focus:border-accent focus:outline-none disabled:opacity-60"
       />
 
       <button
         type="submit"
         disabled={status === 'sending' || status === 'sent'}
-        className="flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-medium text-white transition-colors duration-150 hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        className="flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-medium text-white transition-colors duration-150 hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-accent"
       >
         {status === 'sending' ? (
           <>
@@ -115,7 +115,7 @@ export function LoginForm() {
         <p
           role={status === 'error' || linkError ? 'alert' : 'status'}
           className={`text-[0.6875rem] leading-relaxed ${
-            status === 'error' || linkError ? 'text-red-400' : 'text-zinc-400'
+            status === 'error' || linkError ? 'text-red-600' : 'text-zinc-500'
           }`}
         >
           {message ?? linkError}

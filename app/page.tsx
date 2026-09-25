@@ -110,22 +110,22 @@ export default function HomePage() {
       <PageViewTracker surface="other" />
 
       {/* Nav ------------------------------------------------------------- */}
-      <header className="border-b border-zinc-800/60">
+      <header className="border-b border-zinc-200">
         <div className="mx-auto flex max-w-[80rem] items-center justify-between gap-4 px-6 py-3">
-          <Link href="/" className="flex shrink-0 items-center gap-2 text-zinc-100">
+          <Link href="/" className="flex shrink-0 items-center gap-2 text-zinc-900">
             <Mark className="size-4 shrink-0" />
             <span className="font-mono text-[0.6875rem] font-medium tracking-wider">LUVENTRA</span>
           </Link>
           <nav aria-label="Main" className="flex items-center gap-5">
             <Link
               href="/banks"
-              className="hidden font-mono text-[10px] uppercase tracking-widest text-zinc-400 transition-colors duration-150 hover:text-zinc-100 sm:inline"
+              className="hidden font-mono text-[10px] uppercase tracking-widest text-zinc-500 transition-colors duration-150 hover:text-zinc-900 sm:inline"
             >
               Supported banks
             </Link>
             <Link
               href="#how"
-              className="hidden font-mono text-[10px] uppercase tracking-widest text-zinc-400 transition-colors duration-150 hover:text-zinc-100 sm:inline"
+              className="hidden font-mono text-[10px] uppercase tracking-widest text-zinc-500 transition-colors duration-150 hover:text-zinc-900 sm:inline"
             >
               How it works
             </Link>
@@ -135,44 +135,44 @@ export default function HomePage() {
       </header>
 
       {/* Hero ------------------------------------------------------------- */}
-      <section className="border-b border-zinc-800/60">
-        <div className="mx-auto max-w-[80rem] px-6 pb-12 pt-16 sm:pt-20">
-          <p className="font-mono text-[0.6875rem] uppercase tracking-widest text-emerald-400">
+      <section className="border-b border-zinc-200">
+        <div className="mx-auto max-w-[80rem] px-6 pb-20 pt-20 sm:pb-28 sm:pt-28">
+          <p className="font-mono text-[0.6875rem] uppercase tracking-widest text-emerald-600">
             Free · No account required
           </p>
-          <h1 className="mt-4 max-w-4xl text-balance text-4xl font-medium leading-[1.1] tracking-tight text-zinc-50 sm:text-5xl">
+          <h1 className="mt-5 max-w-3xl text-balance text-4xl font-medium leading-[1.12] tracking-tight text-zinc-900 sm:text-[3.25rem]">
             Convert a bank CSV statement into QuickBooks QBO, OFX or QFX
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-300">
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-600">
             Drop your bank&rsquo;s CSV export below. The columns are detected, the rows are checked
             for the problems that break imports, and a spec-compliant file is generated on this
             page. Your statement is parsed inside your own browser and never leaves your device.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
+          <div className="mt-10 flex flex-wrap items-center gap-3">
             <a
               href="#convert"
-              className="inline-flex items-center gap-2 bg-white px-5 py-2.5 text-sm font-semibold tracking-tight text-zinc-950 transition-[colors,box-shadow] duration-150 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+              className="inline-flex items-center gap-2 bg-zinc-900 px-5 py-2.5 text-sm font-semibold tracking-tight text-white transition-[colors,box-shadow] duration-150 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
             >
               Convert a statement
               <ArrowRight className="size-4" aria-hidden />
             </a>
             <Link
               href="/banks"
-              className="inline-flex items-center gap-2 border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-100 transition-colors duration-150 hover:border-zinc-600 hover:bg-zinc-900 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+              className="inline-flex items-center gap-2 border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-900 transition-colors duration-150 hover:border-zinc-400 hover:bg-white focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
             >
               Find your bank
             </Link>
           </div>
 
-          <ul className="mt-9 flex flex-wrap gap-x-8 gap-y-3">
+          <ul className="mt-12 flex flex-wrap gap-x-10 gap-y-4">
             {[
               { icon: Lock, text: 'Never uploaded — parsed on your device' },
               { icon: Zap, text: 'Columns detected automatically' },
               { icon: ShieldCheck, text: 'OFX SGML 1.0.2 compliant output' },
             ].map(({ icon: Icon, text }) => (
-              <li key={text} className="flex items-center gap-2 text-sm text-zinc-400">
-                <Icon className="size-4 shrink-0 text-emerald-500" aria-hidden />
+              <li key={text} className="flex items-center gap-2 text-sm text-zinc-500">
+                <Icon className="size-4 shrink-0 text-emerald-600" aria-hidden />
                 {text}
               </li>
             ))}
@@ -181,35 +181,35 @@ export default function HomePage() {
       </section>
 
       {/* The converter ---------------------------------------------------- */}
-      <section id="convert" className="scroll-mt-4 border-b border-zinc-800/60 bg-zinc-900/30">
-        <div className="mx-auto max-w-[80rem] px-6 py-12">
-          <h2 className="text-2xl font-medium tracking-tight text-zinc-50">
+      <section id="convert" className="scroll-mt-4 border-b border-zinc-200 bg-zinc-50">
+        <div className="mx-auto max-w-[80rem] px-6 py-20">
+          <h2 className="text-[1.75rem] font-medium tracking-tight text-zinc-900">
             Drop your statement here
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+          <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-zinc-600">
             Accepts CSV, TSV and delimited TXT exports from any bank. Nothing is sent anywhere —
             close the tab and the file is gone.
           </p>
-          <div className="mt-6 overflow-hidden border border-zinc-800">
+          <div className="mt-8 overflow-hidden border border-zinc-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <StatementWorkbench embedded />
           </div>
         </div>
       </section>
 
       {/* How it works ----------------------------------------------------- */}
-      <section id="how" className="scroll-mt-4 border-b border-zinc-800/60">
-        <div className="mx-auto max-w-[80rem] px-6 py-16">
-          <h2 className="text-2xl font-medium tracking-tight text-zinc-50">How it works</h2>
-          <ol className="mt-8 grid gap-6 md:grid-cols-3">
+      <section id="how" className="scroll-mt-4 border-b border-zinc-200">
+        <div className="mx-auto max-w-[80rem] px-6 py-20 sm:py-24">
+          <h2 className="text-[1.75rem] font-medium tracking-tight text-zinc-900">How it works</h2>
+          <ol className="mt-10 grid gap-10 md:grid-cols-3">
             {STEPS.map((step) => (
-              <li key={step.n} className="border-t border-zinc-800 pt-5">
-                <span className="font-mono text-[0.6875rem] tracking-widest text-emerald-400">
+              <li key={step.n} className="border-t border-zinc-200 pt-5">
+                <span className="font-mono text-[0.6875rem] tracking-widest text-emerald-600">
                   {step.n}
                 </span>
-                <h3 className="mt-3 text-base font-medium tracking-tight text-zinc-100">
+                <h3 className="mt-3 text-base font-medium tracking-tight text-zinc-900">
                   {step.title}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">{step.body}</p>
+                <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-zinc-600">{step.body}</p>
               </li>
             ))}
           </ol>
@@ -217,12 +217,12 @@ export default function HomePage() {
       </section>
 
       {/* Privacy ---------------------------------------------------------- */}
-      <section className="border-b border-zinc-800/60 bg-zinc-900/30">
-        <div className="mx-auto max-w-[80rem] px-6 py-16">
-          <h2 className="max-w-3xl text-2xl font-medium tracking-tight text-zinc-50">
+      <section className="border-b border-zinc-200 bg-zinc-50">
+        <div className="mx-auto max-w-[80rem] px-6 py-20 sm:py-24">
+          <h2 className="max-w-3xl text-[1.75rem] font-medium tracking-tight text-zinc-900">
             Your statement never leaves this browser
           </h2>
-          <div className="mt-6 grid max-w-5xl gap-8 text-sm leading-relaxed text-zinc-400 md:grid-cols-3">
+          <div className="mt-8 grid max-w-5xl gap-10 text-[0.9375rem] leading-relaxed text-zinc-600 md:grid-cols-3">
             <p>
               Parsing and file generation both run inside an isolated Web Worker on your own
               machine. No transaction text, amount, payee, account number or filename is
@@ -242,24 +242,24 @@ export default function HomePage() {
 
       {/* Banks ------------------------------------------------------------ */}
       {banks.length > 0 ? (
-        <section className="border-b border-zinc-800/60">
-          <div className="mx-auto max-w-[80rem] px-6 py-16">
-            <h2 className="text-2xl font-medium tracking-tight text-zinc-50">
+        <section className="border-b border-zinc-200">
+          <div className="mx-auto max-w-[80rem] px-6 py-20 sm:py-24">
+            <h2 className="text-[1.75rem] font-medium tracking-tight text-zinc-900">
               Pre-configured for your bank
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+            <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-zinc-600">
               These pages open the converter with the column mapping already set for that
               bank&rsquo;s export layout, and explain the quirks that break a naive import.
             </p>
-            <ul className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {banks.map((bank) => (
                 <li key={bank.slug}>
                   <Link
                     href={`/banks/${bank.slug}`}
-                    className="flex items-center justify-between gap-3 border border-zinc-800/60 bg-zinc-900/40 px-4 py-3 transition-colors duration-150 hover:border-zinc-700 hover:bg-zinc-900"
+                    className="flex items-center justify-between gap-3 border border-zinc-200 bg-zinc-50 px-4 py-3 transition-colors duration-150 hover:border-zinc-300 hover:bg-white"
                   >
-                    <span className="text-sm text-zinc-100">{bank.name}</span>
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                    <span className="text-sm text-zinc-900">{bank.name}</span>
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">
                       {bank.region}
                     </span>
                   </Link>
@@ -271,18 +271,18 @@ export default function HomePage() {
       ) : null}
 
       {/* Closing CTA ------------------------------------------------------ */}
-      <section className="bg-zinc-900/30">
-        <div className="mx-auto max-w-[80rem] px-6 py-16">
-          <h2 className="max-w-2xl text-2xl font-medium tracking-tight text-zinc-50">
+      <section className="bg-zinc-50">
+        <div className="mx-auto max-w-[80rem] px-6 py-20 sm:py-24">
+          <h2 className="max-w-2xl text-[1.75rem] font-medium tracking-tight text-zinc-900">
             Convert your first statement now
           </h2>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-zinc-400">
+          <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-zinc-600">
             No account, no upload, no card. Create a free account only if you want unlimited
             conversions.
           </p>
           <a
             href="#convert"
-            className="mt-6 inline-flex items-center gap-2 bg-white px-5 py-2.5 text-sm font-semibold tracking-tight text-zinc-950 transition-[colors,box-shadow] duration-150 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+            className="mt-6 inline-flex items-center gap-2 bg-zinc-900 px-5 py-2.5 text-sm font-semibold tracking-tight text-white transition-[colors,box-shadow] duration-150 hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
           >
             Convert a statement
             <ArrowRight className="size-4" aria-hidden />

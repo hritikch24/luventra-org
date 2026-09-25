@@ -33,8 +33,8 @@ const CONTACT = 'privacy@luventra.co';
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-8">
-      <h2 className="text-sm font-medium tracking-tight text-zinc-100">{title}</h2>
-      <div className="mt-2 space-y-2 text-sm leading-relaxed text-zinc-400">{children}</div>
+      <h2 className="text-sm font-medium tracking-tight text-zinc-900">{title}</h2>
+      <div className="mt-2 space-y-2 text-sm leading-relaxed text-zinc-500">{children}</div>
     </section>
   );
 }
@@ -45,13 +45,13 @@ export default function PrivacyPage() {
       <div className="mx-auto max-w-[46rem] px-6 py-12">
         <Link
           href="/dashboard"
-          className="font-mono text-[0.6875rem] text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
+          className="font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-700"
         >
           ← converter
         </Link>
 
-        <h1 className="mt-6 text-2xl font-medium tracking-tight text-zinc-100">Privacy Policy</h1>
-        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-400">Last updated 5 September 2026</p>
+        <h1 className="mt-6 text-2xl font-medium tracking-tight text-zinc-900">Privacy Policy</h1>
+        <p className="mt-2 font-mono text-[0.6875rem] text-zinc-500">Last updated 5 September 2026</p>
 
         <Section title="The short version">
           <p>
@@ -81,37 +81,37 @@ export default function PrivacyPage() {
 
         <Section title="What we do collect">
           <p>
-            <strong className="text-zinc-200">Account.</strong> If you sign in, we store your email
+            <strong className="text-zinc-700">Account.</strong> If you sign in, we store your email
             address so we can identify your account. Authentication uses a one-time link; we never
             ask for or store a password. Sessions are kept in cookies set on your device. Our
             authentication and database provider is Supabase.
           </p>
           <p>
-            <strong className="text-zinc-200">Billing.</strong> Payments are processed by Stripe. We
+            <strong className="text-zinc-700">Billing.</strong> Payments are processed by Stripe. We
             never see or store your card details. We store your Stripe customer and subscription
             identifiers, the plan you are on, your subscription status and its renewal date, so we
             know what you are entitled to.
           </p>
           <p>
-            <strong className="text-zinc-200">Usage limit checks.</strong> When a file exceeds the
+            <strong className="text-zinc-700">Usage limit checks.</strong> When a file exceeds the
             free row limit, your browser asks our server whether your subscription is active. That
             request identifies your account. It does not include the file, its contents, its name or
             its size.
           </p>
           <p>
-            <strong className="text-zinc-200">Advertising and analytics.</strong> We use Google Ads
+            <strong className="text-zinc-700">Advertising and analytics.</strong> We use Google Ads
             conversion tracking. When a conversion is recorded, the only thing sent is an event name
             — no filename, row count, amounts or payee names. Google may set cookies and receive
             your IP address and page URL, subject to consent below.
           </p>
           <p>
-            <strong className="text-zinc-200">Anonymous usage counters.</strong> We record that a
+            <strong className="text-zinc-700">Anonymous usage counters.</strong> We record that a
             page was viewed, that a file was loaded, that the checks passed and that an export
             happened, together with which of our own pages you were on, the output format you
             chose and a coarse size band such as &ldquo;51&ndash;200 rows&rdquo;. These rows are
             keyed to a random identifier generated per browser tab, which is discarded when the
             tab closes and is never linked to your account. We also store your{' '}
-            <strong className="text-zinc-200">IP address and two-letter country</strong> with these
+            <strong className="text-zinc-700">IP address and two-letter country</strong> with these
             events, so we can count unique visitors and see which countries the service is used
             from. The table that stores them has no column capable of holding a filename, an
             amount, a payee or an account number.
@@ -123,7 +123,7 @@ export default function PrivacyPage() {
             written.
           </p>
           <p>
-            <strong className="text-zinc-200">Server logs.</strong> Our hosting provider records
+            <strong className="text-zinc-700">Server logs.</strong> Our hosting provider records
             standard request logs, which can include IP address, user agent and requested URL.
           </p>
         </Section>
@@ -158,7 +158,7 @@ export default function PrivacyPage() {
             To exercise any of these, or to delete your account, contact{' '}
             <a
               href={`mailto:${CONTACT}`}
-              className="text-zinc-200 underline underline-offset-2 transition-colors duration-150 hover:text-white"
+              className="text-zinc-700 underline underline-offset-2 transition-colors duration-150 hover:text-white"
             >
               {CONTACT}
             </a>
@@ -177,7 +177,7 @@ export default function PrivacyPage() {
           </p>
         </Section>
 
-        <p className="mt-10 border-l border-amber-500/40 bg-amber-500/5 px-3 py-2 text-[0.6875rem] leading-relaxed text-amber-400/90">
+        <p className="mt-10 border-l border-amber-500/40 bg-amber-500/5 px-3 py-2 text-[0.6875rem] leading-relaxed text-amber-600/90">
           Operator note, not part of the policy: this text describes the system accurately as built,
           but it has not been reviewed by a lawyer. Confirm the contact address, name your governing
           jurisdiction, and have counsel check it against UK GDPR, EU GDPR and any state privacy

@@ -65,28 +65,28 @@ export function BillingModal({ open, rowCount, signedIn, onClose }: BillingModal
       onClose={onClose}
       onCancel={onClose}
       aria-labelledby="billing-title"
-      className="m-auto w-[22rem] border border-zinc-800 bg-zinc-900 p-0 text-zinc-100 backdrop:bg-black/70"
+      className="m-auto w-[22rem] border border-zinc-200 bg-white p-0 text-zinc-900 backdrop:bg-black/70"
     >
-      <div className="flex items-center justify-between border-b border-zinc-800/60 px-3 py-2">
-        <h2 id="billing-title" className="text-xs font-medium text-zinc-100">
+      <div className="flex items-center justify-between border-b border-zinc-200 px-3 py-2">
+        <h2 id="billing-title" className="text-xs font-medium text-zinc-900">
           Upgrade to convert this file
         </h2>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="p-1 text-zinc-400 transition-colors duration-150 hover:text-zinc-200"
+          className="p-1 text-zinc-500 transition-colors duration-150 hover:text-zinc-700"
         >
           <X className="size-3.5" aria-hidden />
         </button>
       </div>
 
       <div className="px-3 py-3">
-        <p className="text-[0.6875rem] leading-relaxed text-zinc-400">
+        <p className="text-[0.6875rem] leading-relaxed text-zinc-500">
           This statement has{' '}
-          <span className="font-mono text-zinc-100 tnum">{rowCount.toLocaleString()}</span>{' '}
+          <span className="font-mono text-zinc-900 tnum">{rowCount.toLocaleString()}</span>{' '}
           transactions. The free tier converts up to{' '}
-          <span className="font-mono text-zinc-100 tnum">{FREE_ROW_LIMIT}</span> per file.
+          <span className="font-mono text-zinc-900 tnum">{FREE_ROW_LIMIT}</span> per file.
         </p>
 
         {signedIn ? (
@@ -94,7 +94,7 @@ export function BillingModal({ open, rowCount, signedIn, onClose }: BillingModal
             type="button"
             onClick={() => void startCheckout()}
             disabled={busy}
-            className="mt-3 flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-medium text-white transition-colors duration-150 hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-zinc-800 disabled:text-zinc-600"
+            className="mt-3 flex w-full items-center justify-center gap-2 bg-accent px-3 py-2 text-xs font-medium text-white transition-colors duration-150 hover:bg-accent-hover disabled:cursor-not-allowed disabled:bg-zinc-200 disabled:text-zinc-400"
           >
             {busy ? (
               <>
@@ -115,12 +115,12 @@ export function BillingModal({ open, rowCount, signedIn, onClose }: BillingModal
         )}
 
         {error ? (
-          <p role="alert" className="mt-2 text-[0.6875rem] leading-relaxed text-red-400">
+          <p role="alert" className="mt-2 text-[0.6875rem] leading-relaxed text-red-600">
             {error}
           </p>
         ) : null}
 
-        <p className="mt-2 text-[0.625rem] leading-relaxed text-zinc-400">
+        <p className="mt-2 text-[0.625rem] leading-relaxed text-zinc-500">
           Your file never leaves the browser. Only the subscription check and anonymous usage
           counters touch the network, and neither carries statement data.
         </p>
