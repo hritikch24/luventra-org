@@ -7,6 +7,7 @@ import { resolvePresetRoles } from '@/app/lib/preset-resolve';
 import { copyFor } from '@/app/lib/market-context';
 import { StatementWorkbench } from '@/app/dashboard/StatementWorkbench';
 import { bankFaq, bankFaqSchema } from '@/app/lib/bank-faq';
+import { Mark } from '@/app/components/Mark';
 import { AuthLink } from '@/app/components/AuthLink';
 import { PageViewTracker } from '@/app/components/PageViewTracker';
 
@@ -122,13 +123,22 @@ export default async function BankPage({ params }: PageProps) {
 
       <header className="border-b border-zinc-200">
         <div className="mx-auto flex max-w-[80rem] items-center justify-between px-6 py-3">
-          <Link
-            href="/banks"
-            className="flex items-center gap-1.5 font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-700"
-          >
-            <ArrowLeft className="size-3" aria-hidden />
-            all banks
-          </Link>
+          <div className="flex min-w-0 items-center gap-4">
+            <Link
+              href="/"
+              className="flex shrink-0 items-center gap-2 text-zinc-900 transition-opacity duration-150 hover:opacity-70 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+            >
+              <Mark className="size-4 shrink-0" />
+              <span className="font-mono text-[0.6875rem] font-medium tracking-wider">LUVENTRA</span>
+            </Link>
+            <Link
+              href="/banks"
+              className="flex items-center gap-1.5 font-mono text-[0.6875rem] text-zinc-500 transition-colors duration-150 hover:text-zinc-700"
+            >
+              <ArrowLeft className="size-3" aria-hidden />
+              all banks
+            </Link>
+          </div>
           <div className="flex items-center gap-3">
             <span className="font-mono text-[0.625rem] text-zinc-500">csv → ofx/qbo/qfx</span>
             <AuthLink />

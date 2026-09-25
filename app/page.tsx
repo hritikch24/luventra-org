@@ -3,8 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, Lock, ShieldCheck, Zap } from 'lucide-react';
 import { SEO_BANKS } from '@/app/lib/seo-banks-data';
 import { StatementWorkbench } from '@/app/dashboard/StatementWorkbench';
-import { AuthLink } from '@/app/components/AuthLink';
-import { Mark } from '@/app/components/Mark';
+import { SiteHeader } from '@/app/components/SiteHeader';
 import { PageViewTracker } from '@/app/components/PageViewTracker';
 
 /*
@@ -109,30 +108,7 @@ export default function HomePage() {
       */}
       <PageViewTracker surface="other" />
 
-      {/* Nav ------------------------------------------------------------- */}
-      <header className="border-b border-zinc-200">
-        <div className="mx-auto flex max-w-[80rem] items-center justify-between gap-4 px-6 py-3">
-          <Link href="/" className="flex shrink-0 items-center gap-2 text-zinc-900">
-            <Mark className="size-4 shrink-0" />
-            <span className="font-mono text-[0.6875rem] font-medium tracking-wider">LUVENTRA</span>
-          </Link>
-          <nav aria-label="Main" className="flex items-center gap-5">
-            <Link
-              href="/banks"
-              className="hidden font-mono text-[10px] uppercase tracking-widest text-zinc-500 transition-colors duration-150 hover:text-zinc-900 sm:inline"
-            >
-              Supported banks
-            </Link>
-            <Link
-              href="#how"
-              className="hidden font-mono text-[10px] uppercase tracking-widest text-zinc-500 transition-colors duration-150 hover:text-zinc-900 sm:inline"
-            >
-              How it works
-            </Link>
-            <AuthLink />
-          </nav>
-        </div>
-      </header>
+      <SiteHeader showSectionLinks />
 
       {/* Hero ------------------------------------------------------------- */}
       <section className="border-b border-zinc-200">

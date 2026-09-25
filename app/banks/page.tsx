@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SEO_BANKS } from '@/app/lib/seo-banks-data';
+import { SiteHeader } from '@/app/components/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'Convert Bank CSV Statements to QBO, OFX and QFX',
@@ -18,7 +19,9 @@ export default function BanksIndexPage() {
   const banks = SEO_BANKS;
 
   return (
-    <main className="min-h-dvh">
+    <>
+      <SiteHeader />
+      <main className="min-h-dvh">
       <div className="mx-auto max-w-[80rem] px-6 py-12">
         <h1 className="text-2xl font-medium tracking-tight text-zinc-900">
           Convert bank CSV statements to QBO, OFX and QFX
@@ -70,6 +73,7 @@ export default function BanksIndexPage() {
           infers the layout from any CSV.
         </p>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

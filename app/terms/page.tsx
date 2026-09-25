@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SiteHeader } from '@/app/components/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
@@ -29,7 +30,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function TermsPage() {
   return (
-    <main className="min-h-dvh">
+    <>
+      <SiteHeader />
+      <main className="min-h-dvh">
       <div className="mx-auto max-w-[46rem] px-6 py-12">
         <Link
           href="/dashboard"
@@ -143,6 +146,7 @@ export default function TermsPage() {
           and EU consumer regimes in particular.
         </p>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SiteHeader } from '@/app/components/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -41,7 +42,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-dvh">
+    <>
+      <SiteHeader />
+      <main className="min-h-dvh">
       <div className="mx-auto max-w-[46rem] px-6 py-12">
         <Link
           href="/dashboard"
@@ -184,6 +187,7 @@ export default function PrivacyPage() {
           laws that apply to you before relying on it for compliance.
         </p>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

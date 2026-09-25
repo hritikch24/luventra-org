@@ -35,7 +35,7 @@ export function AppHeader() {
     <header className="flex h-[var(--header-h)] shrink-0 items-center justify-between gap-4 border-b border-zinc-200 bg-zinc-50 px-4">
       <div className="flex min-w-0 items-center gap-3">
         <Link
-          href="/dashboard"
+          href="/"
           className="flex shrink-0 items-center gap-2 text-zinc-900 transition-opacity duration-150 hover:opacity-80 focus-visible:outline-1 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
         >
           <Mark className="size-4 shrink-0" />

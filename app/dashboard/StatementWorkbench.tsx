@@ -117,13 +117,18 @@ export interface BankPreset {
  * Format assertions rendered under the preview grid.
  *
  * Each line states something the emitter actually does — see `app/worker/ofx.ts`
- * for the SGML profile and Intuit BID tag, and `app/worker/sha1.ts` for the
+ * for the SGML profile and the INTU.BID tag, and `app/worker/sha1.ts` for the
  * FITID digest — so this row stays a description of the engine rather than a
  * decorative trust badge.
+ *
+ * The BID line used to read "Intuit BID Registry Token Matching", which
+ * claimed more than the emitter does: the tag is a compatibility fallback, not
+ * a per-bank registry lookup. Wording corrected rather than left to imply a
+ * capability that does not exist.
  */
 const COMPLIANCE_ASSERTIONS = [
   'OFX SGML Specification v1.0.2 Compliant',
-  'Intuit BID Registry Token Matching',
+  'QuickBooks Desktop-compatible Web Connect ID',
   'SHA-1 Transaction Deduplication Protection',
 ] as const;
 

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { LoginForm } from './LoginForm';
 import { AuthHeading } from './AuthHeading';
+import { SiteHeader } from '@/app/components/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'Sign in',
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center px-4">
+    <>
+      <SiteHeader />
+      <main className="flex min-h-[calc(100dvh-8rem)] items-center justify-center px-4 py-16">
       <div className="w-full max-w-[20rem]">
         {/*
           The heading lives inside LoginForm because it varies with `?intent`,
@@ -21,6 +24,7 @@ export default function LoginPage() {
           <LoginForm />
         </Suspense>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

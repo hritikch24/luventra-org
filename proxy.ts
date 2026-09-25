@@ -75,10 +75,32 @@ function isRetired(pathname: string): boolean {
 export async function proxy(request: NextRequest) {
   // Answered before any Supabase work: a gone URL needs no session refresh.
   if (isRetired(request.nextUrl.pathname)) {
-    return new NextResponse('410 Gone — this page was part of a previous site on this domain.', {
-      status: 410,
-      headers: { 'content-type': 'text/plain; charset=utf-8' },
-    });
+    /*
+     * HTML, not bare text. The status code is for crawlers, but a person can
+     * still follow an old link here from a bookmark or an external site, and a
+     * plain-text body leaves them with no way into the product — the same dead
+     * end the rest of the site was just audited for. Inlined rather than
+     * rendered through a route so the response stays inside the proxy.
+     */
+    return new NextResponse(
+      `<!doctype html><html lang="en"><head><meta charset="utf-8">` +
+        `<meta name="viewport" content="width=device-width,initial-scale=1">` +
+        `<meta name="robots" content="noindex">` +
+        `<title>Page removed</title></head>` +
+        `<body style="margin:0;background:#fafafa;color:#18181b;` +
+        `font:16px/1.6 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">` +
+        `<main style="max-width:34rem;margin:0 auto;padding:6rem 1.5rem">` +
+        `<p style="margin:0;font:11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;` +
+        `letter-spacing:.18em;text-transform:uppercase;color:#71717a">Error 410</p>` +
+        `<h1 style="margin:1rem 0 0;font-size:1.75rem;font-weight:500;letter-spacing:-.02em">` +
+        `This page was removed</h1>` +
+        `<p style="margin:1rem 0 0;color:#52525b">It belonged to a previous site on this domain ` +
+        `and is not coming back. Luventra converts bank CSV statements into QBO, OFX and QFX.</p>` +
+        `<p style="margin:2rem 0 0"><a href="/" style="display:inline-block;background:#18181b;` +
+        `color:#fff;text-decoration:none;padding:.7rem 1.25rem;font-size:.875rem;font-weight:600">` +
+        `Go to the converter</a></p></main></body></html>`,
+      { status: 410, headers: { 'content-type': 'text/html; charset=utf-8' } },
+    );
   }
 
   let response = NextResponse.next({ request });
