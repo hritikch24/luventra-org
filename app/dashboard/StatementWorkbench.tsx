@@ -467,9 +467,24 @@ export function StatementWorkbench({ preset, embedded = false }: StatementWorkbe
         and on all 20 bank pages — invalid HTML and a duplicate landmark for
         assistive tech.
       */}
+      {/*
+        Column weights follow the state.
+
+        Before a file exists the only thing that matters is the drop target, so
+        it takes a wide column and the preview — which has nothing in it yet —
+        gives up the space. The old fixed 17rem rail made the upload the
+        smallest element on screen while an empty ledger occupied the middle,
+        which inverted the visual weight against the one action a visitor came
+        to perform. Once a file is loaded the preview becomes the content and
+        the weights swap back.
+      */}
       <section
         aria-labelledby="workspace-heading"
-        className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto p-3 lg:grid-cols-[17rem_minmax(0,1fr)_19rem] lg:overflow-hidden"
+        className={`grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-auto p-3 lg:overflow-hidden ${
+          loaded
+            ? 'lg:grid-cols-[17rem_minmax(0,1fr)_19rem]'
+            : 'lg:grid-cols-[26rem_minmax(0,1fr)_17rem]'
+        }`}
       >
         {/* Anchors the h3s of the three panels under a single h2 in both the
             standalone and embedded heading outlines. */}

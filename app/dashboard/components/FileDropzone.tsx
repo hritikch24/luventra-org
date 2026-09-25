@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useId, useRef, useState } from 'react';
-import { FileText, X } from 'lucide-react';
+import { FileText, Upload, X } from 'lucide-react';
 import type { CsvPreview } from '@/app/lib/preview';
 import { PILL } from './surface';
 
@@ -138,23 +138,48 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
         <label
           htmlFor={inputId}
           aria-describedby={hintId}
-          className="group flex cursor-pointer flex-col items-center gap-3 px-4 py-7"
+          className="group flex cursor-pointer flex-col items-center gap-4 px-5 py-10"
         >
           <span
-            className={`font-mono text-[11px] uppercase tracking-widest transition-colors duration-150 ${
-              dragging ? 'text-emerald-300' : 'text-zinc-200 group-hover:text-zinc-50'
+            className={`flex size-11 items-center justify-center rounded-full border transition-colors duration-150 ${
+              dragging
+                ? 'border-emerald-400/70 bg-emerald-500/10 text-emerald-300'
+                : 'border-zinc-700 bg-zinc-900 text-zinc-300 group-hover:border-emerald-500/50 group-hover:text-emerald-300'
             }`}
           >
-            {busy ? 'reading' : dragging ? 'release to load' : 'place statement'}
+            <Upload className="size-5" aria-hidden />
           </span>
 
-          {/* A hairline that becomes the only moving part on hover. */}
+          <span className="flex flex-col items-center gap-1 text-center">
+            <span
+              className={`text-sm font-medium tracking-tight transition-colors duration-150 ${
+                dragging ? 'text-emerald-300' : 'text-zinc-50'
+              }`}
+            >
+              {busy ? 'Reading your file…' : dragging ? 'Release to load' : 'Drop your statement here'}
+            </span>
+            <span className="text-xs text-zinc-400">
+              {busy ? 'Parsing in your browser' : 'or choose a file from your computer'}
+            </span>
+          </span>
+
+          {/*
+            A real button, not a hint that the panel is clickable.
+            The previous zero state was a dim bordered box reading "PLACE
+            STATEMENT" in 11px mono caps with no icon and no control — it read
+            as a status label, so visitors did not know a file went there. This
+            is a <span> inside the <label>, so the whole panel still opens the
+            picker and there is no nested interactive element.
+          */}
           <span
-            aria-hidden
-            className={`h-px w-10 transition-all duration-200 ${
-              dragging ? 'w-20 bg-emerald-400/70' : 'bg-zinc-700 group-hover:w-16 group-hover:bg-zinc-500'
+            className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold tracking-tight transition-[colors,box-shadow] duration-150 ${
+              dragging
+                ? 'bg-emerald-400 text-zinc-950'
+                : 'bg-white text-zinc-950 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.45)]'
             }`}
-          />
+          >
+            Choose file
+          </span>
 
           <span className="flex items-center gap-1.5">
             {ACCEPTED_LABELS.map((label) => (
@@ -164,7 +189,7 @@ export function FileDropzone({ preview, busy, error, onFile, onClear }: FileDrop
                   dragging ? 'border-emerald-500/40 text-emerald-300/90' : ''
                 }`}
               >
-                [ {label} ]
+                {label}
               </span>
             ))}
           </span>

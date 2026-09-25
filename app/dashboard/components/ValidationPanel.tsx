@@ -60,59 +60,18 @@ export function ValidationPanel({
 
   return (
     <div data-tour="validation" className="flex flex-col gap-3 lg:min-h-0">
-      <section className={`flex flex-col lg:min-h-0 ${PANEL}`}>
-        <header className={PANEL_HEADER}>
-          <h3 className={CONFIG_LABEL}>
-            Pre-flight
-          </h3>
-          {report ? (
-            <span className="font-mono text-[0.625rem] tnum">
-              <span className={report.failures > 0 ? 'text-red-400' : 'text-zinc-400'}>
-                {report.failures} fail
-              </span>
-              <span className="text-zinc-400"> / </span>
-              <span className={report.warnings > 0 ? 'text-amber-400' : 'text-zinc-400'}>
-                {report.warnings} warn
-              </span>
-            </span>
-          ) : null}
-        </header>
+      {/*
+        The export control sits above the checks, not below them.
 
-        <div className="scroll-thin lg:min-h-0 lg:flex-1 lg:overflow-y-auto" aria-live="polite">
-          {report === null ? (
-            <p className="px-3 py-8 text-center font-mono text-xs text-zinc-400">
-              awaiting file
-            </p>
-          ) : (
-            <ul className="divide-y divide-zinc-800/40">
-              {report.checks.map((check) => {
-                const style = STATUS[check.status];
-                const Icon = style.icon;
-                return (
-                  <li
-                    key={check.id}
-                    className="px-3 py-2 transition-colors duration-150 hover:bg-zinc-800/30"
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <span
-                        className={`size-1.5 shrink-0 rounded-full ${style.dot}`}
-                        aria-hidden
-                      />
-                      <Icon className={`size-3 shrink-0 ${style.tone}`} aria-hidden />
-                      <span className="text-xs font-medium text-zinc-200">{check.label}</span>
-                      <span className="sr-only">{style.sr}</span>
-                    </div>
-                    <p className="mt-1 pl-[1.875rem] text-[0.6875rem] leading-relaxed text-zinc-400">
-                      {check.detail}
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
-      </section>
-
+        With pre-flight first, a seven-row check list pushed Generate to the
+        bottom of a tall column: on a 809px viewport it measured at y=776, the
+        last 33 pixels, and below the fold on any shorter laptop. A visitor
+        uploaded, saw a column of green ticks telling them the file was good,
+        and never saw the control that produces the download. Putting the
+        action first makes that structural rather than dependent on scroll
+        position, which is what an earlier attempt using scrollIntoView tried
+        and failed to guarantee.
+      */}
       <section data-tour="export" className={`shrink-0 p-3 ${PANEL}`}>
         <label htmlFor="acctid" className={`mb-1 block ${CONFIG_LABEL}`}>
           Account ID
@@ -190,10 +149,63 @@ export function ValidationPanel({
           </p>
         ) : report !== null && !report.ready ? (
           <p className="mt-2 text-[0.6875rem] leading-relaxed text-zinc-400">
-            Export is gated until every failing check above is cleared.
+            Export is gated until every failing check below is cleared.
           </p>
         ) : null}
       </section>
+      <section className={`flex flex-col lg:min-h-0 ${PANEL}`}>
+        <header className={PANEL_HEADER}>
+          <h3 className={CONFIG_LABEL}>
+            Pre-flight
+          </h3>
+          {report ? (
+            <span className="font-mono text-[0.625rem] tnum">
+              <span className={report.failures > 0 ? 'text-red-400' : 'text-zinc-400'}>
+                {report.failures} fail
+              </span>
+              <span className="text-zinc-400"> / </span>
+              <span className={report.warnings > 0 ? 'text-amber-400' : 'text-zinc-400'}>
+                {report.warnings} warn
+              </span>
+            </span>
+          ) : null}
+        </header>
+
+        <div className="scroll-thin lg:min-h-0 lg:flex-1 lg:overflow-y-auto" aria-live="polite">
+          {report === null ? (
+            <p className="px-3 py-8 text-center font-mono text-xs text-zinc-400">
+              awaiting file
+            </p>
+          ) : (
+            <ul className="divide-y divide-zinc-800/40">
+              {report.checks.map((check) => {
+                const style = STATUS[check.status];
+                const Icon = style.icon;
+                return (
+                  <li
+                    key={check.id}
+                    className="px-3 py-2 transition-colors duration-150 hover:bg-zinc-800/30"
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`size-1.5 shrink-0 rounded-full ${style.dot}`}
+                        aria-hidden
+                      />
+                      <Icon className={`size-3 shrink-0 ${style.tone}`} aria-hidden />
+                      <span className="text-xs font-medium text-zinc-200">{check.label}</span>
+                      <span className="sr-only">{style.sr}</span>
+                    </div>
+                    <p className="mt-1 pl-[1.875rem] text-[0.6875rem] leading-relaxed text-zinc-400">
+                      {check.detail}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </section>
+
     </div>
   );
 }
