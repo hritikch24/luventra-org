@@ -390,14 +390,97 @@ export function runPreflight({
 }
 
 /**
+ * Human labels for engine issue codes.
+ *
+ * The indicator list previously used `issue.code` verbatim, so a bookkeeper
+ * read `bad-amount` and `ragged-rows` in the column that is supposed to tell
+ * them whether their file is going to work. The engine's message already
+ * explains the detail; this is the short label above it.
+ *
+ * Keyed by plain string rather than a code union on purpose: the engine adds
+ * codes independently of this file, and an unknown one should degrade to a
+ * readable fallback rather than fail the build or render raw. Entries for
+ * codes not yet emitted are harmless and land labelled the moment they are.
+ */
+const ISSUE_LABELS: Readonly<Record<string, string>> = {
+  // Errors — these block export.
+  'unsupported-content': 'Not a CSV file',
+  'empty-file': 'File is empty',
+  'file-too-large': 'File too large',
+  'no-rows': 'No transactions found',
+  'no-transactions': 'No transactions could be read',
+  'no-date-column': 'No date column found',
+  'no-amount-column': 'No amount column found',
+  'multi-currency': 'More than one currency',
+  'system-timeout': 'Took too long to process',
+  'worker-exception': 'Conversion failed',
+  'unhandled-rejection': 'Conversion failed',
+  'bad-request': 'Conversion failed',
+  'unknown-kind': 'Conversion failed',
+  // Warnings — the file still converts.
+  'signs-inverted': 'Card signs flipped',
+  'all-positive': 'All amounts are positive: is this a credit card?',
+  'ambiguous-date-order': 'Date order assumed MM/DD',
+  'unparsed-dates': "Some dates couldn't be read",
+  'bad-date': 'Row skipped: unreadable date',
+  'bad-amount': 'Row skipped: no amount',
+  'ragged-rows': 'Some rows have a different column count',
+  'no-header': 'No header row: columns guessed from content',
+  'encoding-fallback': 'Text encoding guessed',
+  // Info.
+  'skipped-unsettled': 'Pending rows left out',
+};
+
+/** `some-unknown-code` -> `Some unknown code`, so nothing renders as a slug. */
+function humanise(code: string): string {
+  const spaced = code.replace(/[-_]+/g, ' ').trim();
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
+/** Codes the engine reports once per offending row rather than once per file. */
+const PER_ROW_CODES = new Set(['bad-date', 'bad-amount']);
+
+/**
  * Fold worker-reported issues into the same shape, so `ParseIssue`s coming back
  * over the wire render through the identical indicator list.
+ *
+ * Per-row codes are collapsed to one entry carrying a count. A statement with
+ * forty unreadable rows previously produced forty identical indicator rows and
+ * buried every other check; Bank of America's "Beginning balance" preamble
+ * raises one `bad-amount` on every single file, so the ungrouped form was the
+ * common case rather than the edge case.
  */
 export function issuesToChecks(issues: readonly ParseIssue[]): readonly PreflightCheck[] {
-  return issues.map((issue, index) => ({
-    id: `worker-${issue.code}-${index}`,
-    label: issue.code,
-    status: issue.level === 'error' ? 'fail' : issue.level === 'warning' ? 'warn' : 'pass',
-    detail: issue.message,
-  }));
+  const checks: PreflightCheck[] = [];
+  const grouped = new Map<string, { count: number; first: ParseIssue }>();
+
+  for (const issue of issues) {
+    if (PER_ROW_CODES.has(issue.code)) {
+      const seen = grouped.get(issue.code);
+      if (seen) seen.count += 1;
+      else grouped.set(issue.code, { count: 1, first: issue });
+      continue;
+    }
+    checks.push({
+      id: `worker-${issue.code}-${checks.length}`,
+      label: ISSUE_LABELS[issue.code] ?? humanise(issue.code),
+      status: issue.level === 'error' ? 'fail' : issue.level === 'warning' ? 'warn' : 'pass',
+      detail: issue.message,
+    });
+  }
+
+  for (const [code, { count, first }] of grouped) {
+    const label = ISSUE_LABELS[code] ?? humanise(code);
+    checks.push({
+      id: `worker-${code}-grouped`,
+      label: count === 1 ? label : `${label} (${count} rows)`,
+      status: first.level === 'error' ? 'fail' : first.level === 'warning' ? 'warn' : 'pass',
+      detail:
+        count === 1
+          ? first.message
+          : `${count} rows were skipped for this reason. First: ${first.message}`,
+    });
+  }
+
+  return checks;
 }
