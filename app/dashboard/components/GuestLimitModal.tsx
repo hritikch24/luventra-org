@@ -69,7 +69,7 @@ export function GuestLimitModal({ open, resetsAt, onClose }: GuestLimitModalProp
 
       <div className="px-4 py-4">
         <p className="text-sm leading-relaxed text-zinc-700">
-          Daily guest threshold reached. Create a free account to unlock unlimited conversions.
+          Daily guest limit reached. Create a free account to lift it; very large files need a paid plan.
         </p>
         <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
           Guests get {ANON_DAILY_LIMIT} conversions every 24 hours

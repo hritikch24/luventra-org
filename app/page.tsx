@@ -63,7 +63,7 @@ const structuredData = {
 export const metadata: Metadata = {
   title: 'Convert Bank CSV Statements to QBO, OFX and QFX',
   description:
-    'Convert any bank CSV export into QuickBooks QBO, OFX or QFX. Runs entirely in your browser — the statement is never uploaded. Free, no account needed.',
+    'Convert a bank CSV export into QuickBooks QBO, OFX or QFX. Runs entirely in your browser — the statement is never uploaded. Free to try, no account needed.',
   alternates: { canonical: '/' },
 };
 
@@ -163,8 +163,8 @@ export default function HomePage() {
             Drop your statement here
           </h2>
           <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-zinc-600">
-            Accepts CSV, TSV and delimited TXT exports from any bank. Nothing is sent anywhere —
-            close the tab and the file is gone.
+            Accepts CSV, TSV and delimited TXT exports. Check the column mapping and preview before
+            you export. Nothing is sent anywhere — close the tab and the file is gone.
           </p>
           <div className="mt-8 overflow-hidden border border-zinc-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
             <StatementWorkbench embedded />
@@ -253,8 +253,8 @@ export default function HomePage() {
             Convert your first statement now
           </h2>
           <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-zinc-600">
-            No account, no upload, no card. Create a free account only if you want unlimited
-            conversions.
+            No account, no upload, no card to start. Create a free account to lift the daily guest
+            limit; very large files need a paid plan.
           </p>
           <a
             href="#convert"
