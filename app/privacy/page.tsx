@@ -167,6 +167,25 @@ export default function PrivacyPage() {
             </a>
             .
           </p>
+          <p>
+            WhatsApp (primary):{' '}
+            <a
+              href="https://wa.me/17738708925"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-zinc-700 underline underline-offset-2 transition-colors duration-150 hover:text-white"
+            >
+              +1 (773) 870-8925
+            </a>
+            . Calls and WhatsApp:{' '}
+            <a
+              href="tel:+13314318078"
+              className="text-zinc-700 underline underline-offset-2 transition-colors duration-150 hover:text-white"
+            >
+              +1 (331) 431-8078
+            </a>
+            .
+          </p>
         </Section>
 
         <Section title="Children">
