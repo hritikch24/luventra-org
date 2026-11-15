@@ -1,0 +1,12 @@
+# Statement Converter (luventra.co)
+
+> Converts bank CSV exports into OFX, QBO and QFX files for accounting software.
+
+## Key pages
+- [Home](https://www.luventra.co/): the converter.
+- [Bank guides](https://www.luventra.co/banks): export notes and conversion pages for individual banks.
+- [Privacy](https://www.luventra.co/privacy)
+- [Terms](https://www.luventra.co/terms)
+
+## Note
+Bank export formats change without notice; check the converted file in your accounting software before importing.

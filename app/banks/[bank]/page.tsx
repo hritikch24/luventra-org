@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const profile = bankBySlug(slug);
   if (!profile) return {};
 
-  const title = `Convert ${profile.name} CSV Statements to QuickBooks QBO/OFX Format`;
+  const title = `${profile.name} CSV to QBO/OFX for QuickBooks`;
   const description = `Convert ${profile.legalName} ${profile.accountKind} CSV exports to QBO, OFX or QFX for QuickBooks, Quicken and Xero. Runs entirely in your browser — the file is never uploaded.`;
 
   return {
